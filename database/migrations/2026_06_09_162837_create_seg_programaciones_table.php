@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('seg_programaciones', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('programacion_id');
             $table->bigInteger('actividad_id');
             $table->bigInteger('subactividad_id')->nullable();
             $table->bigInteger('facilitador_id');
