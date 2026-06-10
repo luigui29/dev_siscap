@@ -40,6 +40,7 @@ routes/web.php → Redirects requests to controller methods
 ## Rules
 - Follow user requests strictly and don't deviate from request 
 - Code comments and documentation must be written in spanish
+- Always use styles from and don't add new styles to styles.blade.php
 - Use Font Awesome web application icons for all icon styling
 - All HTML tags should use bootstrap classes and styles from styles.blade.php
 - Don't make commits and don't push to main
