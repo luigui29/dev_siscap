@@ -130,7 +130,7 @@
                                    </tr>
                               @empty
                                    <tr>
-                                        <td colSpan="7" class="text-center py-4">
+                                        <td colspan="7" class="text-center py-4">
                                              <div class="empty-state py-4 text-center">
                                                   <i class="fas fa-search text-muted" style="font-size: 2rem;"></i>
                                                   <p class="mb-0 mt-2 font-weight-bold text-secondary">No se encontraron cursos recientes</p>

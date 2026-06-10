@@ -320,7 +320,7 @@
                          
                          <!-- Stats Card 1 -->
                          <div class="p-3 bg-white border rounded shadow-sm d-flex align-items-center" style="gap: 12px; min-height: 80px;">
-                              <div style="width: 36px; height: 36px; border-radius: 50%; backgroundColor: '#E0F2FE'; color: '#0369A1'; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
+                              <div style="width: 36px; height: 36px; border-radius: 50%; background-color: #E0F2FE; color: #0369A1; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
                                    <i class="fas fa-folder" style="font-size: 0.9rem; color: #0369A1;"></i>
                               </div>
                               <div>
@@ -331,7 +331,7 @@
 
                          <!-- Stats Card 2 -->
                          <div class="p-3 bg-white border rounded shadow-sm d-flex align-items-center" style="gap: 12px; min-height: 80px;">
-                              <div style="width: 36px; height: 36px; border-radius: 50%; backgroundColor: '#DCFCE7'; color: '#15803D'; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
+                              <div style="width: 36px; height: 36px; border-radius: 50%; background-color: #DCFCE7; color: #15803D; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
                                    <i class="fas fa-check-circle" style="font-size: 0.9rem; color: #15803D;"></i>
                               </div>
                               <div>
@@ -342,7 +342,7 @@
 
                          <!-- Stats Card 3 -->
                          <div class="p-3 bg-white border rounded shadow-sm d-flex align-items-center" style="gap: 12px; min-height: 80px;">
-                              <div style="width: 36px; height: 36px; border-radius: 50%; backgroundColor: '#FEF3C7'; color: '#B45309'; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
+                              <div style="width: 36px; height: 36px; border-radius: 50%; background-color: #FEF3C7; color: #B45309; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
                                    <i class="fas fa-hourglass-half" style="font-size: 0.9rem; color: #B45309;"></i>
                               </div>
                               <div>
