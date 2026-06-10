@@ -21,8 +21,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('programacion_id')->references('id')->on('tbl_programaciones')->onDelete('cascade');
-
-            $table->unique(['programacion_id', 'ficha_empleado']);
         });
     }
 
