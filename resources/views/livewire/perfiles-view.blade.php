@@ -24,6 +24,7 @@
 
      <!-- TAB 1: PERFIL INDIVIDUAL -->
      @if($pestania_activa === 'individual')
+          @include('partials.filtro-empleados')
           <div class="row text-dark">
                <div class="col-12 col-lg-4 mb-4">
                     <div class="card shadow-sm border-0 bg-white h-100" style="border-radius: 8px;">
@@ -37,33 +38,32 @@
                               <div class="form-group mb-3">
                                    <label class="font-weight-bold small text-muted">SELECCIONAR COLABORADOR</label>
                                    <select class="form-control" wire:model.live="ficha_usuario_seleccionado" style="height: 44px; font-weight: 600;">
-                                        @foreach($colaboradores as $c)
-                                             <option value="{{ $c->ficha }}">[{{ $c->ficha }}] - {{ $c->name }}</option>
+                                        @foreach($empleados as $e)
+                                             <option value="{{ $e->ficha }}">[{{ $e->ficha }}] - {{ $e->nombre_empleado }}</option>
                                         @endforeach
                                    </select>
                               </div>
 
                               @php
-                                   $active_employee = $colaboradores->firstWhere('ficha', $ficha_usuario_seleccionado);
+                                   $active_employee = $empleados->firstWhere('ficha', $ficha_usuario_seleccionado);
                               @endphp
 
                               @if($active_employee)
                                    <div class="p-3 bg-light rounded text-center border mt-4">
                                         <div class="avatar-text m-auto d-flex align-items-center justify-content-center text-white font-weight-bold" style="background-color: #5DADE2; width: 64px; height: 64px; border-radius: 50%; font-size: 1.5rem; border: 2px solid #FFF; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                                             {{ substr($active_employee->name, 0, 2) }}
+                                             {{ substr($active_employee->nombre_empleado, 0, 2) }}
                                         </div>
                                         <h5 class="font-weight-bold text-dark mt-3 mb-1" style="font-size: 1.1rem;">
-                                             {{ $active_employee->name }}
+                                             {{ $active_employee->nombre_empleado }}
                                         </h5>
                                         <span class="badge badge-success px-2 py-1 mb-2 text-uppercase font-weight-bold" style="font-size: 0.7rem; border-radius: 50px;">
                                              FICHA: {{ $active_employee->ficha }}
                                         </span>
 
                                         <div class="text-left mt-3 pt-3 border-top" style="font-size: 0.85rem;">
-                                             <p class="mb-2 text-dark"><strong>Cédula:</strong> V-15.392.091</p>
-                                             <p class="mb-2 text-dark"><strong>Cargo:</strong> {{ $active_employee->role }}</p>
-                                             <p class="mb-2 text-dark"><strong>Gerencia:</strong> {{ $active_employee->texto_gerencia ?? 'GERENCIA DE ADIESTRAMIENTO' }}</p>
-                                             <p class="mb-0 text-dark"><strong>Fecha Ingreso:</strong> 2021-02-15</p>
+                                             <p class="mb-2 text-dark"><strong>Cargo:</strong> {{ $active_employee->texto_cargo ?? 'No definido' }}</p>
+                                             <p class="mb-2 text-dark"><strong>Gerencia:</strong> {{ $active_employee->texto_gerencia ?? 'No definida' }}</p>
+                                             <p class="mb-0 text-dark"><strong>Unidad:</strong> {{ $active_employee->texto_unidad ?? 'No definida' }}</p>
                                         </div>
                                    </div>
                               @endif

@@ -18,7 +18,6 @@ class RrhhPersonal extends Model
         'texto_cargo',
         'texto_unidad',
         'texto_gerencia',
-        'supervisor',
         'texto_status',
         'centro_costo',
         'centro_txt'

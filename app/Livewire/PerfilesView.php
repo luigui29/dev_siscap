@@ -7,11 +7,13 @@ use Livewire\Component;
 
 class PerfilesView extends Component
 {
-     public $pestania_activa = 'individual';
-     public $notificacion = null;
-     
-     public $ficha_usuario_seleccionado = '';
-     public $colaboradores = [];
+    use \App\Traits\FiltraEmpleados;
+
+    public $pestania_activa = 'individual';
+    public $notificacion = null;
+    
+    public $ficha_usuario_seleccionado = '';
+    public $colaboradores = [];
      
      // Form fields for Education
      public $edu_nivel_educativo = 'Técnico Medio';
@@ -45,9 +47,16 @@ class PerfilesView extends Component
                $this->pestania_activa = $pestania;
           }
           try {
-               $this->colaboradores = User::all();
-               if ($this->colaboradores->isNotEmpty()) {
-                    $this->ficha_usuario_seleccionado = $this->colaboradores->first()->ficha;
+               $this->colaboradores = \App\Models\User::all();
+               
+               // Cargar empleados iniciales con filtros (vacíos por defecto)
+               $empleados_iniciales = $this->aplicarFiltrosEmpleados(\App\Models\RrhhPersonal::query())
+                   ->orderBy('nombre_empleado', 'asc')
+                   ->limit(50)
+                   ->get();
+                   
+               if ($empleados_iniciales->isNotEmpty()) {
+                    $this->ficha_usuario_seleccionado = $empleados_iniciales->first()->ficha;
                }
           } catch (\Exception $excepcion) {
                $this->colaboradores = collect([]);
@@ -122,6 +131,22 @@ class PerfilesView extends Component
 
      public function render()
      {
-          return view('livewire.perfiles-view')->layout('components.layouts.app');
+          $empleados = collect([]);
+          if ($this->pestania_activa === 'individual') {
+              $empleados = $this->aplicarFiltrosEmpleados(\App\Models\RrhhPersonal::query())
+                  ->orderBy('nombre_empleado', 'asc')
+                  ->limit(50)
+                  ->get();
+              
+              if ($empleados->isNotEmpty() && !$empleados->contains('ficha', $this->ficha_usuario_seleccionado)) {
+                  $this->ficha_usuario_seleccionado = $empleados->first()->ficha;
+              } elseif ($empleados->isEmpty()) {
+                  $this->ficha_usuario_seleccionado = null;
+              }
+          }
+
+          return view('livewire.perfiles-view', [
+              'empleados' => $empleados
+          ])->layout('components.layouts.app');
      }
 }
