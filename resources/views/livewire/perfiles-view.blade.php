@@ -22,35 +22,6 @@
           </div>
      </div>
 
-     <!-- Navigation Sub-Menu Tab List -->
-     <div class="card shadow-sm border-0 bg-white mb-4" style="border-radius: 8px;">
-          <div class="card-body p-2 d-flex flex-wrap" style="gap: 8px;">
-               <button 
-                    wire:click="$set('pestania_activa', 'individual')" 
-                    class="btn d-flex align-items-center {{ $pestania_activa === 'individual' ? 'btn-primary' : 'btn-light text-secondary' }}" 
-                    style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
-               >
-                    <i class="fas fa-id-badge"></i> Perfil Individual
-               </button>
-
-               <button 
-                    wire:click="$set('pestania_activa', 'gerencia')" 
-                    class="btn d-flex align-items-center {{ $pestania_activa === 'gerencia' ? 'btn-primary' : 'btn-light text-secondary' }}" 
-                    style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
-               >
-                    <i class="fas fa-th-list"></i> Matriz Horas Gerencias
-               </button>
-
-               <button 
-                    wire:click="$set('pestania_activa', 'siscap')" 
-                    class="btn d-flex align-items-center {{ $pestania_activa === 'siscap' ? 'btn-primary' : 'btn-light text-secondary' }}" 
-                    style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
-               >
-                    <i class="fas fa-user-shield"></i> Colaboradores SISCAP
-               </button>
-          </div>
-     </div>
-
      <!-- TAB 1: PERFIL INDIVIDUAL -->
      @if($pestania_activa === 'individual')
           <div class="row text-dark">

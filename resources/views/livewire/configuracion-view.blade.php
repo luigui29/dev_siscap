@@ -22,35 +22,6 @@
           </div>
      </div>
 
-     <!-- Navigation Sub-Menu Tab List -->
-     <div class="card shadow-sm border-0 bg-white mb-4" style="border-radius: 8px;">
-          <div class="card-body p-2 d-flex flex-wrap" style="gap: 8px;">
-               <button 
-                    wire:click="$set('pestania_activa', 'roles')" 
-                    class="btn d-flex align-items-center {{ $pestania_activa === 'roles' ? 'btn-primary' : 'btn-light text-secondary' }}" 
-                    style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
-               >
-                    <i class="fas fa-user-shield"></i> Roles y Permisos
-               </button>
-
-               <button 
-                    wire:click="$set('pestania_activa', 'areas')" 
-                    class="btn d-flex align-items-center {{ $pestania_activa === 'areas' ? 'btn-primary' : 'btn-light text-secondary' }}" 
-                    style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
-               >
-                    <i class="fas fa-cubes"></i> Áreas de Capacitación
-               </button>
-
-               <button 
-                    wire:click="$set('pestania_activa', 'ajustes')" 
-                    class="btn d-flex align-items-center {{ $pestania_activa === 'ajustes' ? 'btn-primary' : 'btn-light text-secondary' }}" 
-                    style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
-               >
-                    <i class="fas fa-sliders-h"></i> Ajustes Generales
-               </button>
-          </div>
-     </div>
-
      <!-- SUBVIEW 1: ROLES & PRIVILEGES -->
      @if($pestania_activa === 'roles')
           <div class="row text-dark">

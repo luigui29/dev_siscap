@@ -23,8 +23,11 @@ class ConfiguracionView extends Component
      public $usuarios = [];
      public $areas = [];
 
-     public function mount()
+     public function mount($pestania = null)
      {
+          if ($pestania) {
+               $this->pestania_activa = $pestania;
+          }
           try {
                $this->usuarios = User::all();
                $this->areas = Area::all()->toArray();

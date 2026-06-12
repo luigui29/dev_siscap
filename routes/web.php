@@ -11,6 +11,6 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', DashboardView::class)->name('dashboard');
-Route::get('/perfiles', PerfilesView::class)->name('perfiles');
-Route::get('/programacion', ProgramacionView::class)->name('programacion');
-Route::get('/configuracion', ConfiguracionView::class)->name('configuracion');
+Route::get('/perfiles/{pestania?}', PerfilesView::class)->name('perfiles');
+Route::get('/programacion/{pestania?}', ProgramacionView::class)->name('programacion');
+Route::get('/configuracion/{pestania?}', ConfiguracionView::class)->name('configuracion');

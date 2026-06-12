@@ -39,8 +39,11 @@ class PerfilesView extends Component
      
      public $termino_busqueda = '';
 
-     public function mount()
+     public function mount($pestania = null)
      {
+          if ($pestania) {
+               $this->pestania_activa = $pestania;
+          }
           try {
                $this->colaboradores = User::all();
                if ($this->colaboradores->isNotEmpty()) {

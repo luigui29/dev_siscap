@@ -34,8 +34,11 @@ class ProgramacionView extends Component
      
      public $mes_calendario = 'junio';
 
-     public function mount()
+     public function mount($pestania = null)
      {
+          if ($pestania) {
+               $this->pestania_activa = $pestania;
+          }
           try {
                $this->colaboradores = User::all();
                $this->propuestas = Programacion::all();

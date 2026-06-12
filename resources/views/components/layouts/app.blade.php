@@ -4,18 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'SISCAP' }}</title>
-    <!-- CSS Bootstrap 4.6.1 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
     
     @include('partials.styles')
     @livewireStyles
 </head>
 <body class="bg-light">
-    <!-- Simple Navbar -->
+    <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #334155;">
         <a class="navbar-brand font-weight-bold" href="/dashboard" style="font-family: 'Outfit', sans-serif;">
             <i class="fas fa-graduation-cap text-primary"></i> SISCAP
@@ -28,14 +23,36 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/dashboard">Dashboard</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/perfiles">Perfiles</a>
+                <li class="nav-item dropdown" x-data="{ open: false }" @click.away="open = false">
+                    <a class="nav-link dropdown-toggle" href="javascript:void(0)" @click.prevent="open = !open" :class="{ 'show': open }" aria-expanded="false">
+                        Perfiles
+                    </a>
+                    <div class="dropdown-menu" :class="{ 'show': open }" style="margin-top: 0;">
+                        <a class="dropdown-item" href="/perfiles/individual">Perfil Individual</a>
+                        <a class="dropdown-item" href="/perfiles/gerencia">Matriz Horas Gerencias</a>
+                        <a class="dropdown-item" href="/perfiles/siscap">Colaboradores SISCAP</a>
+                    </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/programacion">Programación</a>
+                <li class="nav-item dropdown" x-data="{ open: false }" @click.away="open = false">
+                    <a class="nav-link dropdown-toggle" href="javascript:void(0)" @click.prevent="open = !open" :class="{ 'show': open }" aria-expanded="false">
+                        Programación
+                    </a>
+                    <div class="dropdown-menu" :class="{ 'show': open }" style="margin-top: 0;">
+                        <a class="dropdown-item" href="/programacion/pre">Registro Propuestas</a>
+                        <a class="dropdown-item" href="/programacion/final">Aprobación y Estructura</a>
+                        <a class="dropdown-item" href="/programacion/ejecucion">Control de Ejecución</a>
+                        <a class="dropdown-item" href="/programacion/calendario">Cronograma Adiestramiento</a>
+                    </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/configuracion">Configuración</a>
+                <li class="nav-item dropdown" x-data="{ open: false }" @click.away="open = false">
+                    <a class="nav-link dropdown-toggle" href="javascript:void(0)" @click.prevent="open = !open" :class="{ 'show': open }" aria-expanded="false">
+                        Configuración
+                    </a>
+                    <div class="dropdown-menu" :class="{ 'show': open }" style="margin-top: 0;">
+                        <a class="dropdown-item" href="/configuracion/roles">Roles y Permisos</a>
+                        <a class="dropdown-item" href="/configuracion/areas">Áreas de Capacitación</a>
+                        <a class="dropdown-item" href="/configuracion/ajustes">Ajustes Generales</a>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -45,10 +62,7 @@
         {{ $slot }}
     </main>
 
-    <!-- JS Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <!-- JS GLOBAL -->
     @include('partials.scripts')
     @livewireScripts
 </body>

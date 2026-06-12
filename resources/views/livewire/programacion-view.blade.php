@@ -22,43 +22,6 @@
           </div>
      </div>
 
-     <!-- Navigation Sub-Menu Tab List -->
-     <div class="card shadow-sm border-0 bg-white mb-4" style="border-radius: 8px;">
-          <div class="card-body p-2 d-flex flex-wrap" style="gap: 8px;">
-               <button 
-                    wire:click="$set('pestania_activa', 'pre')" 
-                    class="btn d-flex align-items-center {{ $pestania_activa === 'pre' ? 'btn-primary' : 'btn-light text-secondary' }}" 
-                    style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
-               >
-                    <i class="fas fa-edit"></i> 1. Registro Propuestas (Fases Pre)
-               </button>
-
-               <button 
-                    wire:click="$set('pestania_activa', 'final')" 
-                    class="btn d-flex align-items-center {{ $pestania_activa === 'final' ? 'btn-primary' : 'btn-light text-secondary' }}" 
-                    style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
-               >
-                    <i class="fas fa-vote-yea"></i> 2. Aprobación y Estructura
-               </button>
-
-               <button 
-                    wire:click="$set('pestania_activa', 'ejecucion')" 
-                    class="btn d-flex align-items-center {{ $pestania_activa === 'ejecucion' ? 'btn-primary' : 'btn-light text-secondary' }}" 
-                    style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
-               >
-                    <i class="fas fa-tasks"></i> 3. Control de Ejecución
-               </button>
-
-               <button 
-                    wire:click="$set('pestania_activa', 'calendario')" 
-                    class="btn d-flex align-items-center {{ $pestania_activa === 'calendario' ? 'btn-primary' : 'btn-light text-secondary' }}" 
-                    style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
-               >
-                    <i class="fas fa-calendar-alt"></i> 4. Cronograma de Adiestramiento
-               </button>
-          </div>
-     </div>
-
      <!-- TAB 1: PRE-PROGRAMACIÓN FORM -->
      @if($pestania_activa === 'pre')
           <div class="row text-dark">

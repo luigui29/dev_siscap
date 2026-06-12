@@ -1,4 +1,4 @@
-<div class="container-fluid py-4">
+<div class="container-fluid py-3">
      <!-- Encabezado de página -->
      <div class="d-flex justify-content-between align-items-center mb-4">
           <div>
@@ -16,45 +16,61 @@
           
           <!-- Cursos Impartidos este Mes -->
           <div class="col-12 col-md-6 col-lg-3 mb-3 mb-lg-0">
-               <div class="statistics-card statistics-card1">
-                    <div class="statistics-inner">
-                         <div class="statistics-title">Cursos Impartidos este Mes</div>
-                         <div class="statistics-value">42</div>
+               <div class="card stat-card total-1 p-3 shadow-sm h-100">
+                    <div class="d-flex justify-content-between align-items-center">
+                         <div>
+                              <div class="text-muted font-weight-bold text-uppercase mb-1" style="font-size: 0.75rem;">Cursos Impartidos este Mes</div>
+                              <h3 class="mb-0 font-weight-bold text-dark">42</h3>
+                         </div>
+                         <div class="stat-icon total-1">
+                              <i class="fas fa-tachometer-alt"></i>
+                         </div>
                     </div>
-                    <i class="fas fa-tachometer-alt icon-overlay"></i>
                </div>
           </div>
 
           <!-- Cursos Impartidos este Año -->
           <div class="col-12 col-md-6 col-lg-3 mb-3 mb-lg-0">
-               <div class="statistics-card statistics-card2">
-                    <div class="statistics-inner">
-                         <div class="statistics-title">Cursos Impartidos este Año</div>
-                         <div class="statistics-value">356</div>
+               <div class="card stat-card total-2 p-3 shadow-sm h-100">
+                    <div class="d-flex justify-content-between align-items-center">
+                         <div>
+                              <div class="text-muted font-weight-bold text-uppercase mb-1" style="font-size: 0.75rem;">Cursos Impartidos este Año</div>
+                              <h3 class="mb-0 font-weight-bold text-dark">356</h3>
+                         </div>
+                         <div class="stat-icon total-2">
+                              <i class="fas fa-users"></i>
+                         </div>
                     </div>
-                    <i class="fas fa-users icon-overlay"></i>
                </div>
           </div>
 
           <!-- Cursos por Ejecutar -->
           <div class="col-12 col-md-6 col-lg-3 mb-3 mb-lg-0">
-               <div class="statistics-card statistics-card3">
-                    <div class="statistics-inner">
-                         <div class="statistics-title">Cursos por Ejecutar</div>
-                         <div class="statistics-value">18</div>
+               <div class="card stat-card total-3 p-3 shadow-sm h-100">
+                    <div class="d-flex justify-content-between align-items-center">
+                         <div>
+                              <div class="text-muted font-weight-bold text-uppercase mb-1" style="font-size: 0.75rem;">Cursos por Ejecutar</div>
+                              <h3 class="mb-0 font-weight-bold text-dark">18</h3>
+                         </div>
+                         <div class="stat-icon total-3">
+                              <i class="fas fa-hourglass-start"></i>
+                         </div>
                     </div>
-                    <i class="fas fa-hourglass-start icon-overlay"></i>
                </div>
           </div>
 
           <!-- Cursos por Aprobar -->
           <div class="col-12 col-md-6 col-lg-3 mb-3 mb-lg-0">
-               <div class="statistics-card statistics-card4">
-                    <div class="statistics-inner">
-                         <div class="statistics-title">Cursos por Aprobar</div>
-                         <div class="statistics-value">7</div>
+               <div class="card stat-card total-4 p-3 shadow-sm h-100">
+                    <div class="d-flex justify-content-between align-items-center">
+                         <div>
+                              <div class="text-muted font-weight-bold text-uppercase mb-1" style="font-size: 0.75rem;">Cursos por Aprobar</div>
+                              <h3 class="mb-0 font-weight-bold text-dark">7</h3>
+                         </div>
+                         <div class="stat-icon total-4">
+                              <i class="fas fa-check-double"></i>
+                         </div>
                     </div>
-                    <i class="fas fa-check-double icon-overlay"></i>
                </div>
           </div>
 
