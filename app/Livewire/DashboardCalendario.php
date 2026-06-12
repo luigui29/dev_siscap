@@ -67,19 +67,17 @@ class DashboardCalendario extends Component
         $days = [];
         
         foreach ($period as $day) {
-            // Solo días laborales (lunes a viernes)
-            if ($day->dayOfWeekIso >= 1 && $day->dayOfWeekIso <= 5) {
-                $days[] = [
-                    'date' => $day->copy(),
-                    'is_current_month' => $day->month == $this->month,
-                    'is_feriado' => $this->esFeriado($day),
-                ];
-            }
+            $days[] = [
+                'date' => $day->copy(),
+                'is_current_month' => $day->month == $this->month,
+                'is_weekend' => $day->isWeekend(),
+                'is_feriado' => $this->esFeriado($day),
+            ];
         }
         
         return [
             'nombre_mes' => ucfirst($date->locale(config('app.locale', 'es'))->translatedFormat('F')),
-            'semanas' => array_chunk($days, 5)
+            'semanas' => array_chunk($days, 7)
         ];
     }
 
