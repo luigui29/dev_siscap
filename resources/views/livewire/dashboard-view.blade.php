@@ -76,6 +76,9 @@
 
      </div>
 
+     <!-- Calendario Anual de Programaciones -->
+     <livewire:dashboard-calendario />
+
      <!-- Tabla de Cursos Recientes -->
      <div class="card-corporate shadow-sm border-0">
           <div class="card-header d-flex justify-content-between align-items-center py-3" style="background-color: #64748B; border-bottom: none;">

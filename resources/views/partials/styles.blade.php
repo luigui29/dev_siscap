@@ -568,4 +568,102 @@
           text-transform: uppercase;
           letter-spacing: 0.5px;
      }
+
+     /* Estilos para días del Calendario */
+     .calendario-dia {
+          min-height: 70px;
+          padding: 6px;
+          vertical-align: top;
+          text-align: left;
+          border: 1px solid #F1F5F9;
+          background-color: #FFFFFF;
+          transition: background-color 0.2s;
+     }
+
+     .calendario-dia:hover {
+          background-color: #F8FAFC;
+     }
+
+     .calendario-dia .dia-numero {
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: #475569;
+          margin-bottom: 4px;
+          display: block;
+     }
+
+     .calendario-dia.otro-mes {
+          background-color: #FAFBFC;
+     }
+
+     .calendario-dia.otro-mes .dia-numero {
+          color: #CBD5E0;
+     }
+
+     .calendario-dia.feriado {
+          background-color: rgba(231, 76, 60, 0.05);
+     }
+
+     .calendario-dia.feriado .dia-numero {
+          color: #E74C3C;
+     }
+
+     .calendario-dia .dia-eventos {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+     }
+
+     .calendario-dia .evento-etiqueta {
+          display: inline-block;
+          font-size: 0.65rem;
+          font-weight: 700;
+          padding: 1px 6px;
+          border-radius: 4px;
+          line-height: 1.4;
+          white-space: nowrap;
+     }
+
+     .evento-etiqueta.pre-programado {
+          background-color: rgba(245, 176, 65, 0.15);
+          color: #D4870E;
+          border: 1px solid rgba(245, 176, 65, 0.3);
+     }
+
+     .evento-etiqueta.programado {
+          background-color: rgba(88, 214, 141, 0.15);
+          color: #1E8449;
+          border: 1px solid rgba(88, 214, 141, 0.3);
+     }
+
+     .evento-etiqueta.ejecutado {
+          background-color: rgba(93, 173, 226, 0.15);
+          color: #2471A3;
+          border: 1px solid rgba(93, 173, 226, 0.3);
+     }
+
+     /* Leyenda del calendario */
+     .calendario-leyenda {
+          display: flex;
+          justify-content: center;
+          flex-wrap: wrap;
+          gap: 20px;
+          font-size: 0.85rem;
+          font-weight: 500;
+          color: #475569;
+          margin-top: 1rem;
+     }
+
+     .calendario-leyenda .leyenda-item {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+     }
+
+     .calendario-leyenda .leyenda-color {
+          width: 14px;
+          height: 14px;
+          border-radius: 3px;
+          display: inline-block;
+     }
 </style>
