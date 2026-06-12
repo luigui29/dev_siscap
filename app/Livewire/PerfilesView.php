@@ -7,64 +7,64 @@ use Livewire\Component;
 
 class PerfilesView extends Component
 {
-     public $active_tab = 'individual';
-     public $notification = null;
+     public $pestania_activa = 'individual';
+     public $notificacion = null;
      
-     public $selected_user_ficha = '';
+     public $ficha_usuario_seleccionado = '';
      public $colaboradores = [];
      
      // Form fields for Education
      public $edu_nivel_educativo = 'Técnico Medio';
      public $edu_titulo = '';
      public $edu_instituto = '';
-     public $educations = [];
+     public $educaciones = [];
 
      // Form fields for Experience
      public $exp_cargo = '';
      public $exp_empresa = '';
      public $exp_observacion = '';
-     public $experiences = [];
+     public $experiencias = [];
 
      // English Skills
-     public $eng_i1 = false;
-     public $eng_i2 = false;
-     public $eng_i3 = false;
-     public $eng_i4 = false;
+     public $ing_i1 = false;
+     public $ing_i2 = false;
+     public $ing_i3 = false;
+     public $ing_i4 = false;
 
      // Register Colaborador
-     public $new_ficha = '';
-     public $new_name = '';
-     public $new_email = '';
-     public $new_role = 'Instructor Adjunto';
+     public $nueva_ficha = '';
+     public $nuevo_nombre = '';
+     public $nuevo_correo = '';
+     public $nuevo_rol = 'Instructor Adjunto';
      
-     public $search_term = '';
+     public $termino_busqueda = '';
 
      public function mount()
      {
           try {
                $this->colaboradores = User::all();
                if ($this->colaboradores->isNotEmpty()) {
-                    $this->selected_user_ficha = $this->colaboradores->first()->ficha;
+                    $this->ficha_usuario_seleccionado = $this->colaboradores->first()->ficha;
                }
-          } catch (\Exception $e) {
+          } catch (\Exception $excepcion) {
                $this->colaboradores = collect([]);
           }
      }
 
-     public function clearNotification()
+     public function limpiarNotificacion()
      {
-          $this->notification = null;
+          $this->notificacion = null;
      }
 
-     public function showNotification($msg, $type = 'success')
+     public function mostrarNotificacion($mensaje, $tipo = 'success')
      {
-          $this->notification = ['msg' => $msg, 'type' => $type];
+          $this->notificacion = ['mensaje' => $mensaje, 'tipo' => $tipo];
      }
 
-     public function addEducation()
+     public function agregarEducacion()
      {
-          $this->educations[] = [
-               'ficha' => $this->selected_user_ficha,
+          $this->educaciones[] = [
+               'ficha' => $this->ficha_usuario_seleccionado,
                'nivel_educativo' => $this->edu_nivel_educativo,
                'titulo' => $this->edu_titulo,
                'especialidad' => '',
@@ -73,13 +73,13 @@ class PerfilesView extends Component
           ];
           $this->edu_titulo = '';
           $this->edu_instituto = '';
-          $this->showNotification('Educación registrada con éxito.');
+          $this->mostrarNotificacion('Educación registrada con éxito.');
      }
 
-     public function addExperience()
+     public function agregarExperiencia()
      {
-          $this->experiences[] = [
-               'ficha' => $this->selected_user_ficha,
+          $this->experiencias[] = [
+               'ficha' => $this->ficha_usuario_seleccionado,
                'cargo_desempeniado' => $this->exp_cargo,
                'empresa' => $this->exp_empresa,
                'desde' => date('Y'),
@@ -89,32 +89,32 @@ class PerfilesView extends Component
           $this->exp_cargo = '';
           $this->exp_empresa = '';
           $this->exp_observacion = '';
-          $this->showNotification('Experiencia laboral registrada.');
+          $this->mostrarNotificacion('Experiencia laboral registrada.');
      }
 
-     public function toggleEnglish($level)
+     public function alternarIngles($nivel)
      {
-          $property = 'eng_' . $level;
-          $this->$property = !$this->$property;
-          $this->showNotification('Nivel de inglés actualizado.');
+          $propiedad = 'ing_' . $nivel;
+          $this->$propiedad = !$this->$propiedad;
+          $this->mostrarNotificacion('Nivel de inglés actualizado.');
      }
 
-     public function createColaborador()
+     public function crearColaborador()
      {
-          $this->showNotification('Colaborador registrado exitosamente.');
-          $this->new_ficha = '';
-          $this->new_name = '';
-          $this->new_email = '';
+          $this->mostrarNotificacion('Colaborador registrado exitosamente.');
+          $this->nueva_ficha = '';
+          $this->nuevo_nombre = '';
+          $this->nuevo_correo = '';
      }
 
-     public function toggleStatus($ficha)
+     public function alternarEstado($ficha)
      {
-          $this->showNotification("Estado modificado para ficha $ficha.");
+          $this->mostrarNotificacion("Estado modificado para ficha $ficha.");
      }
 
-     public function deleteColaborador($ficha)
+     public function eliminarColaborador($ficha)
      {
-          $this->showNotification("Colaborador ficha $ficha eliminado.", 'danger');
+          $this->mostrarNotificacion("Colaborador ficha $ficha eliminado.", 'danger');
      }
 
      public function render()

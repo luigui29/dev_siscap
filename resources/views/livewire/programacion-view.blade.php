@@ -1,10 +1,10 @@
 <div class="container-fluid py-4" style="background-color: #F2F2F2; max-width: 1440px; margin: 0 auto;">
      <!-- Toast Notification -->
-     @if($notification)
-          <div class="alert alert-{{ $notification['type'] === 'success' ? 'success' : ($notification['type'] === 'danger' ? 'danger' : 'info') }} alert-dismissible fade show shadow border-0 position-fixed d-flex align-items-center" role="alert" style="right: 20px; top: 80px; z-index: 1060; gap: 10px; border-radius: 8px; min-width: 320px;">
+     @if($notificacion)
+          <div class="alert alert-{{ $notificacion['tipo'] === 'success' ? 'success' : ($notificacion['tipo'] === 'danger' ? 'danger' : 'info') }} alert-dismissible fade show shadow border-0 position-fixed d-flex align-items-center" role="alert" style="right: 20px; top: 80px; z-index: 1060; gap: 10px; border-radius: 8px; min-width: 320px;">
                <i class="fas fa-info-circle" style="font-size: 1.25rem;"></i>
-               <div>{{ $notification['msg'] }}</div>
-               <button type="button" class="close ml-auto" wire:click="clearNotification" style="outline: none;">
+               <div>{{ $notificacion['mensaje'] }}</div>
+               <button type="button" class="close ml-auto" wire:click="limpiarNotificacion" style="outline: none;">
                     <span>&times;</span>
                </button>
           </div>
@@ -26,32 +26,32 @@
      <div class="card shadow-sm border-0 bg-white mb-4" style="border-radius: 8px;">
           <div class="card-body p-2 d-flex flex-wrap" style="gap: 8px;">
                <button 
-                    wire:click="$set('active_tab', 'pre')" 
-                    class="btn d-flex align-items-center {{ $active_tab === 'pre' ? 'btn-primary' : 'btn-light text-secondary' }}" 
+                    wire:click="$set('pestania_activa', 'pre')" 
+                    class="btn d-flex align-items-center {{ $pestania_activa === 'pre' ? 'btn-primary' : 'btn-light text-secondary' }}" 
                     style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
                >
                     <i class="fas fa-edit"></i> 1. Registro Propuestas (Fases Pre)
                </button>
 
                <button 
-                    wire:click="$set('active_tab', 'final')" 
-                    class="btn d-flex align-items-center {{ $active_tab === 'final' ? 'btn-primary' : 'btn-light text-secondary' }}" 
+                    wire:click="$set('pestania_activa', 'final')" 
+                    class="btn d-flex align-items-center {{ $pestania_activa === 'final' ? 'btn-primary' : 'btn-light text-secondary' }}" 
                     style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
                >
                     <i class="fas fa-vote-yea"></i> 2. Aprobación y Estructura
                </button>
 
                <button 
-                    wire:click="$set('active_tab', 'ejecucion')" 
-                    class="btn d-flex align-items-center {{ $active_tab === 'ejecucion' ? 'btn-primary' : 'btn-light text-secondary' }}" 
+                    wire:click="$set('pestania_activa', 'ejecucion')" 
+                    class="btn d-flex align-items-center {{ $pestania_activa === 'ejecucion' ? 'btn-primary' : 'btn-light text-secondary' }}" 
                     style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
                >
                     <i class="fas fa-tasks"></i> 3. Control de Ejecución
                </button>
 
                <button 
-                    wire:click="$set('active_tab', 'calendario')" 
-                    class="btn d-flex align-items-center {{ $active_tab === 'calendario' ? 'btn-primary' : 'btn-light text-secondary' }}" 
+                    wire:click="$set('pestania_activa', 'calendario')" 
+                    class="btn d-flex align-items-center {{ $pestania_activa === 'calendario' ? 'btn-primary' : 'btn-light text-secondary' }}" 
                     style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
                >
                     <i class="fas fa-calendar-alt"></i> 4. Cronograma de Adiestramiento
@@ -60,7 +60,7 @@
      </div>
 
      <!-- TAB 1: PRE-PROGRAMACIÓN FORM -->
-     @if($active_tab === 'pre')
+     @if($pestania_activa === 'pre')
           <div class="row text-dark">
                
                <!-- Formulario Form Panel Left -->
@@ -72,7 +72,7 @@
                               </h5>
                          </div>
 
-                         <form wire:submit.prevent="saveProposal" class="card-body">
+                         <form wire:submit.prevent="guardarPropuesta" class="card-body">
                               <p class="text-secondary small mb-4">
                                    * Diseñe una propuesta técnica definiendo la subactividad y asignando las fichas participantes. El curso quedará guardado como <strong>PRE-PROGRAMADO</strong>.
                               </p>
@@ -80,7 +80,7 @@
                               <div class="row">
                                    <div class="col-md-6 form-group">
                                         <label class="font-weight-bold small">ÁREA DE CAPACITACIÓN</label>
-                                        <select class="form-control" wire:model.live="selected_area_id" style="height: 40px;">
+                                        <select class="form-control" wire:model.live="id_area_seleccionada" style="height: 40px;">
                                              <option value="1">Formación General y Técnica</option>
                                              <option value="2">Mantenimiento y Confiabilidad Industrial</option>
                                              <option value="3">Seguridad y Salud Laboral SHA</option>
@@ -89,7 +89,7 @@
 
                                    <div class="col-md-6 form-group">
                                         <label class="font-weight-bold small">CATEGORÍA DE ACTIVIDAD</label>
-                                        <select class="form-control" wire:model.live="selected_act_id" style="height: 40px;">
+                                        <select class="form-control" wire:model.live="id_act_seleccionada" style="height: 40px;">
                                              <option value="101">Curso de Confiabilidad Vibracional</option>
                                              <option value="102">Taller Práctico de PLC Siemens S7</option>
                                              <option value="103">Inducción General de Ingreso SISCAP</option>
@@ -100,7 +100,7 @@
                               <div class="row">
                                    <div class="col-md-6 form-group">
                                         <label class="font-weight-bold small">ACTIVIDAD ADIESTRAMIENTO</label>
-                                        <select class="form-control" wire:model="selected_subact_id" style="height: 40px;">
+                                        <select class="form-control" wire:model="id_subact_seleccionada" style="height: 40px;">
                                              <option value="1011">Análisis por Ultrasonido Acústico Pasivo</option>
                                              <option value="1012">Introducción de Ensayos No Destructivos (NDT)</option>
                                              <option value="1021">Arquitectura Profinet & Redes de Planta</option>
@@ -150,8 +150,8 @@
 
                                    <div class="col-md-6 form-group mt-3 mt-md-0">
                                         <div class="custom-control custom-switch">
-                                             <input type="checkbox" class="custom-control-input" id="isExtraInput" wire:model="is_extra_input">
-                                             <label class="custom-control-label text-muted font-weight-bold" for="isExtraInput" style="padding-top: 2px;">¿Es actividad extraordinaria / Sabatina?</label>
+                                             <input type="checkbox" class="custom-control-input" id="esEntradaExtra" wire:model="es_entrada_extra">
+                                             <label class="custom-control-label text-muted font-weight-bold" for="esEntradaExtra" style="padding-top: 2px;">¿Es actividad extraordinaria / Sabatina?</label>
                                         </div>
                                    </div>
                               </div>
@@ -172,9 +172,9 @@
                                         </thead>
                                         <tbody>
                                              @foreach($colaboradores as $c)
-                                                  <tr class="cursor-pointer" wire:click="toggleParticipant('{{ $c->ficha }}')">
+                                                  <tr class="cursor-pointer" wire:click="alternarParticipante('{{ $c->ficha }}')">
                                                        <td class="text-center p-2">
-                                                            <input type="checkbox" class="pointer" value="{{ $c->ficha }}" wire:model="selected_participants" style="transform: scale(1.15);">
+                                                            <input type="checkbox" class="pointer" value="{{ $c->ficha }}" wire:model="participantes_seleccionados" style="transform: scale(1.15);">
                                                        </td>
                                                        <td class="p-2 font-weight-bold text-dark" style="font-size: 0.85rem;">{{ $c->name }}</td>
                                                        <td class="p-2" style="font-size: 0.85rem;"><span class="badge badge-light px-2 py-1">{{ $c->ficha }}</span></td>
@@ -205,7 +205,7 @@
 
                          <div class="card-body p-0">
                               <div style="max-height: 700px; overflow-y: auto;">
-                                   @forelse($proposals->whereNull('aprobado') as $p)
+                                   @forelse($propuestas->whereNull('aprobado') as $p)
                                         <div class="p-3 border-bottom hover-gradient-soft">
                                              <div class="d-flex justify-content-between align-items-start">
                                                   <strong class="text-dark" style="font-size: 0.95rem;">#{{ $p->id }} - ID Act: {{ $p->actividad_id }}</strong>
@@ -235,7 +235,7 @@
      @endif
 
      <!-- TAB 2: APROBACIONES FINALES -->
-     @if($active_tab === 'final')
+     @if($pestania_activa === 'final')
           <div class="row text-dark">
                <div class="col-12 col-lg-9 mb-4">
                     <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
@@ -257,7 +257,7 @@
                                         </tr>
                                    </thead>
                                    <tbody>
-                                        @forelse($proposals as $p)
+                                        @forelse($propuestas as $p)
                                              <tr>
                                                   <td class="p-3">
                                                        <strong class="text-dark d-block" style="font-size: 0.9rem;">#{{ $p->id }} - ID Act: {{ $p->actividad_id }}</strong>
@@ -284,10 +284,10 @@
                                                   <td class="p-3 text-right">
                                                        <div class="d-flex justify-content-end" style="gap: 6px;">
                                                             @if($p->aprobado === null)
-                                                                 <button wire:click="approveProposal({{ $p->id }})" class="btn btn-sm btn-outline-success border font-weight-bold">
+                                                                 <button wire:click="aprobarPropuesta({{ $p->id }})" class="btn btn-sm btn-outline-success border font-weight-bold">
                                                                       <i class="fas fa-check"></i> Aprobar
                                                                  </button>
-                                                                 <button wire:click="rejectProposal({{ $p->id }})" class="btn btn-sm btn-outline-danger border font-weight-bold">
+                                                                 <button wire:click="rechazarPropuesta({{ $p->id }})" class="btn btn-sm btn-outline-danger border font-weight-bold">
                                                                       <i class="fas fa-times"></i> Rechazar
                                                                  </button>
                                                             @endif
@@ -325,7 +325,7 @@
                               </div>
                               <div>
                                    <span class="text-secondary small d-block uppercase font-weight-bold" style="font-size: 0.65rem;">PROPUESTAS REGISTRADAS</span>
-                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $proposals->count() }} Planificaciones</span>
+                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $propuestas->count() }} Planificaciones</span>
                               </div>
                          </div>
 
@@ -336,7 +336,7 @@
                               </div>
                               <div>
                                    <span class="text-secondary small d-block uppercase font-weight-bold" style="font-size: 0.65rem;">APROBACIONES FIRMES</span>
-                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $proposals->where('aprobado', true)->count() }} Cursos Listos</span>
+                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $propuestas->where('aprobado', true)->count() }} Cursos Listos</span>
                               </div>
                          </div>
 
@@ -347,7 +347,7 @@
                               </div>
                               <div>
                                    <span class="text-secondary small d-block uppercase font-weight-bold" style="font-size: 0.65rem;">PROPUESTAS PENDIENTES</span>
-                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $proposals->whereNull('aprobado')->count() }} en Evaluación</span>
+                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $propuestas->whereNull('aprobado')->count() }} en Evaluación</span>
                               </div>
                          </div>
 
@@ -357,7 +357,7 @@
      @endif
 
      <!-- TAB 3: CONTROL DE EJECUCIÓN -->
-     @if($active_tab === 'ejecucion')
+     @if($pestania_activa === 'ejecucion')
           <div class="row text-dark">
                
                <div class="col-12 mb-4">
@@ -374,17 +374,17 @@
                               </div>
 
                               <div class="row" style="max-height: 420px; overflow-y: auto;">
-                                   @forelse($proposals->where('aprobado', true) as $p)
+                                   @forelse($propuestas->where('aprobado', true) as $p)
                                         <div class="col-12 col-md-6 col-lg-4 mb-3">
                                              <div 
-                                                  wire:click="startExecution({{ $p->id }})"
-                                                  class="p-3 border rounded shadow-sm h-100 cursor-pointer d-flex flex-column justify-content-between position-relative {{ $selected_execution_id === $p->id ? 'border-primary' : 'border-light' }} {{ $p->ejecutado ? 'bg-disabled opacity-60' : 'hover-gradient-soft bg-white' }}"
-                                                  style="min-height: 130px; transition: all 0.2s; border-width: {{ $selected_execution_id === $p->id ? '2px' : '1px' }};"
+                                                  wire:click="iniciarEjecucion({{ $p->id }})"
+                                                  class="p-3 border rounded shadow-sm h-100 cursor-pointer d-flex flex-column justify-content-between position-relative {{ $id_ejecucion_seleccionada === $p->id ? 'border-primary' : 'border-light' }} {{ $p->ejecutado ? 'bg-disabled opacity-60' : 'hover-gradient-soft bg-white' }}"
+                                                  style="min-height: 130px; transition: all 0.2s; border-width: {{ $id_ejecucion_seleccionada === $p->id ? '2px' : '1px' }};"
                                              >
                                                   <div>
                                                        <div class="d-flex justify-content-between align-items-start">
                                                             <strong class="text-dark d-block text-truncate" style="max-width: 85%; font-size: 0.92rem;">#{{ $p->id }} - ID Act: {{ $p->actividad_id }}</strong>
-                                                            @if(!$p->ejecutado && $selected_execution_id === $p->id)
+                                                            @if(!$p->ejecutado && $id_ejecucion_seleccionada === $p->id)
                                                                  <span class="text-primary font-weight-bold" style="font-size: 0.75rem;"><i class="fas fa-chevron-circle-down"></i> Activo</span>
                                                             @endif
                                                        </div>
@@ -408,15 +408,15 @@
                     </div>
                </div>
 
-               @if($selected_execution_id)
+               @if($id_ejecucion_seleccionada)
                     <div class="col-12 mb-4">
                          <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
                               <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                                    <div class="d-flex justify-content-between align-items-center">
                                         <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
-                                             <i class="fas fa-users-cog mr-2"></i> Pasar Lista de Firmas Físicas (Asistencia Real del Curso #{{ $selected_execution_id }})
+                                             <i class="fas fa-users-cog mr-2"></i> Pasar Lista de Firmas Físicas (Asistencia Real del Curso #{{ $id_ejecucion_seleccionada }})
                                         </h5>
-                                        <button class="btn btn-sm btn-light font-weight-bold" wire:click="$set('selected_execution_id', null)">
+                                        <button class="btn btn-sm btn-light font-weight-bold" wire:click="$set('id_ejecucion_seleccionada', null)">
                                              Cancelar
                                         </button>
                                    </div>
@@ -439,14 +439,14 @@
                                              </thead>
                                              <tbody>
                                                   @php
-                                                       $active_course = $proposals->firstWhere('id', $selected_execution_id);
+                                                       $active_course = $propuestas->firstWhere('id', $id_ejecucion_seleccionada);
                                                        $participants = $active_course ? ($active_course->participantes ?? []) : [];
                                                   @endphp
                                                   @forelse($participants as $p_ficha)
                                                        @php
                                                             $colab = $colaboradores->firstWhere('ficha', $p_ficha);
                                                        @endphp
-                                                       <tr class="cursor-pointer" wire:click="toggleAttendance('{{ $p_ficha }}')">
+                                                       <tr class="cursor-pointer" wire:click="alternarAsistencia('{{ $p_ficha }}')">
                                                             <td class="text-center p-3">
                                                                  <input type="checkbox" checked="{{ in_array($p_ficha, $asistentes_fichas) }}" style="transform: scale(1.35);">
                                                             </td>
@@ -466,7 +466,7 @@
                                    </div>
 
                                    <div class="mt-4 pt-3 border-top text-right">
-                                        <button wire:click="saveExecution" class="btn btn-success px-5 py-2 font-weight-bold">
+                                        <button wire:click="guardarEjecucion" class="btn btn-success px-5 py-2 font-weight-bold">
                                              <i class="fas fa-check-circle"></i> Confirmar y Registrar Asistencia Real
                                         </button>
                                    </div>
@@ -479,18 +479,18 @@
      @endif
 
      <!-- TAB 4: CALENDARIO CRONOGRAMA -->
-     @if($active_tab === 'calendario')
+     @if($pestania_activa === 'calendario')
           <div class="row text-dark">
                <div class="col-12 col-lg-8 order-2 order-lg-2">
                     <div class="card shadow-sm border-0 bg-white">
                          <div class="calendario-select-meses border-0 p-3 d-flex justify-content-between align-items-center" style="background-color: #5DADE2; color: #FFF;">
-                              <button wire:click="$set('calendar_month', 'junio')" class="btn btn-link text-white font-weight-bold" style="text-decoration: none;">
+                              <button wire:click="$set('mes_calendario', 'junio')" class="btn btn-link text-white font-weight-bold" style="text-decoration: none;">
                                    <i class="fas fa-chevron-left"></i> Junio 2026
                               </button>
                               <h5 class="mb-0 font-weight-bold uppercase" style="letter-spacing: 1px;">
-                                   {{ strtoupper($calendar_month) }} 2026
+                                   {{ strtoupper($mes_calendario) }} 2026
                               </h5>
-                              <button wire:click="$set('calendar_month', 'julio')" class="btn btn-link text-white font-weight-bold" style="text-decoration: none;">
+                              <button wire:click="$set('mes_calendario', 'julio')" class="btn btn-link text-white font-weight-bold" style="text-decoration: none;">
                                    Julio 2026 <i class="fas fa-chevron-right"></i>
                               </button>
                          </div>
@@ -511,7 +511,7 @@
                                         </thead>
                                         <tbody>
                                              <!-- Grid of Calendar -->
-                                             @if($calendar_month === 'junio')
+                                             @if($mes_calendario === 'junio')
                                                   <!-- Example calendar grid for June 2026 (Starts on Monday June 1) -->
                                                   <tr>
                                                        @for($i = 1; $i <= 7; $i++)

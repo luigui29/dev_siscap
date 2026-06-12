@@ -8,13 +8,13 @@ use Livewire\Component;
 
 class ProgramacionView extends Component
 {
-     public $active_tab = 'pre';
-     public $notification = null;
+     public $pestania_activa = 'pre';
+     public $notificacion = null;
      
      // Form fields
-     public $selected_area_id = 1;
-     public $selected_act_id = 101;
-     public $selected_subact_id = 1011;
+     public $id_area_seleccionada = 1;
+     public $id_act_seleccionada = 101;
+     public $id_subact_seleccionada = 1011;
      public $facilitador_ficha = '';
      public $institucion_input = 'VENPRECAR, C.A.';
      public $fecha_input = '';
@@ -22,71 +22,71 @@ class ProgramacionView extends Component
      public $desde_input = '';
      public $hasta_input = '';
      public $duracion_input = 8;
-     public $is_extra_input = false;
+     public $es_entrada_extra = false;
 
      public $colaboradores = [];
-     public $selected_participants = [];
+     public $participantes_seleccionados = [];
      
-     public $proposals = [];
+     public $propuestas = [];
      
-     public $selected_execution_id = null;
+     public $id_ejecucion_seleccionada = null;
      public $asistentes_fichas = [];
      
-     public $calendar_month = 'junio';
+     public $mes_calendario = 'junio';
 
      public function mount()
      {
           try {
                $this->colaboradores = User::all();
-               $this->proposals = Programacion::all();
-          } catch (\Exception $e) {
+               $this->propuestas = Programacion::all();
+          } catch (\Exception $excepcion) {
                $this->colaboradores = collect([]);
-               $this->proposals = collect([]);
+               $this->propuestas = collect([]);
           }
      }
 
-     public function clearNotification()
+     public function limpiarNotificacion()
      {
-          $this->notification = null;
+          $this->notificacion = null;
      }
 
-     public function showNotification($msg, $type = 'success')
+     public function mostrarNotificacion($mensaje, $tipo = 'success')
      {
-          $this->notification = ['msg' => $msg, 'type' => $type];
+          $this->notificacion = ['mensaje' => $mensaje, 'tipo' => $tipo];
      }
 
-     public function toggleParticipant($ficha)
+     public function alternarParticipante($ficha)
      {
-          if (in_array($ficha, $this->selected_participants)) {
-               $this->selected_participants = array_diff($this->selected_participants, [$ficha]);
+          if (in_array($ficha, $this->participantes_seleccionados)) {
+               $this->participantes_seleccionados = array_diff($this->participantes_seleccionados, [$ficha]);
           } else {
-               $this->selected_participants[] = $ficha;
+               $this->participantes_seleccionados[] = $ficha;
           }
      }
 
-     public function saveProposal()
+     public function guardarPropuesta()
      {
-          $this->showNotification('Propuesta pre-programada guardada exitosamente.');
-          $this->reset(['facilitador_ficha', 'lugar_input', 'selected_participants']);
+          $this->mostrarNotificacion('Propuesta pre-programada guardada exitosamente.');
+          $this->reset(['facilitador_ficha', 'lugar_input', 'participantes_seleccionados']);
      }
 
-     public function approveProposal($id)
+     public function aprobarPropuesta($id)
      {
-          $this->showNotification("Propuesta #$id aprobada correctamente.");
+          $this->mostrarNotificacion("Propuesta #$id aprobada correctamente.");
      }
 
-     public function rejectProposal($id)
+     public function rechazarPropuesta($id)
      {
-          $this->showNotification("Propuesta #$id rechazada.", 'danger');
+          $this->mostrarNotificacion("Propuesta #$id rechazada.", 'danger');
      }
 
-     public function startExecution($id)
+     public function iniciarEjecucion($id)
      {
-          $this->selected_execution_id = $id;
+          $this->id_ejecucion_seleccionada = $id;
           $this->asistentes_fichas = [];
      }
 
-     public function toggleAttendance($ficha)
+     public function alternarAsistencia($ficha)
      {
           if (in_array($ficha, $this->asistentes_fichas)) {
                $this->asistentes_fichas = array_diff($this->asistentes_fichas, [$ficha]);
@@ -95,10 +95,10 @@ class ProgramacionView extends Component
           }
      }
 
-     public function saveExecution()
+     public function guardarEjecucion()
      {
-          $this->showNotification('Asistencia y horas hombre registradas exitosamente.');
-          $this->selected_execution_id = null;
+          $this->mostrarNotificacion('Asistencia y horas hombre registradas exitosamente.');
+          $this->id_ejecucion_seleccionada = null;
      }
 
      public function render()

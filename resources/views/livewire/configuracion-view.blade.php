@@ -1,10 +1,10 @@
 <div class="container-fluid py-4" style="background-color: #F2F2F2; max-width: 1440px; margin: 0 auto;">
      <!-- Toast Notification -->
-     @if($notification)
-          <div class="alert alert-{{ $notification['type'] === 'success' ? 'success' : ($notification['type'] === 'danger' ? 'danger' : 'info') }} alert-dismissible fade show shadow border-0 position-fixed d-flex align-items-center" role="alert" style="right: 20px; top: 80px; z-index: 1060; gap: 10px; border-radius: 8px; min-width: 320px;">
+     @if($notificacion)
+          <div class="alert alert-{{ $notificacion['tipo'] === 'success' ? 'success' : ($notificacion['tipo'] === 'danger' ? 'danger' : 'info') }} alert-dismissible fade show shadow border-0 position-fixed d-flex align-items-center" role="alert" style="right: 20px; top: 80px; z-index: 1060; gap: 10px; border-radius: 8px; min-width: 320px;">
                <i class="fas fa-sliders-h" style="font-size: 1.25rem;"></i>
-               <div>{{ $notification['msg'] }}</div>
-               <button type="button" class="close ml-auto" wire:click="clearNotification" style="outline: none;">
+               <div>{{ $notificacion['mensaje'] }}</div>
+               <button type="button" class="close ml-auto" wire:click="limpiarNotificacion" style="outline: none;">
                     <span>&times;</span>
                </button>
           </div>
@@ -26,24 +26,24 @@
      <div class="card shadow-sm border-0 bg-white mb-4" style="border-radius: 8px;">
           <div class="card-body p-2 d-flex flex-wrap" style="gap: 8px;">
                <button 
-                    wire:click="$set('active_tab', 'roles')" 
-                    class="btn d-flex align-items-center {{ $active_tab === 'roles' ? 'btn-primary' : 'btn-light text-secondary' }}" 
+                    wire:click="$set('pestania_activa', 'roles')" 
+                    class="btn d-flex align-items-center {{ $pestania_activa === 'roles' ? 'btn-primary' : 'btn-light text-secondary' }}" 
                     style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
                >
                     <i class="fas fa-user-shield"></i> Roles y Permisos
                </button>
 
                <button 
-                    wire:click="$set('active_tab', 'areas')" 
-                    class="btn d-flex align-items-center {{ $active_tab === 'areas' ? 'btn-primary' : 'btn-light text-secondary' }}" 
+                    wire:click="$set('pestania_activa', 'areas')" 
+                    class="btn d-flex align-items-center {{ $pestania_activa === 'areas' ? 'btn-primary' : 'btn-light text-secondary' }}" 
                     style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
                >
                     <i class="fas fa-cubes"></i> Áreas de Capacitación
                </button>
 
                <button 
-                    wire:click="$set('active_tab', 'ajustes')" 
-                    class="btn d-flex align-items-center {{ $active_tab === 'ajustes' ? 'btn-primary' : 'btn-light text-secondary' }}" 
+                    wire:click="$set('pestania_activa', 'ajustes')" 
+                    class="btn d-flex align-items-center {{ $pestania_activa === 'ajustes' ? 'btn-primary' : 'btn-light text-secondary' }}" 
                     style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
                >
                     <i class="fas fa-sliders-h"></i> Ajustes Generales
@@ -52,7 +52,7 @@
      </div>
 
      <!-- SUBVIEW 1: ROLES & PRIVILEGES -->
-     @if($active_tab === 'roles')
+     @if($pestania_activa === 'roles')
           <div class="row text-dark">
                <div class="col-12 col-lg-5 mb-4">
                     <div class="card shadow-sm border-0 bg-white mb-0" style="border-radius: 8px;">
@@ -62,7 +62,7 @@
                               </h5>
                          </div>
 
-                         <form wire:submit.prevent="assignRole" class="card-body">
+                         <form wire:submit.prevent="asignarRol" class="card-body">
                               <p class="text-secondary small mb-4">
                                    Asigne o cambie los roles de usuario autorizados. Las jerarquías van en escala ascendente: <strong>Analista &lt; Coordinador &lt; Gerente</strong>.
                               </p>
@@ -74,7 +74,7 @@
                                              type="text" 
                                              class="form-control pl-4 text-sm" 
                                              placeholder="Filtrar por ficha o nombre..." 
-                                             wire:model.live="search_term"
+                                             wire:model.live="termino_busqueda"
                                              style="border-radius: 6px; font-size: 0.88rem; height: 40px;"
                                         />
                                    </div>
@@ -82,9 +82,9 @@
 
                               <div class="form-group mb-3">
                                    <label class="font-weight-bold small text-dark">1. SELECCIONAR PARTICIPANTE</label>
-                                   <select class="form-control" wire:model="selected_user_ficha" style="height: 44px; font-weight: 600;">
+                                   <select class="form-control" wire:model="ficha_usuario_seleccionado" style="height: 44px; font-weight: 600;">
                                         <option value="">Seleccione un colaborador...</option>
-                                        @foreach($users as $usr)
+                                        @foreach($usuarios as $usr)
                                              <option value="{{ $usr->ficha }}">[{{ $usr->ficha }}] - {{ $usr->name }}</option>
                                         @endforeach
                                    </select>
@@ -92,7 +92,7 @@
 
                               <div class="form-group mb-4">
                                    <label class="font-weight-bold small text-muted">2. ASIGNAR ROL DE OPERACIÓN</label>
-                                   <select class="form-control" wire:model="target_role" style="height: 44px; font-weight: 600;">
+                                   <select class="form-control" wire:model="rol_objetivo" style="height: 44px; font-weight: 600;">
                                         <option value="Analista">Analista</option>
                                         <option value="Coordinador">Coordinador</option>
                                         <option value="Gerente">Gerente</option>
@@ -129,7 +129,7 @@
                                         </tr>
                                    </thead>
                                    <tbody>
-                                        @foreach($users as $usr)
+                                        @foreach($usuarios as $usr)
                                              @php
                                                   $roles_list = $usr->roles ?? [];
                                                   $is_gerente = in_array('ADMIN_ROLE', $roles_list);
@@ -173,18 +173,18 @@
      @endif
 
      <!-- SUBVIEW 2: AREAS DE CAPACITACION -->
-     @if($active_tab === 'areas')
+     @if($pestania_activa === 'areas')
           <div class="row text-dark">
                <div class="col-12 col-lg-5 mb-4">
                     <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
                                    <i class="fas fa-cubes mr-2 text-white"></i> 
-                                   {{ $editing_area_id ? 'Editar Área Existente' : 'Ingresar Nueva Área Temática' }}
+                                   {{ $id_area_editando ? 'Editar Área Existente' : 'Ingresar Nueva Área Temática' }}
                               </h5>
                          </div>
 
-                         <form wire:submit.prevent="addOrEditArea" class="card-body">
+                         <form wire:submit.prevent="agregarOEditarArea" class="card-body">
                               <div class="form-group mb-3">
                                    <label class="font-weight-bold small">NOMBRE DE ÁREA</label>
                                    <input type="text" class="form-control" wire:model="area_nombre" placeholder="Ej: Electromecánica Industrial" style="height: 40px;">
@@ -203,8 +203,8 @@
                               </div>
 
                               <div class="mt-4 pt-3 border-top text-right">
-                                   @if($editing_area_id)
-                                        <button type="button" class="btn btn-light mr-2 font-weight-bold" wire:click="$set('editing_area_id', null)">
+                                   @if($id_area_editando)
+                                        <button type="button" class="btn btn-light mr-2 font-weight-bold" wire:click="$set('id_area_editando', null)">
                                              Cancelar
                                         </button>
                                    @endif
@@ -237,13 +237,13 @@
                                                        </span>
                                                   </div>
                                                   <div class="d-flex" style="gap: 4px;">
-                                                       <button class="btn btn-sm btn-light border" wire:click="startEditArea({{ $area['id'] }})">
+                                                       <button class="btn btn-sm btn-light border" wire:click="iniciarEdicionArea({{ $area['id'] }})">
                                                             <i class="fas fa-edit text-primary"></i>
                                                        </button>
-                                                       <button class="btn btn-sm btn-light border" wire:click="toggleAreaEstatus({{ $area['id'] }})">
+                                                       <button class="btn btn-sm btn-light border" wire:click="alternarEstatusArea({{ $area['id'] }})">
                                                             <i class="fas fa-power-off text-warning"></i>
                                                        </button>
-                                                       <button class="btn btn-sm btn-light border" wire:click="deleteArea({{ $area['id'] }})">
+                                                       <button class="btn btn-sm btn-light border" wire:click="eliminarArea({{ $area['id'] }})">
                                                             <i class="fas fa-trash-alt text-danger"></i>
                                                        </button>
                                                   </div>
@@ -258,7 +258,7 @@
      @endif
 
      <!-- SUBVIEW 3: GLOBAL PARAMETERS -->
-     @if($active_tab === 'ajustes')
+     @if($pestania_activa === 'ajustes')
           <div class="row text-dark">
                <div class="col-12 col-md-8 mx-auto mb-4">
                     <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
@@ -268,7 +268,7 @@
                               </h5>
                          </div>
 
-                         <form wire:submit.prevent="saveGlobalSettings" class="card-body">
+                         <form wire:submit.prevent="guardarAjustesGlobales" class="card-body">
                               <p class="text-secondary small mb-4">
                                    * Administre y altere el comportamiento paramétrico del sistema de planificación industrial.
                               </p>

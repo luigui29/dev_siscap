@@ -8,76 +8,76 @@ use Livewire\Component;
 
 class ConfiguracionView extends Component
 {
-     public $active_tab = 'roles';
-     public $notification = null;
+     public $pestania_activa = 'roles';
+     public $notificacion = null;
      
-     public $search_term = '';
-     public $selected_user_ficha = '';
-     public $target_role = 'Analista';
+     public $termino_busqueda = '';
+     public $ficha_usuario_seleccionado = '';
+     public $rol_objetivo = 'Analista';
      
      public $area_nombre = '';
      public $area_descripcion = '';
      public $area_estatus = true;
-     public $editing_area_id = null;
+     public $id_area_editando = null;
 
-     public $users = [];
+     public $usuarios = [];
      public $areas = [];
 
      public function mount()
      {
           try {
-               $this->users = User::all();
+               $this->usuarios = User::all();
                $this->areas = Area::all()->toArray();
-          } catch (\Exception $e) {
-               $this->users = collect([]);
+          } catch (\Exception $excepcion) {
+               $this->usuarios = collect([]);
                $this->areas = [];
           }
      }
 
-     public function clearNotification()
+     public function limpiarNotificacion()
      {
-          $this->notification = null;
+          $this->notificacion = null;
      }
 
-     public function showNotification($msg, $type = 'success')
+     public function mostrarNotificacion($mensaje, $tipo = 'success')
      {
-          $this->notification = ['msg' => $msg, 'type' => $type];
+          $this->notificacion = ['mensaje' => $mensaje, 'tipo' => $tipo];
      }
 
-     public function assignRole()
+     public function asignarRol()
      {
-          $this->showNotification('Nivel de rol actualizado.');
+          $this->mostrarNotificacion('Nivel de rol actualizado.');
      }
 
-     public function addOrEditArea()
+     public function agregarOEditarArea()
      {
-          $msg = $this->editing_area_id ? 'Área actualizada.' : 'Nueva área agregada.';
-          $this->showNotification($msg);
-          $this->editing_area_id = null;
+          $mensaje = $this->id_area_editando ? 'Área actualizada.' : 'Nueva área agregada.';
+          $this->mostrarNotificacion($mensaje);
+          $this->id_area_editando = null;
           $this->area_nombre = '';
           $this->area_descripcion = '';
      }
 
-     public function startEditArea($id)
+     public function iniciarEdicionArea($id)
      {
-          $this->editing_area_id = $id;
+          $this->id_area_editando = $id;
           $this->area_nombre = 'Ejemplo de Área';
           $this->area_descripcion = 'Descripción de ejemplo.';
      }
 
-     public function toggleAreaEstatus($id)
+     public function alternarEstatusArea($id)
      {
-          $this->showNotification('Estatus de área modificado.');
+          $this->mostrarNotificacion('Estatus de área modificado.');
      }
 
-     public function deleteArea($id)
+     public function eliminarArea($id)
      {
-          $this->showNotification('Área eliminada del sistema.', 'danger');
+          $this->mostrarNotificacion('Área eliminada del sistema.', 'danger');
      }
 
-     public function saveGlobalSettings()
+     public function guardarAjustesGlobales()
      {
-          $this->showNotification('Ajustes globales guardados con éxito.');
+          $this->mostrarNotificacion('Ajustes globales guardados con éxito.');
      }
 
      public function render()

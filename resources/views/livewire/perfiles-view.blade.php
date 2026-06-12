@@ -1,10 +1,10 @@
 <div class="container-fluid py-4" style="background-color: #F2F2F2; max-width: 1440px; margin: 0 auto;">
      <!-- Toast Notification -->
-     @if($notification)
-          <div class="alert alert-{{ $notification['type'] === 'success' ? 'success' : ($notification['type'] === 'danger' ? 'danger' : 'info') }} alert-dismissible fade show shadow border-0 position-fixed d-flex align-items-center" role="alert" style="right: 20px; top: 80px; z-index: 1060; gap: 10px; border-radius: 8px; min-width: 320px;">
+     @if($notificacion)
+          <div class="alert alert-{{ $notificacion['tipo'] === 'success' ? 'success' : ($notificacion['tipo'] === 'danger' ? 'danger' : 'info') }} alert-dismissible fade show shadow border-0 position-fixed d-flex align-items-center" role="alert" style="right: 20px; top: 80px; z-index: 1060; gap: 10px; border-radius: 8px; min-width: 320px;">
                <i class="fas fa-info-circle" style="font-size: 1.25rem;"></i>
-               <div>{{ $notification['msg'] }}</div>
-               <button type="button" class="close ml-auto" wire:click="clearNotification" style="outline: none;">
+               <div>{{ $notificacion['mensaje'] }}</div>
+               <button type="button" class="close ml-auto" wire:click="limpiarNotificacion" style="outline: none;">
                     <span>&times;</span>
                </button>
           </div>
@@ -26,24 +26,24 @@
      <div class="card shadow-sm border-0 bg-white mb-4" style="border-radius: 8px;">
           <div class="card-body p-2 d-flex flex-wrap" style="gap: 8px;">
                <button 
-                    wire:click="$set('active_tab', 'individual')" 
-                    class="btn d-flex align-items-center {{ $active_tab === 'individual' ? 'btn-primary' : 'btn-light text-secondary' }}" 
+                    wire:click="$set('pestania_activa', 'individual')" 
+                    class="btn d-flex align-items-center {{ $pestania_activa === 'individual' ? 'btn-primary' : 'btn-light text-secondary' }}" 
                     style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
                >
                     <i class="fas fa-id-badge"></i> Perfil Individual
                </button>
 
                <button 
-                    wire:click="$set('active_tab', 'gerencia')" 
-                    class="btn d-flex align-items-center {{ $active_tab === 'gerencia' ? 'btn-primary' : 'btn-light text-secondary' }}" 
+                    wire:click="$set('pestania_activa', 'gerencia')" 
+                    class="btn d-flex align-items-center {{ $pestania_activa === 'gerencia' ? 'btn-primary' : 'btn-light text-secondary' }}" 
                     style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
                >
                     <i class="fas fa-th-list"></i> Matriz Horas Gerencias
                </button>
 
                <button 
-                    wire:click="$set('active_tab', 'siscap')" 
-                    class="btn d-flex align-items-center {{ $active_tab === 'siscap' ? 'btn-primary' : 'btn-light text-secondary' }}" 
+                    wire:click="$set('pestania_activa', 'siscap')" 
+                    class="btn d-flex align-items-center {{ $pestania_activa === 'siscap' ? 'btn-primary' : 'btn-light text-secondary' }}" 
                     style="gap: 8px; font-weight: 600; font-size: 0.85rem; border-radius: 6px; padding: 0.5rem 1rem;"
                >
                     <i class="fas fa-user-shield"></i> Colaboradores SISCAP
@@ -52,7 +52,7 @@
      </div>
 
      <!-- TAB 1: PERFIL INDIVIDUAL -->
-     @if($active_tab === 'individual')
+     @if($pestania_activa === 'individual')
           <div class="row text-dark">
                <div class="col-12 col-lg-4 mb-4">
                     <div class="card shadow-sm border-0 bg-white h-100" style="border-radius: 8px;">
@@ -65,7 +65,7 @@
                          <div class="card-body">
                               <div class="form-group mb-3">
                                    <label class="font-weight-bold small text-muted">SELECCIONAR COLABORADOR</label>
-                                   <select class="form-control" wire:model.live="selected_user_ficha" style="height: 44px; font-weight: 600;">
+                                   <select class="form-control" wire:model.live="ficha_usuario_seleccionado" style="height: 44px; font-weight: 600;">
                                         @foreach($colaboradores as $c)
                                              <option value="{{ $c->ficha }}">[{{ $c->ficha }}] - {{ $c->name }}</option>
                                         @endforeach
@@ -73,7 +73,7 @@
                               </div>
 
                               @php
-                                   $active_employee = $colaboradores->firstWhere('ficha', $selected_user_ficha);
+                                   $active_employee = $colaboradores->firstWhere('ficha', $ficha_usuario_seleccionado);
                               @endphp
 
                               @if($active_employee)
@@ -132,8 +132,8 @@
                                         </thead>
                                         <tbody>
                                              @php
-                                                  $active_edu = array_filter($educations, function($edu) {
-                                                       return $edu['ficha'] === $this->selected_user_ficha;
+                                                  $active_edu = array_filter($educaciones, function($edu) {
+                                                       return $edu['ficha'] === $this->ficha_usuario_seleccionado;
                                                   });
                                              @endphp
                                              @forelse($active_edu as $edu)
@@ -174,7 +174,7 @@
                                              <input type="text" class="form-control form-control-sm" wire:model="edu_instituto" placeholder="Instituto/Universidad">
                                         </div>
                                         <div class="col-md-3 mb-2">
-                                             <button wire:click="addEducation" class="btn btn-sm btn-primary w-full">Cargar</button>
+                                             <button wire:click="agregarEducacion" class="btn btn-sm btn-primary w-full">Cargar</button>
                                         </div>
                                    </div>
                               </div>
@@ -198,8 +198,8 @@
                                         </thead>
                                         <tbody>
                                              @php
-                                                  $active_exp = array_filter($experiences, function($exp) {
-                                                       return $exp['ficha'] === $this->selected_user_ficha;
+                                                  $active_exp = array_filter($experiencias, function($exp) {
+                                                       return $exp['ficha'] === $this->ficha_usuario_seleccionado;
                                                   });
                                              @endphp
                                              @forelse($active_exp as $exp)
@@ -232,7 +232,7 @@
                                              <input type="text" class="form-control form-control-sm" wire:model="exp_observacion" placeholder="Detalle Omitido">
                                         </div>
                                         <div class="col-md-3 mb-2">
-                                             <button wire:click="addExperience" class="btn btn-sm btn-primary w-full">Cargar</button>
+                                             <button wire:click="agregarExperiencia" class="btn btn-sm btn-primary w-full">Cargar</button>
                                         </div>
                                    </div>
                               </div>
@@ -246,20 +246,20 @@
 
                               <div class="p-3 border rounded bg-light d-flex flex-wrap justify-content-between" style="gap: 16px;">
                                    <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="eng_i1" wire:click="toggleEnglish('i1')" @if($eng_i1) checked @endif>
-                                        <label class="custom-control-label font-weight-bold" for="eng_i1">Inglés Instrumental Básico (I1)</label>
+                                        <input type="checkbox" class="custom-control-input" id="ing_i1" wire:click="alternarIngles('i1')" @if($ing_i1) checked @endif>
+                                        <label class="custom-control-label font-weight-bold" for="ing_i1">Inglés Instrumental Básico (I1)</label>
                                    </div>
                                    <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="eng_i2" wire:click="toggleEnglish('i2')" @if($eng_i2) checked @endif>
-                                        <label class="custom-control-label font-weight-bold" for="eng_i2">Inglés Técnico Operativo (I2)</label>
+                                        <input type="checkbox" class="custom-control-input" id="ing_i2" wire:click="alternarIngles('i2')" @if($ing_i2) checked @endif>
+                                        <label class="custom-control-label font-weight-bold" for="ing_i2">Inglés Técnico Operativo (I2)</label>
                                    </div>
                                    <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="eng_i3" wire:click="toggleEnglish('i3')" @if($eng_i3) checked @endif>
-                                        <label class="custom-control-label font-weight-bold" for="eng_i3">Traducción de Manuales SHA (I3)</label>
+                                        <input type="checkbox" class="custom-control-input" id="ing_i3" wire:click="alternarIngles('i3')" @if($ing_i3) checked @endif>
+                                        <label class="custom-control-label font-weight-bold" for="ing_i3">Traducción de Manuales SHA (I3)</label>
                                    </div>
                                    <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="eng_i4" wire:click="toggleEnglish('i4')" @if($eng_i4) checked @endif>
-                                        <label class="custom-control-label font-weight-bold" for="eng_i4">Conversacional Fluido (I4)</label>
+                                        <input type="checkbox" class="custom-control-input" id="ing_i4" wire:click="alternarIngles('i4')" @if($ing_i4) checked @endif>
+                                        <label class="custom-control-label font-weight-bold" for="ing_i4">Conversacional Fluido (I4)</label>
                                    </div>
                               </div>
 
@@ -270,7 +270,7 @@
      @endif
 
      <!-- TAB 2: MATRIZ HORAS GERENCIAS -->
-     @if($active_tab === 'gerencia')
+     @if($pestania_activa === 'gerencia')
           <div class="row text-dark">
                <div class="col-12 mb-4">
                     <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
@@ -352,7 +352,7 @@
      @endif
 
      <!-- TAB 3: COLABORADORES SISCAP -->
-     @if($active_tab === 'siscap')
+     @if($pestania_activa === 'siscap')
           <div class="row text-dark">
                <div class="col-12 col-md-4 mb-4">
                     <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
@@ -362,27 +362,27 @@
                               </h5>
                          </div>
 
-                         <form wire:submit.prevent="createColaborador" class="card-body">
+                         <form wire:submit.prevent="crearColaborador" class="card-body">
                               <p class="text-secondary small mb-3">Defina los datos de la ficha para autorizar su participación en la plataforma adiestradora:</p>
 
                               <div class="form-group mb-2">
                                    <label class="font-weight-bold small text-muted">AÑO / FICHA CORPORATIVA</label>
-                                   <input type="text" class="form-control form-control-sm" wire:model="new_ficha" placeholder="Ej: F-12209" style="height: 38px;">
+                                   <input type="text" class="form-control form-control-sm" wire:model="nueva_ficha" placeholder="Ej: F-12209" style="height: 38px;">
                               </div>
 
                               <div class="form-group mb-2">
                                    <label class="font-weight-bold small text-muted">NOMBRE Y APELLIDO</label>
-                                   <input type="text" class="form-control form-control-sm" wire:model="new_name" placeholder="Carlos Mendoza" style="height: 38px;">
+                                   <input type="text" class="form-control form-control-sm" wire:model="nuevo_nombre" placeholder="Carlos Mendoza" style="height: 38px;">
                               </div>
 
                               <div class="form-group mb-2">
                                    <label class="font-weight-bold small text-muted">CORREO CORPORATIVO</label>
-                                   <input type="email" class="form-control form-control-sm" wire:model="new_email" placeholder="carlos.mendoza@venprecar.com.ve" style="height: 38px;">
+                                   <input type="email" class="form-control form-control-sm" wire:model="nuevo_correo" placeholder="carlos.mendoza@venprecar.com.ve" style="height: 38px;">
                               </div>
 
                               <div class="form-group mb-3">
                                    <label class="font-weight-bold small text-muted">CARGO DE REFERENCIA</label>
-                                   <select class="form-control form-control-sm" wire:model="new_role" style="height: 38px;">
+                                   <select class="form-control form-control-sm" wire:model="nuevo_rol" style="height: 38px;">
                                         <option value="Instructor Adjunto">Instructor Adjunto</option>
                                         <option value="Técnico NDT">Técnico NDT</option>
                                         <option value="Súper-Especialista Progresivo">Súper-Especialista Progresivo</option>
@@ -405,9 +405,9 @@
                               <div class="search-box position-relative">
                                    <input 
                                         type="text" 
-                                        class="form-control text-dark @error('search_term') is-invalid @enderror" 
+                                        class="form-control text-dark @error('termino_busqueda') is-invalid @enderror" 
                                         placeholder="Buscar..." 
-                                        wire:model.live="search_term"
+                                        wire:model.live="termino_busqueda"
                                         style="width: 200px; border-radius: 50px; font-size: 0.8rem; height: 32px; padding-left: 28px;"
                                    />
                                    <i class="fas fa-search position-absolute text-muted" style="left: 10px; top: 10px; font-size: 0.78rem;"></i>
@@ -459,10 +459,10 @@
                                                   </td>
                                                   <td class="p-3 text-right">
                                                        <div class="d-flex justify-content-end" style="gap: 6px;">
-                                                            <button class="btn btn-sm btn-light border" wire:click="toggleStatus('{{ $c->ficha }}')">
+                                                            <button class="btn btn-sm btn-light border" wire:click="alternarEstado('{{ $c->ficha }}')">
                                                                  <i class="fas fa-power-off text-warning"></i>
                                                             </button>
-                                                            <button class="btn btn-sm btn-light border" wire:click="deleteColaborador('{{ $c->ficha }}')">
+                                                            <button class="btn btn-sm btn-light border" wire:click="eliminarColaborador('{{ $c->ficha }}')">
                                                                  <i class="fas fa-trash-alt text-danger"></i>
                                                             </button>
                                                        </div>
