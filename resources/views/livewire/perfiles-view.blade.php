@@ -1,5 +1,5 @@
-<div class="container-fluid py-4" style="background-color: #F2F2F2; max-width: 1440px; margin: 0 auto;">
-     <!-- Toast Notification -->
+<div class="container-fluid py-4 mx-auto" style="background-color: #F2F2F2;">
+     <!-- Notificacion (Toast) -->
      @if($notificacion)
           <div class="alert alert-{{ $notificacion['tipo'] === 'success' ? 'success' : ($notificacion['tipo'] === 'danger' ? 'danger' : 'info') }} alert-dismissible fade show shadow border-0 position-fixed d-flex align-items-center" role="alert" style="right: 20px; top: 80px; z-index: 1060; gap: 10px; border-radius: 8px; min-width: 320px;">
                <i class="fas fa-info-circle" style="font-size: 1.25rem;"></i>
@@ -10,24 +10,22 @@
           </div>
      @endif
 
-     <!-- Pantalla con Cabecera -->
-     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 text-dark">
-          <div>
-               <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155; margin: 0;">
-                    Gestión de Perfiles y Hoja de Vida
-               </h3>
-               <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                    Control de expedientes de adiestramiento, educación, currículo técnico y matriz del plan de Horas-Hombre del personal.
-               </p>
-          </div>
+     <!-- Cabecera -->
+     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 mx-5 text-dark">
+          <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155; margin: 0;">
+               Gestión de Perfiles
+          </h3>
      </div>
 
-     <!-- TAB 1: PERFIL INDIVIDUAL -->
+     <!-- PERFIL INDIVIDUAL -->
      @if($pestania_activa === 'individual')
-          @include('partials.filtro-empleados')
-          <div class="row text-dark">
+          <div class="mx-5">
+               @include('partials.filtro-empleados')
+          </div>
+
+          <div class="row mx-5 text-dark">
                <div class="col-12 col-lg-4 mb-4">
-                    <div class="card shadow-sm border-0 bg-white h-100" style="border-radius: 8px;">
+                    <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
                                    <i class="fas fa-search mr-2"></i> Consultar Empleado
@@ -36,7 +34,7 @@
 
                          <div class="card-body">
                               <div class="form-group mb-3">
-                                   <label class="font-weight-bold small text-muted">SELECCIONAR COLABORADOR</label>
+                                   <label class="font-weight-bold small text-muted">SELECCIONAR EMPLEADO</label>
                                    <select class="form-control" wire:model.live="ficha_usuario_seleccionado" style="height: 44px; font-weight: 600;">
                                         @foreach($empleados as $e)
                                              <option value="{{ $e->ficha }}">[{{ $e->ficha }}] - {{ $e->nombre_empleado }}</option>
@@ -60,7 +58,7 @@
                                              FICHA: {{ $active_employee->ficha }}
                                         </span>
 
-                                        <div class="text-left mt-3 pt-3 border-top" style="font-size: 0.85rem;">
+                                        <div class="text-left mt-2 pt-3 border-top" style="font-size: 0.85rem;">
                                              <p class="mb-2 text-dark"><strong>Cargo:</strong> {{ $active_employee->texto_cargo ?? 'No definido' }}</p>
                                              <p class="mb-2 text-dark"><strong>Gerencia:</strong> {{ $active_employee->texto_gerencia ?? 'No definida' }}</p>
                                              <p class="mb-0 text-dark"><strong>Unidad:</strong> {{ $active_employee->texto_unidad ?? 'No definida' }}</p>
@@ -73,18 +71,15 @@
 
                <div class="col-12 col-lg-8 mb-4">
                     <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
-                         <div class="border-bottom p-3 d-flex justify-content-between align-items-center" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+                         <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
-                                   <i class="fas fa-file-invoice mr-2 text-white"></i> Desarrollo Académico & Técnico del Colaborador
+                                   <i class="fas fa-file-invoice mr-2 text-white"></i> Desarrollo Académico & Técnico del Empleado
                               </h5>
-                              <button class="btn btn-sm btn-light font-weight-bold" onclick="alert('Exportando curriculum estructurado...')">
-                                   <i class="fas fa-file-excel mr-1"></i> Resumen Excel
-                              </button>
                          </div>
 
                          <div class="p-4">
                               
-                              <!-- Section 1: Education -->
+                              <!-- Sección 1: Nivel Educativo  -->
                               <div class="d-flex justify-content-between align-items-center mb-3">
                                    <h6 class="font-weight-bold text-dark mb-0">
                                         <i class="fas fa-graduation-cap text-primary mr-2"></i> 1. Formación Educativa / Títulos Obtenidos
@@ -95,38 +90,37 @@
                                    <table class="table table-sm mb-0">
                                         <thead class="bg-light">
                                              <tr>
-                                                  <th class="p-2" style="font-size: 0.75rem;">NIVEL</th>
-                                                  <th class="p-2" style="font-size: 0.75rem;">TÍTULO O CARRERA</th>
-                                                  <th class="p-2" style="font-size: 0.75rem;">INSTITUCIÓN</th>
+                                                  <th class="p-2" style="font-size: 0.75rem;">NIVEL DE EDUCACIÓN</th>
+                                                  <th class="p-2" style="font-size: 0.75rem;">TÍTULO / CARRERA TÉCNICA</th>
+                                                  <th class="p-2" style="font-size: 0.75rem;">INSTITUTO</th>
                                                   <th class="p-2 text-center" style="font-size: 0.75rem;">AÑO</th>
+                                                  <th class="p-2 text-center" style="font-size: 0.75rem; width: 40px;"></th>
                                              </tr>
                                         </thead>
                                         <tbody>
-                                             @php
-                                                  $active_edu = array_filter($educaciones, function($edu) {
-                                                       return $edu['ficha'] === $this->ficha_usuario_seleccionado;
-                                                  });
-                                             @endphp
-                                             @forelse($active_edu as $edu)
+                                             @forelse($educacionesDb as $edu)
                                                   <tr>
-                                                       <td class="p-2 font-weight-bold" style="font-size: 0.85rem;">{{ $edu['nivel_educativo'] }}</td>
+                                                       <td class="p-2 font-weight-bold" style="font-size: 0.85rem;">{{ $edu->nivel_educativo }}</td>
                                                        <td class="p-2" style="font-size: 0.85rem;">
-                                                            {{ $edu['titulo'] }} <br>
-                                                            <small class="text-muted">{{ $edu['especialidad'] }}</small>
+                                                            {{ $edu->titulo }} <br>
+                                                            @if($edu->especialidad)<small class="text-muted">{{ $edu->especialidad }}</small>@endif
                                                        </td>
-                                                       <td class="p-2" style="font-size: 0.85rem;">{{ $edu['instituto'] }}</td>
-                                                       <td class="p-2 text-center" style="font-size: 0.85rem;">{{ substr($edu['fecha_culminado'], 0, 4) }}</td>
+                                                       <td class="p-2" style="font-size: 0.85rem;">{{ $edu->instituto }}</td>
+                                                       <td class="p-2 text-center" style="font-size: 0.85rem;">{{ $edu->fecha_culminado }}</td>
+                                                       <td class="p-2 text-center">
+                                                            <button wire:click="eliminarEducacion({{ $edu->id }})" class="btn btn-sm btn-link text-danger p-0 m-0"><i class="fas fa-trash"></i></button>
+                                                       </td>
                                                   </tr>
                                              @empty
                                                   <tr>
-                                                       <td colspan="4" class="text-center py-3 text-muted small">No hay formación previa cargada.</td>
+                                                       <td colspan="5" class="text-center py-3 text-muted small">No hay formación previa cargada.</td>
                                                   </tr>
                                              @endforelse
                                         </tbody>
                                    </table>
                               </div>
 
-                              <!-- Add Education Mini Form -->
+                              <!-- Añadir Educación -->
                               <div class="p-3 border rounded bg-light mb-4">
                                    <strong class="d-block text-dark small mb-2"><i class="fas fa-plus-circle text-primary"></i> Ingresar Registro de Educación</strong>
                                    <div class="row">
@@ -150,7 +144,7 @@
                                    </div>
                               </div>
 
-                              <!-- Section 2: Laboral Academic Experience -->
+                              <!-- Sección 2: Experiencia Laboral -->
                               <div class="d-flex justify-content-between align-items-center mb-3">
                                    <h6 class="font-weight-bold text-dark mb-0">
                                         <i class="fas fa-briefcase text-primary mr-2"></i> 2. Experiencia Laboral e Industrial
@@ -165,31 +159,30 @@
                                                   <th class="p-2" style="font-size: 0.75rem;">EMPRESA EXECUTORA</th>
                                                   <th class="p-2 text-center" style="font-size: 0.75rem;">DESDE/HASTA</th>
                                                   <th class="p-2" style="font-size: 0.75rem;">OBSERVACIONES</th>
+                                                  <th class="p-2 text-center" style="font-size: 0.75rem; width: 40px;"></th>
                                              </tr>
                                         </thead>
                                         <tbody>
-                                             @php
-                                                  $active_exp = array_filter($experiencias, function($exp) {
-                                                       return $exp['ficha'] === $this->ficha_usuario_seleccionado;
-                                                  });
-                                             @endphp
-                                             @forelse($active_exp as $exp)
+                                             @forelse($experienciasDb as $exp)
                                                   <tr>
-                                                       <td class="p-2 font-weight-bold" style="font-size: 0.85rem;">{{ $exp['cargo_desempeniado'] }}</td>
-                                                       <td class="p-2" style="font-size: 0.85rem;">{{ $exp['empresa'] }}</td>
-                                                       <td class="p-2 text-center" style="font-size: 0.85rem;">{{ $exp['desde'] }} / {{ $exp['hasta'] }}</td>
-                                                       <td class="p-2 text-muted small" style="font-size: 0.85rem;">{{ $exp['observacion'] }}</td>
+                                                       <td class="p-2 font-weight-bold" style="font-size: 0.85rem;">{{ $exp->cargo_desempeñado }}</td>
+                                                       <td class="p-2" style="font-size: 0.85rem;">{{ $exp->empresa }}</td>
+                                                       <td class="p-2 text-center" style="font-size: 0.85rem;">{{ $exp->desde ? \Carbon\Carbon::parse($exp->desde)->format('Y-m-d') : '' }} / {{ $exp->hasta ? \Carbon\Carbon::parse($exp->hasta)->format('Y-m-d') : 'Actualidad' }}</td>
+                                                       <td class="p-2 text-muted small" style="font-size: 0.85rem;">{{ $exp->observacion }}</td>
+                                                       <td class="p-2 text-center">
+                                                            <button wire:click="eliminarExperiencia({{ $exp->id }})" class="btn btn-sm btn-link text-danger p-0 m-0"><i class="fas fa-trash"></i></button>
+                                                       </td>
                                                   </tr>
                                              @empty
                                                   <tr>
-                                                       <td colspan="4" class="text-center py-3 text-muted small">No hay experiencia cargada.</td>
+                                                       <td colspan="5" class="text-center py-3 text-muted small">No hay experiencia cargada.</td>
                                                   </tr>
                                              @endforelse
                                         </tbody>
                                    </table>
                               </div>
 
-                              <!-- Add Experience Mini Form -->
+                              <!-- Añadir Experiencia Laboral -->
                               <div class="p-3 border rounded bg-light mb-4">
                                    <strong class="d-block text-dark small mb-2"><i class="fas fa-plus-circle text-primary"></i> Ingresar Experiencia Laboral</strong>
                                    <div class="row">
@@ -208,32 +201,77 @@
                                    </div>
                               </div>
 
-                              <!-- Section 3: English Skills -->
+                              <!-- Sección 3: Nivel de Inglés -->
                               <hr class="my-4">
+
                               <h6 class="font-weight-bold text-dark mb-2">
                                    <i class="fas fa-language text-primary mr-2"></i> 3. Nivel de Competencia en Inglés Técnico
                               </h6>
                               <p class="text-secondary small mb-3">Marque los niveles correspondientes aprobados validamente según directrices de RRHH:</p>
 
-                              <div class="p-3 border rounded bg-light d-flex flex-wrap justify-content-between" style="gap: 16px;">
-                                   <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="ing_i1" wire:click="alternarIngles('i1')" @if($ing_i1) checked @endif>
-                                        <label class="custom-control-label font-weight-bold" for="ing_i1">Inglés Instrumental Básico (I1)</label>
+                              <div class="p-3 border rounded bg-light row mx-0">
+                                   <div class="col-md-3 mb-3">
+                                        <div class="custom-control custom-switch">
+                                             <input type="checkbox" class="custom-control-input" id="ing_i1" wire:click="alternarIngles('i1')" @if(optional($inglesDb)->i1) checked @endif>
+                                             <label class="custom-control-label font-weight-bold" for="ing_i1">Instrumental 1 (I1)</label>
+                                        </div>
                                    </div>
-                                   <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="ing_i2" wire:click="alternarIngles('i2')" @if($ing_i2) checked @endif>
-                                        <label class="custom-control-label font-weight-bold" for="ing_i2">Inglés Técnico Operativo (I2)</label>
+                                   <div class="col-md-3 mb-3">
+                                        <div class="custom-control custom-switch">
+                                             <input type="checkbox" class="custom-control-input" id="ing_i2" wire:click="alternarIngles('i2')" @if(optional($inglesDb)->i2) checked @endif>
+                                             <label class="custom-control-label font-weight-bold" for="ing_i2">Instrumental 2 (I2)</label>
+                                        </div>
                                    </div>
-                                   <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="ing_i3" wire:click="alternarIngles('i3')" @if($ing_i3) checked @endif>
-                                        <label class="custom-control-label font-weight-bold" for="ing_i3">Traducción de Manuales SHA (I3)</label>
+                                   <div class="col-md-3 mb-3">
+                                        <div class="custom-control custom-switch">
+                                             <input type="checkbox" class="custom-control-input" id="ing_bb" wire:click="alternarIngles('bb')" @if(optional($inglesDb)->bb) checked @endif>
+                                             <label class="custom-control-label font-weight-bold" for="ing_bb">Básico Básico (BB)</label>
+                                        </div>
                                    </div>
-                                   <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="ing_i4" wire:click="alternarIngles('i4')" @if($ing_i4) checked @endif>
-                                        <label class="custom-control-label font-weight-bold" for="ing_i4">Conversacional Fluido (I4)</label>
+                                   <div class="col-md-3 mb-3">
+                                        <div class="custom-control custom-switch">
+                                             <input type="checkbox" class="custom-control-input" id="ing_ba" wire:click="alternarIngles('ba')" @if(optional($inglesDb)->ba) checked @endif>
+                                             <label class="custom-control-label font-weight-bold" for="ing_ba">Básico Alto (BA)</label>
+                                        </div>
+                                   </div>
+                                   <div class="col-md-3 mb-3">
+                                        <div class="custom-control custom-switch">
+                                             <input type="checkbox" class="custom-control-input" id="ing_ib" wire:click="alternarIngles('ib')" @if(optional($inglesDb)->ib) checked @endif>
+                                             <label class="custom-control-label font-weight-bold" for="ing_ib">Intermedio Básico (IB)</label>
+                                        </div>
+                                   </div>
+                                   <div class="col-md-3 mb-3">
+                                        <div class="custom-control custom-switch">
+                                             <input type="checkbox" class="custom-control-input" id="ing_ia" wire:click="alternarIngles('ia')" @if(optional($inglesDb)->ia) checked @endif>
+                                             <label class="custom-control-label font-weight-bold" for="ing_ia">Intermedio Alto (IA)</label>
+                                        </div>
+                                   </div>
+                                   <div class="col-md-3 mb-3">
+                                        <div class="custom-control custom-switch">
+                                             <input type="checkbox" class="custom-control-input" id="ing_ab" wire:click="alternarIngles('ab')" @if(optional($inglesDb)->ab) checked @endif>
+                                             <label class="custom-control-label font-weight-bold" for="ing_ab">Avanzado Básico (AB)</label>
+                                        </div>
+                                   </div>
+                                   <div class="col-md-3 mb-3">
+                                        <div class="custom-control custom-switch">
+                                             <input type="checkbox" class="custom-control-input" id="ing_aa" wire:click="alternarIngles('aa')" @if(optional($inglesDb)->aa) checked @endif>
+                                             <label class="custom-control-label font-weight-bold" for="ing_aa">Avanzado Alto (AA)</label>
+                                        </div>
                                    </div>
                               </div>
 
+                              <!-- Sección 4: Exportar Resumen del Trabajador -->
+                              <hr class="my-4">
+
+                              <h6 class="font-weight-bold text-dark my-2">
+                                   Exportar Resumen del Trabajador
+                              </h6>
+
+                              <div class="mt-3 mb-2 d-flex">     
+                                   <button class="btn btn-sm btn-light font-weight-bold">
+                                   <i class="fas fa-file-excel mr-1"></i> Excel
+                                   </button>
+                              </div>
                          </div>
                     </div>
                </div>

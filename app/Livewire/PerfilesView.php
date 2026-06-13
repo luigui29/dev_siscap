@@ -28,10 +28,7 @@ class PerfilesView extends Component
      public $experiencias = [];
 
      // English Skills
-     public $ing_i1 = false;
-     public $ing_i2 = false;
-     public $ing_i3 = false;
-     public $ing_i4 = false;
+     // (We will use direct DB loading in render, but for reactive checks we can keep public properties, or just let Blade handle it. But wire:click="alternarIngles" requires updating DB directly)
 
      // Register Colaborador
      public $nueva_ficha = '';
@@ -75,39 +72,71 @@ class PerfilesView extends Component
 
      public function agregarEducacion()
      {
-          $this->educaciones[] = [
-               'ficha' => $this->ficha_usuario_seleccionado,
+          if (!$this->ficha_usuario_seleccionado) {
+               $this->mostrarNotificacion('Seleccione un colaborador primero.', 'danger');
+               return;
+          }
+
+          \App\Models\NivelEducativo::create([
+               'ficha_empleado' => $this->ficha_usuario_seleccionado,
                'nivel_educativo' => $this->edu_nivel_educativo,
                'titulo' => $this->edu_titulo,
-               'especialidad' => '',
                'instituto' => $this->edu_instituto,
-               'fecha_culminado' => date('Y-m-d')
-          ];
+               'graduado' => true,
+               'fecha_culminado' => date('Y'),
+          ]);
+          
           $this->edu_titulo = '';
           $this->edu_instituto = '';
           $this->mostrarNotificacion('Educación registrada con éxito.');
      }
 
+     public function eliminarEducacion($id)
+     {
+          \App\Models\NivelEducativo::where('id', $id)->delete();
+          $this->mostrarNotificacion('Registro educativo eliminado.', 'danger');
+     }
+
      public function agregarExperiencia()
      {
-          $this->experiencias[] = [
-               'ficha' => $this->ficha_usuario_seleccionado,
-               'cargo_desempeniado' => $this->exp_cargo,
+          if (!$this->ficha_usuario_seleccionado) {
+               $this->mostrarNotificacion('Seleccione un colaborador primero.', 'danger');
+               return;
+          }
+
+          \App\Models\ExperienciaLaboral::create([
+               'ficha_empleado' => $this->ficha_usuario_seleccionado,
+               'cargo_desempeñado' => $this->exp_cargo,
                'empresa' => $this->exp_empresa,
-               'desde' => date('Y'),
-               'hasta' => 'Actualidad',
+               'desde' => date('Y-m-d'),
+               'hasta' => null,
                'observacion' => $this->exp_observacion
-          ];
+          ]);
+
           $this->exp_cargo = '';
           $this->exp_empresa = '';
           $this->exp_observacion = '';
           $this->mostrarNotificacion('Experiencia laboral registrada.');
      }
 
-     public function alternarIngles($nivel)
+     public function eliminarExperiencia($id)
      {
-          $propiedad = 'ing_' . $nivel;
-          $this->$propiedad = !$this->$propiedad;
+          \App\Models\ExperienciaLaboral::where('id', $id)->delete();
+          $this->mostrarNotificacion('Experiencia laboral eliminada.', 'danger');
+     }
+
+     public function alternarIngles($columna)
+     {
+          if (!$this->ficha_usuario_seleccionado) return;
+
+          $registro = \App\Models\NivelIngles::firstOrCreate(
+              ['ficha_empleado' => $this->ficha_usuario_seleccionado],
+              ['i1' => false, 'i2' => false, 'bb' => false, 'ba' => false, 'ib' => false, 'ia' => false, 'ab' => false, 'aa' => false]
+          );
+
+          $registro->$columna = !$registro->$columna;
+          $registro->save();
+
           $this->mostrarNotificacion('Nivel de inglés actualizado.');
      }
 
@@ -132,6 +161,10 @@ class PerfilesView extends Component
      public function render()
      {
           $empleados = collect([]);
+          $educacionesDb = collect([]);
+          $experienciasDb = collect([]);
+          $inglesDb = null;
+
           if ($this->pestania_activa === 'individual') {
               $empleados = $this->aplicarFiltrosEmpleados(\App\Models\RrhhPersonal::query())
                   ->orderBy('nombre_empleado', 'asc')
@@ -143,10 +176,19 @@ class PerfilesView extends Component
               } elseif ($empleados->isEmpty()) {
                   $this->ficha_usuario_seleccionado = null;
               }
+
+              if ($this->ficha_usuario_seleccionado) {
+                  $educacionesDb = \App\Models\NivelEducativo::where('ficha_empleado', $this->ficha_usuario_seleccionado)->orderBy('created_at', 'desc')->get();
+                  $experienciasDb = \App\Models\ExperienciaLaboral::where('ficha_empleado', $this->ficha_usuario_seleccionado)->orderBy('desde', 'desc')->get();
+                  $inglesDb = \App\Models\NivelIngles::where('ficha_empleado', $this->ficha_usuario_seleccionado)->first();
+              }
           }
 
           return view('livewire.perfiles-view', [
-              'empleados' => $empleados
+              'empleados' => $empleados,
+              'educacionesDb' => $educacionesDb,
+              'experienciasDb' => $experienciasDb,
+              'inglesDb' => $inglesDb
           ])->layout('components.layouts.app');
      }
 }
