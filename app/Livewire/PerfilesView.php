@@ -7,6 +7,7 @@ use App\Models\RrhhPersonal;
 use App\Models\NivelEducativo;
 use App\Models\ExperienciaLaboral;
 use App\Models\NivelIngles;
+use App\Models\GerenciaUnidad;
 use Livewire\Component;
 
 class PerfilesView extends Component
@@ -36,6 +37,10 @@ class PerfilesView extends Component
      public $exp_observacion = '';
      
      public $termino_busqueda = '';
+
+     // Filtros para la matriz de horas gerencias
+     public $filtro_gerencia = '';
+     public $filtro_unidad = '';
 
      public function mount($pestania = null)
      {
@@ -189,12 +194,32 @@ class PerfilesView extends Component
                return strtoupper($exp->empresa) !== 'VENPRECAR';
           });
 
+          // Variables para la matriz de gerencias
+          $gerencias_opciones = collect([]);
+          $unidades_opciones = collect([]);
+          
+          if ($this->pestania_activa === 'gerencia') {
+               // Cargar gerencias únicas
+               $gerencias_opciones = GerenciaUnidad::select('texto_gerencia')->distinct()->orderBy('texto_gerencia')->pluck('texto_gerencia');
+               
+               // Si hay una gerencia seleccionada, cargar sus unidades
+               if ($this->filtro_gerencia) {
+                    $unidades_opciones = GerenciaUnidad::where('texto_gerencia', $this->filtro_gerencia)
+                         ->select('texto_unidad')
+                         ->distinct()
+                         ->orderBy('texto_unidad')
+                         ->pluck('texto_unidad');
+               }
+          }
+
           return view('livewire.perfiles-view', [
               'empleados' => $empleados,
               'educacionesDb' => $educacionesDb,
               'experienciasInternas' => $experienciasInternas,
               'experienciasExternas' => $experienciasExternas,
-              'inglesDb' => $inglesDb
+              'inglesDb' => $inglesDb,
+              'gerencias_opciones' => $gerencias_opciones,
+              'unidades_opciones' => $unidades_opciones
           ])->layout('components.layouts.app');
      }
 }

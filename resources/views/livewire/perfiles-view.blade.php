@@ -357,6 +357,31 @@
                                    Visualización de la distribución acumulada de Horas-Hombre de adiestramiento formal registradas en las unidades organizativas de la factoría.
                               </p>
 
+                              <!-- Filtros de Gerencia y Unidad -->
+                              <div class="row mb-4 p-3 bg-light rounded border mx-0">
+                                   <div class="col-md-5">
+                                        <label class="small font-weight-bold text-muted mb-1"><i class="fas fa-sitemap mr-1"></i> Filtrar por Gerencia</label>
+                                        <select class="form-control form-control-sm" wire:model.live="filtro_gerencia">
+                                             <option value="">-- Todas las Gerencias --</option>
+                                             @foreach($gerencias_opciones as $opcion_gerencia)
+                                                  <option value="{{ $opcion_gerencia }}">{{ $opcion_gerencia }}</option>
+                                             @endforeach
+                                        </select>
+                                   </div>
+                                   <div class="col-md-5">
+                                        <label class="small font-weight-bold text-muted mb-1"><i class="fas fa-users-cog mr-1"></i> Filtrar por Unidad</label>
+                                        <select class="form-control form-control-sm" wire:model.live="filtro_unidad" @if(!$filtro_gerencia) disabled @endif>
+                                             <option value="">-- Todas las Unidades --</option>
+                                             @foreach($unidades_opciones as $opcion_unidad)
+                                                  <option value="{{ $opcion_unidad }}">{{ $opcion_unidad }}</option>
+                                             @endforeach
+                                        </select>
+                                   </div>
+                                   <div class="col-md-2 d-flex align-items-end">
+                                        <button class="btn btn-sm btn-outline-secondary w-100" wire:click="$set('filtro_gerencia', ''); $set('filtro_unidad', '');">Limpiar</button>
+                                   </div>
+                              </div>
+
                               <div class="row mb-4">
                                    <div class="col-12 col-md-4 mb-3">
                                         <div class="p-3 border rounded text-center bg-light">

@@ -14,3 +14,7 @@ Route::get('/dashboard', DashboardView::class)->name('dashboard');
 Route::get('/perfiles/{pestania?}', PerfilesView::class)->name('perfiles');
 Route::get('/programacion/{pestania?}', ProgramacionView::class)->name('programacion');
 Route::get('/configuracion/{pestania?}', ConfiguracionView::class)->name('configuracion');
+
+Route::get('/test-db', function () {
+    return App\Models\GerenciaUnidad::first();
+});
