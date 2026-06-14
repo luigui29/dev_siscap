@@ -82,7 +82,7 @@
                               <!-- Sección 1: Nivel Educativo  -->
                               <div class="d-flex justify-content-between align-items-center mb-3">
                                    <h6 class="font-weight-bold text-dark mb-0">
-                                        <i class="fas fa-graduation-cap text-primary mr-2"></i> 1. Formación Educativa / Títulos Obtenidos
+                                        <i class="fas fa-graduation-cap text-primary mr-2"></i> Formación Educativa / Títulos Obtenidos
                                    </h6>
                               </div>
 
@@ -100,7 +100,11 @@
                                         <tbody>
                                              @forelse($educacionesDb as $edu)
                                                   <tr>
-                                                       <td class="p-2 font-weight-bold" style="font-size: 0.85rem;">{{ $edu->nivel_educativo }}</td>
+                                                       <td class="p-2 font-weight-bold" style="font-size: 0.85rem;">
+                                                            {{ $edu->nivel_educativo }}
+                                                            @if($edu->graduado)<span class="badge badge-success ml-1" style="font-size: 0.65rem;">Graduado</span>@endif
+                                                            @if($edu->ultimo_nivel)<span class="badge badge-primary ml-1" style="font-size: 0.65rem;">Último Nivel</span>@endif
+                                                       </td>
                                                        <td class="p-2" style="font-size: 0.85rem;">
                                                             {{ $edu->titulo }} <br>
                                                             @if($edu->especialidad)<small class="text-muted">{{ $edu->especialidad }}</small>@endif
@@ -125,45 +129,61 @@
                                    <strong class="d-block text-dark small mb-2"><i class="fas fa-plus-circle text-primary"></i> Ingresar Registro de Educación</strong>
                                    <div class="row">
                                         <div class="col-md-3 form-group mb-2">
-                                             <select class="form-control form-control-sm" wire:model="edu_nivel_educativo">
-                                                  <option value="Técnico Medio">Técnico Medio</option>
-                                                  <option value="T.S.U.">T.S.U.</option>
-                                                  <option value="Universitario">Universitario</option>
-                                                  <option value="Postgrado">Postgrado</option>
-                                             </select>
+                                             <input type="text" class="form-control form-control-sm" wire:model="edu_nivel_educativo" placeholder="Nivel Educativo">
                                         </div>
                                         <div class="col-md-3 form-group mb-2">
-                                             <input type="text" class="form-control form-control-sm" wire:model="edu_titulo" placeholder="Título Obtenido">
+                                             <input type="text" class="form-control form-control-sm" wire:model="edu_titulo" placeholder="Título Obtenido (Opcional)">
                                         </div>
                                         <div class="col-md-3 form-group mb-2">
-                                             <input type="text" class="form-control form-control-sm" wire:model="edu_instituto" placeholder="Instituto/Universidad">
+                                             <input type="text" class="form-control form-control-sm" wire:model="edu_especialidad" placeholder="Especialidad (Opcional)">
                                         </div>
-                                        <div class="col-md-3 mb-2">
-                                             <button wire:click="agregarEducacion" class="btn btn-sm btn-primary w-full">Cargar</button>
+                                        <div class="col-md-3 form-group mb-2">
+                                             <input type="text" class="form-control form-control-sm" wire:model="edu_instituto" placeholder="Instituto/Universidad (Opcional)">
+                                        </div>
+                                        <div class="col-md-3 form-group mb-2">
+                                             <input type="date" class="form-control form-control-sm" wire:model="edu_fecha_culminado" placeholder="Fecha Culminado">
+                                        </div>
+                                        <div class="col-md-3 form-group mb-2 d-flex align-items-center">
+                                             <div class="custom-control custom-switch">
+                                                  <input type="checkbox" class="custom-control-input" id="edu_graduado" wire:model="edu_graduado">
+                                                  <label class="custom-control-label font-weight-bold small" for="edu_graduado">Graduado</label>
+                                             </div>
+                                        </div>
+                                        <div class="col-md-3 form-group mb-2 d-flex align-items-center">
+                                             <div class="custom-control custom-switch">
+                                                  <input type="checkbox" class="custom-control-input" id="edu_ultimo_nivel" wire:model="edu_ultimo_nivel">
+                                                  <label class="custom-control-label font-weight-bold small" for="edu_ultimo_nivel">Último Nivel</label>
+                                             </div>
+                                        </div>
+                                        <div class="col-md-3 mb-2 d-flex align-items-center">
+                                             <button wire:click="agregarEducacion" class="btn btn-sm btn-primary w-100">Cargar</button>
                                         </div>
                                    </div>
                               </div>
 
                               <!-- Sección 2: Experiencia Laboral -->
+                              <hr class="my-4">
+
                               <div class="d-flex justify-content-between align-items-center mb-3">
                                    <h6 class="font-weight-bold text-dark mb-0">
-                                        <i class="fas fa-briefcase text-primary mr-2"></i> 2. Experiencia Laboral e Industrial
+                                        <i class="fas fa-briefcase text-primary mr-2"></i> Experiencia Laboral 
                                    </h6>
                               </div>
 
+                              <h6 class="font-weight-bold text-dark mt-3 mb-2 small"> Experiencia Laboral Interna </h6>
                               <div class="table-responsive mb-4 border rounded">
                                    <table class="table table-sm mb-0">
                                         <thead class="bg-light">
                                              <tr>
                                                   <th class="p-2" style="font-size: 0.75rem;">CARGO DESEMPEÑADO</th>
-                                                  <th class="p-2" style="font-size: 0.75rem;">EMPRESA EXECUTORA</th>
+                                                  <th class="p-2" style="font-size: 0.75rem;">EMPRESA</th>
                                                   <th class="p-2 text-center" style="font-size: 0.75rem;">DESDE/HASTA</th>
                                                   <th class="p-2" style="font-size: 0.75rem;">OBSERVACIONES</th>
                                                   <th class="p-2 text-center" style="font-size: 0.75rem; width: 40px;"></th>
                                              </tr>
                                         </thead>
                                         <tbody>
-                                             @forelse($experienciasDb as $exp)
+                                             @forelse($experienciasInternas as $exp)
                                                   <tr>
                                                        <td class="p-2 font-weight-bold" style="font-size: 0.85rem;">{{ $exp->cargo_desempeñado }}</td>
                                                        <td class="p-2" style="font-size: 0.85rem;">{{ $exp->empresa }}</td>
@@ -175,7 +195,39 @@
                                                   </tr>
                                              @empty
                                                   <tr>
-                                                       <td colspan="5" class="text-center py-3 text-muted small">No hay experiencia cargada.</td>
+                                                       <td colspan="5" class="text-center py-3 text-muted small">No hay experiencia interna cargada.</td>
+                                                  </tr>
+                                             @endforelse
+                                        </tbody>
+                                   </table>
+                              </div>
+
+                              <h6 class="font-weight-bold text-dark mt-3 mb-2 small"> Experiencia Laboral Externa</h6>
+                              <div class="table-responsive mb-4 border rounded">
+                                   <table class="table table-sm mb-0">
+                                        <thead class="bg-light">
+                                             <tr>
+                                                  <th class="p-2" style="font-size: 0.75rem;">CARGO DESEMPEÑADO</th>
+                                                  <th class="p-2" style="font-size: 0.75rem;">EMPRESA</th>
+                                                  <th class="p-2 text-center" style="font-size: 0.75rem;">DESDE/HASTA</th>
+                                                  <th class="p-2" style="font-size: 0.75rem;">OBSERVACIONES</th>
+                                                  <th class="p-2 text-center" style="font-size: 0.75rem; width: 40px;"></th>
+                                             </tr>
+                                        </thead>
+                                        <tbody>
+                                             @forelse($experienciasExternas as $exp)
+                                                  <tr>
+                                                       <td class="p-2 font-weight-bold" style="font-size: 0.85rem;">{{ $exp->cargo_desempeñado }}</td>
+                                                       <td class="p-2" style="font-size: 0.85rem;">{{ $exp->empresa }}</td>
+                                                       <td class="p-2 text-center" style="font-size: 0.85rem;">{{ $exp->desde ? \Carbon\Carbon::parse($exp->desde)->format('Y-m-d') : '' }} / {{ $exp->hasta ? \Carbon\Carbon::parse($exp->hasta)->format('Y-m-d') : 'Actualidad' }}</td>
+                                                       <td class="p-2 text-muted small" style="font-size: 0.85rem;">{{ $exp->observacion }}</td>
+                                                       <td class="p-2 text-center">
+                                                            <button wire:click="eliminarExperiencia({{ $exp->id }})" class="btn btn-sm btn-link text-danger p-0 m-0"><i class="fas fa-trash"></i></button>
+                                                       </td>
+                                                  </tr>
+                                             @empty
+                                                  <tr>
+                                                       <td colspan="5" class="text-center py-3 text-muted small">No hay experiencia externa cargada.</td>
                                                   </tr>
                                              @endforelse
                                         </tbody>
@@ -186,17 +238,25 @@
                               <div class="p-3 border rounded bg-light mb-4">
                                    <strong class="d-block text-dark small mb-2"><i class="fas fa-plus-circle text-primary"></i> Ingresar Experiencia Laboral</strong>
                                    <div class="row">
-                                        <div class="col-md-3 form-group mb-2">
+                                        <div class="col-md-4 form-group mb-2">
                                              <input type="text" class="form-control form-control-sm" wire:model="exp_cargo" placeholder="Cargo Desempeñado">
                                         </div>
-                                        <div class="col-md-3 form-group mb-2">
-                                             <input type="text" class="form-control form-control-sm" wire:model="exp_empresa" placeholder="Empresa Matriz">
+                                        <div class="col-md-4 form-group mb-2">
+                                             <input type="text" class="form-control form-control-sm" wire:model="exp_empresa" placeholder="Empresa (Opcional)">
                                         </div>
-                                        <div class="col-md-3 form-group mb-2">
-                                             <input type="text" class="form-control form-control-sm" wire:model="exp_observacion" placeholder="Detalle Omitido">
+                                        <div class="col-md-4 form-group mb-2">
+                                             <input type="text" class="form-control form-control-sm" wire:model="exp_observacion" placeholder="Observaciones (Opcional)">
                                         </div>
-                                        <div class="col-md-3 mb-2">
-                                             <button wire:click="agregarExperiencia" class="btn btn-sm btn-primary w-full">Cargar</button>
+                                        <div class="col-md-4 form-group mb-2">
+                                             <label class="small text-muted mb-0">Desde</label>
+                                             <input type="date" class="form-control form-control-sm" wire:model="exp_desde">
+                                        </div>
+                                        <div class="col-md-4 form-group mb-2">
+                                             <label class="small text-muted mb-0">Hasta (Opcional)</label>
+                                             <input type="date" class="form-control form-control-sm" wire:model="exp_hasta">
+                                        </div>
+                                        <div class="col-md-4 mb-2 d-flex align-items-end">
+                                             <button wire:click="agregarExperiencia" class="btn btn-sm btn-primary w-100">Cargar</button>
                                         </div>
                                    </div>
                               </div>
@@ -205,56 +265,56 @@
                               <hr class="my-4">
 
                               <h6 class="font-weight-bold text-dark mb-2">
-                                   <i class="fas fa-language text-primary mr-2"></i> 3. Nivel de Competencia en Inglés Técnico
+                                   <i class="fas fa-language text-primary mr-2"></i> Nivel de Competencia en Inglés Técnico
                               </h6>
                               <p class="text-secondary small mb-3">Marque los niveles correspondientes aprobados validamente según directrices de RRHH:</p>
 
                               <div class="p-3 border rounded bg-light row mx-0">
                                    <div class="col-md-3 mb-3">
                                         <div class="custom-control custom-switch">
-                                             <input type="checkbox" class="custom-control-input" id="ing_i1" wire:click="alternarIngles('i1')" @if(optional($inglesDb)->i1) checked @endif>
+                                             <input type="checkbox" class="custom-control-input" id="ing_i1" wire:click="alternarIngles('i1')" @if(optional($inglesDb)->i1) checked @endif wire:key="chk_i1_{{ optional($inglesDb)->i1 ? '1' : '0' }}">
                                              <label class="custom-control-label font-weight-bold" for="ing_i1">Instrumental 1 (I1)</label>
                                         </div>
                                    </div>
                                    <div class="col-md-3 mb-3">
                                         <div class="custom-control custom-switch">
-                                             <input type="checkbox" class="custom-control-input" id="ing_i2" wire:click="alternarIngles('i2')" @if(optional($inglesDb)->i2) checked @endif>
+                                             <input type="checkbox" class="custom-control-input" id="ing_i2" wire:click="alternarIngles('i2')" @if(optional($inglesDb)->i2) checked @endif wire:key="chk_i2_{{ optional($inglesDb)->i2 ? '1' : '0' }}">
                                              <label class="custom-control-label font-weight-bold" for="ing_i2">Instrumental 2 (I2)</label>
                                         </div>
                                    </div>
                                    <div class="col-md-3 mb-3">
                                         <div class="custom-control custom-switch">
-                                             <input type="checkbox" class="custom-control-input" id="ing_bb" wire:click="alternarIngles('bb')" @if(optional($inglesDb)->bb) checked @endif>
+                                             <input type="checkbox" class="custom-control-input" id="ing_bb" wire:click="alternarIngles('bb')" @if(optional($inglesDb)->bb) checked @endif wire:key="chk_bb_{{ optional($inglesDb)->bb ? '1' : '0' }}">
                                              <label class="custom-control-label font-weight-bold" for="ing_bb">Básico Básico (BB)</label>
                                         </div>
                                    </div>
                                    <div class="col-md-3 mb-3">
                                         <div class="custom-control custom-switch">
-                                             <input type="checkbox" class="custom-control-input" id="ing_ba" wire:click="alternarIngles('ba')" @if(optional($inglesDb)->ba) checked @endif>
+                                             <input type="checkbox" class="custom-control-input" id="ing_ba" wire:click="alternarIngles('ba')" @if(optional($inglesDb)->ba) checked @endif wire:key="chk_ba_{{ optional($inglesDb)->ba ? '1' : '0' }}">
                                              <label class="custom-control-label font-weight-bold" for="ing_ba">Básico Alto (BA)</label>
                                         </div>
                                    </div>
                                    <div class="col-md-3 mb-3">
                                         <div class="custom-control custom-switch">
-                                             <input type="checkbox" class="custom-control-input" id="ing_ib" wire:click="alternarIngles('ib')" @if(optional($inglesDb)->ib) checked @endif>
+                                             <input type="checkbox" class="custom-control-input" id="ing_ib" wire:click="alternarIngles('ib')" @if(optional($inglesDb)->ib) checked @endif wire:key="chk_ib_{{ optional($inglesDb)->ib ? '1' : '0' }}">
                                              <label class="custom-control-label font-weight-bold" for="ing_ib">Intermedio Básico (IB)</label>
                                         </div>
                                    </div>
                                    <div class="col-md-3 mb-3">
                                         <div class="custom-control custom-switch">
-                                             <input type="checkbox" class="custom-control-input" id="ing_ia" wire:click="alternarIngles('ia')" @if(optional($inglesDb)->ia) checked @endif>
+                                             <input type="checkbox" class="custom-control-input" id="ing_ia" wire:click="alternarIngles('ia')" @if(optional($inglesDb)->ia) checked @endif wire:key="chk_ia_{{ optional($inglesDb)->ia ? '1' : '0' }}">
                                              <label class="custom-control-label font-weight-bold" for="ing_ia">Intermedio Alto (IA)</label>
                                         </div>
                                    </div>
                                    <div class="col-md-3 mb-3">
                                         <div class="custom-control custom-switch">
-                                             <input type="checkbox" class="custom-control-input" id="ing_ab" wire:click="alternarIngles('ab')" @if(optional($inglesDb)->ab) checked @endif>
+                                             <input type="checkbox" class="custom-control-input" id="ing_ab" wire:click="alternarIngles('ab')" @if(optional($inglesDb)->ab) checked @endif wire:key="chk_ab_{{ optional($inglesDb)->ab ? '1' : '0' }}">
                                              <label class="custom-control-label font-weight-bold" for="ing_ab">Avanzado Básico (AB)</label>
                                         </div>
                                    </div>
                                    <div class="col-md-3 mb-3">
                                         <div class="custom-control custom-switch">
-                                             <input type="checkbox" class="custom-control-input" id="ing_aa" wire:click="alternarIngles('aa')" @if(optional($inglesDb)->aa) checked @endif>
+                                             <input type="checkbox" class="custom-control-input" id="ing_aa" wire:click="alternarIngles('aa')" @if(optional($inglesDb)->aa) checked @endif wire:key="chk_aa_{{ optional($inglesDb)->aa ? '1' : '0' }}">
                                              <label class="custom-control-label font-weight-bold" for="ing_aa">Avanzado Alto (AA)</label>
                                         </div>
                                    </div>
@@ -359,137 +419,4 @@
                </div>
           </div>
      @endif
-
-     <!-- TAB 3: COLABORADORES SISCAP -->
-     @if($pestania_activa === 'siscap')
-          <div class="row text-dark">
-               <div class="col-12 col-md-4 mb-4">
-                    <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
-                         <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-                              <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
-                                   <i class="fas fa-user-plus mr-2"></i> Registrar Colaborador Habilitado
-                              </h5>
-                         </div>
-
-                         <form wire:submit.prevent="crearColaborador" class="card-body">
-                              <p class="text-secondary small mb-3">Defina los datos de la ficha para autorizar su participación en la plataforma adiestradora:</p>
-
-                              <div class="form-group mb-2">
-                                   <label class="font-weight-bold small text-muted">AÑO / FICHA CORPORATIVA</label>
-                                   <input type="text" class="form-control form-control-sm" wire:model="nueva_ficha" placeholder="Ej: F-12209" style="height: 38px;">
-                              </div>
-
-                              <div class="form-group mb-2">
-                                   <label class="font-weight-bold small text-muted">NOMBRE Y APELLIDO</label>
-                                   <input type="text" class="form-control form-control-sm" wire:model="nuevo_nombre" placeholder="Carlos Mendoza" style="height: 38px;">
-                              </div>
-
-                              <div class="form-group mb-2">
-                                   <label class="font-weight-bold small text-muted">CORREO CORPORATIVO</label>
-                                   <input type="email" class="form-control form-control-sm" wire:model="nuevo_correo" placeholder="carlos.mendoza@venprecar.com.ve" style="height: 38px;">
-                              </div>
-
-                              <div class="form-group mb-3">
-                                   <label class="font-weight-bold small text-muted">CARGO DE REFERENCIA</label>
-                                   <select class="form-control form-control-sm" wire:model="nuevo_rol" style="height: 38px;">
-                                        <option value="Instructor Adjunto">Instructor Adjunto</option>
-                                        <option value="Técnico NDT">Técnico NDT</option>
-                                        <option value="Súper-Especialista Progresivo">Súper-Especialista Progresivo</option>
-                                   </select>
-                              </div>
-
-                              <button type="submit" class="btn btn-primary btn-block py-2 font-weight-bold">
-                                   <i class="fas fa-save mr-1"></i> Confirmar y Guardar Perfil
-                              </button>
-                         </form>
-                    </div>
-               </div>
-
-               <div class="col-12 col-md-8 mb-4">
-                    <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
-                         <div class="border-bottom p-3 d-flex justify-content-between align-items-center" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-                              <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
-                                   <i class="fas fa-user-shield mr-2"></i> Colección de Colaboradores e Inspectores Autorizados
-                              </h5>
-                              <div class="search-box position-relative">
-                                   <input 
-                                        type="text" 
-                                        class="form-control text-dark @error('termino_busqueda') is-invalid @enderror" 
-                                        placeholder="Buscar..." 
-                                        wire:model.live="termino_busqueda"
-                                        style="width: 200px; border-radius: 50px; font-size: 0.8rem; height: 32px; padding-left: 28px;"
-                                   />
-                                   <i class="fas fa-search position-absolute text-muted" style="left: 10px; top: 10px; font-size: 0.78rem;"></i>
-                              </div>
-                         </div>
-
-                         <div class="table-responsive">
-                              <table class="table table-hover mb-0">
-                                   <thead class="bg-light">
-                                        <tr>
-                                             <th class="p-3">FICHA</th>
-                                             <th class="p-3">EMPLEADO TRABAJADOR</th>
-                                             <th class="p-3">PERMISO / CONTROL</th>
-                                             <th class="p-3 text-center">ESTADO</th>
-                                             <th class="p-3 text-right">ACCIONES</th>
-                                        </tr>
-                                   </thead>
-                                   <tbody>
-                                        @forelse($colaboradores as $c)
-                                             <tr>
-                                                  <td class="p-3">
-                                                       <span class="badge badge-light px-3 py-2 text-primary font-weight-bold border" style="font-size: 0.82rem; border-radius: 6px;">
-                                                            <i class="far fa-id-card mr-1"></i> {{ $c->ficha }}
-                                                       </span>
-                                                  </td>
-                                                  <td class="p-3">
-                                                       <div class="d-flex align-items-center" style="gap: 10px;">
-                                                            <div class="avatar-text text-white d-flex align-items-center justify-content-center text-uppercase font-weight-bold" style="width: 34px; height: 34px; border-radius: 50%; background-color:#5DADE2; font-size: 0.8rem;">
-                                                                 {{ substr($c->name, 0, 2) }}
-                                                            </div>
-                                                            <div>
-                                                                 <span class="font-weight-bold text-dark d-block" style="font-size: 0.88rem;">{{ $c->name }}</span>
-                                                                 <span class="text-muted d-block" style="font-size: 0.78rem;">{{ $c->email }}</span>
-                                                            </div>
-                                                       </div>
-                                                  </td>
-                                                  <td class="p-3">
-                                                       <span class="font-weight-bold text-secondary text-capitalize d-block mb-1" style="font-size: 0.82rem;">{{ $c->role }}</span>
-                                                       <div class="d-flex flex-wrap" style="gap: 3px;">
-                                                            @foreach(($c->roles ?? []) as $role)
-                                                                 <span class="badge bg-light text-secondary border font-weight-bold" style="font-size: 0.65rem;">{{ $role }}</span>
-                                                            @endforeach
-                                                       </div>
-                                                  </td>
-                                                  <td class="p-3 text-center">
-                                                       <span class="badge text-uppercase font-weight-bold py-1 px-3 {{ $c->status === 'ACTIVO' ? 'badge-success' : 'badge-danger' }}" style="font-size: 0.7rem; border-radius: 50px;">
-                                                            {{ $c->status }}
-                                                       </span>
-                                                  </td>
-                                                  <td class="p-3 text-right">
-                                                       <div class="d-flex justify-content-end" style="gap: 6px;">
-                                                            <button class="btn btn-sm btn-light border" wire:click="alternarEstado('{{ $c->ficha }}')">
-                                                                 <i class="fas fa-power-off text-warning"></i>
-                                                            </button>
-                                                            <button class="btn btn-sm btn-light border" wire:click="eliminarColaborador('{{ $c->ficha }}')">
-                                                                 <i class="fas fa-trash-alt text-danger"></i>
-                                                            </button>
-                                                       </div>
-                                                  </td>
-                                             </tr>
-                                        @empty
-                                             <tr>
-                                                  <td colspan="5" class="text-center py-5 text-muted">
-                                                       Ningún colaborador registrado en la base de datos de SISCAP.
-                                                  </td>
-                                             </tr>
-                                        @endforelse
-                                   </tbody>
-                              </table>
-                         </div>
-                    </div>
-               </div>
-          </div>
-     @endif
-
 </div>

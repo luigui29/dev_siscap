@@ -3,6 +3,10 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use App\Models\RrhhPersonal;
+use App\Models\NivelEducativo;
+use App\Models\ExperienciaLaboral;
+use App\Models\NivelIngles;
 use Livewire\Component;
 
 class PerfilesView extends Component
@@ -13,28 +17,23 @@ class PerfilesView extends Component
     public $notificacion = null;
     
     public $ficha_usuario_seleccionado = '';
-    public $colaboradores = [];
+    public $usuarios = [];
      
-     // Form fields for Education
-     public $edu_nivel_educativo = 'Técnico Medio';
+     // Campos para nivel educativo
+     public $edu_nivel_educativo = '';
      public $edu_titulo = '';
+     public $edu_especialidad = '';
      public $edu_instituto = '';
-     public $educaciones = [];
+     public $edu_graduado = false;
+     public $edu_fecha_culminado = '';
+     public $edu_ultimo_nivel = false;
 
-     // Form fields for Experience
+     // Campos para experiencia laboral
      public $exp_cargo = '';
      public $exp_empresa = '';
+     public $exp_desde = '';
+     public $exp_hasta = '';
      public $exp_observacion = '';
-     public $experiencias = [];
-
-     // English Skills
-     // (We will use direct DB loading in render, but for reactive checks we can keep public properties, or just let Blade handle it. But wire:click="alternarIngles" requires updating DB directly)
-
-     // Register Colaborador
-     public $nueva_ficha = '';
-     public $nuevo_nombre = '';
-     public $nuevo_correo = '';
-     public $nuevo_rol = 'Instructor Adjunto';
      
      public $termino_busqueda = '';
 
@@ -44,10 +43,10 @@ class PerfilesView extends Component
                $this->pestania_activa = $pestania;
           }
           try {
-               $this->colaboradores = \App\Models\User::all();
+               $this->usuarios = User::all();
                
                // Cargar empleados iniciales con filtros (vacíos por defecto)
-               $empleados_iniciales = $this->aplicarFiltrosEmpleados(\App\Models\RrhhPersonal::query())
+               $empleados_iniciales = $this->aplicarFiltrosEmpleados(RrhhPersonal::query())
                    ->orderBy('nombre_empleado', 'asc')
                    ->limit(50)
                    ->get();
@@ -56,7 +55,7 @@ class PerfilesView extends Component
                     $this->ficha_usuario_seleccionado = $empleados_iniciales->first()->ficha;
                }
           } catch (\Exception $excepcion) {
-               $this->colaboradores = collect([]);
+               $this->usuarios = collect([]);
           }
      }
 
@@ -73,55 +72,54 @@ class PerfilesView extends Component
      public function agregarEducacion()
      {
           if (!$this->ficha_usuario_seleccionado) {
-               $this->mostrarNotificacion('Seleccione un colaborador primero.', 'danger');
+               $this->mostrarNotificacion('Seleccione un empleado primero.', 'danger');
                return;
           }
 
-          \App\Models\NivelEducativo::create([
+          NivelEducativo::create([
                'ficha_empleado' => $this->ficha_usuario_seleccionado,
                'nivel_educativo' => $this->edu_nivel_educativo,
-               'titulo' => $this->edu_titulo,
-               'instituto' => $this->edu_instituto,
-               'graduado' => true,
-               'fecha_culminado' => date('Y'),
+               'titulo' => $this->edu_titulo ?: null,
+               'especialidad' => $this->edu_especialidad ?: null,
+               'instituto' => $this->edu_instituto ?: null,
+               'graduado' => $this->edu_graduado,
+               'fecha_culminado' => $this->edu_fecha_culminado ? date('Y', strtotime($this->edu_fecha_culminado)) : null,
+               'ultimo_nivel' => $this->edu_ultimo_nivel,
           ]);
           
-          $this->edu_titulo = '';
-          $this->edu_instituto = '';
+          $this->reset(['edu_nivel_educativo', 'edu_titulo', 'edu_especialidad', 'edu_instituto', 'edu_graduado', 'edu_fecha_culminado', 'edu_ultimo_nivel']);
           $this->mostrarNotificacion('Educación registrada con éxito.');
      }
 
      public function eliminarEducacion($id)
      {
-          \App\Models\NivelEducativo::where('id', $id)->delete();
+          NivelEducativo::where('id', $id)->delete();
           $this->mostrarNotificacion('Registro educativo eliminado.', 'danger');
      }
 
      public function agregarExperiencia()
      {
           if (!$this->ficha_usuario_seleccionado) {
-               $this->mostrarNotificacion('Seleccione un colaborador primero.', 'danger');
+               $this->mostrarNotificacion('Seleccione un empleado primero.', 'danger');
                return;
           }
 
-          \App\Models\ExperienciaLaboral::create([
+          ExperienciaLaboral::create([
                'ficha_empleado' => $this->ficha_usuario_seleccionado,
                'cargo_desempeñado' => $this->exp_cargo,
-               'empresa' => $this->exp_empresa,
-               'desde' => date('Y-m-d'),
-               'hasta' => null,
-               'observacion' => $this->exp_observacion
+               'empresa' => $this->exp_empresa ?: null,
+               'desde' => $this->exp_desde,
+               'hasta' => $this->exp_hasta ?: null,
+               'observacion' => $this->exp_observacion ?: ''
           ]);
 
-          $this->exp_cargo = '';
-          $this->exp_empresa = '';
-          $this->exp_observacion = '';
+          $this->reset(['exp_cargo', 'exp_empresa', 'exp_desde', 'exp_hasta', 'exp_observacion']);
           $this->mostrarNotificacion('Experiencia laboral registrada.');
      }
 
      public function eliminarExperiencia($id)
      {
-          \App\Models\ExperienciaLaboral::where('id', $id)->delete();
+          ExperienciaLaboral::where('id', $id)->delete();
           $this->mostrarNotificacion('Experiencia laboral eliminada.', 'danger');
      }
 
@@ -129,33 +127,33 @@ class PerfilesView extends Component
      {
           if (!$this->ficha_usuario_seleccionado) return;
 
-          $registro = \App\Models\NivelIngles::firstOrCreate(
+          $registro = NivelIngles::firstOrCreate(
               ['ficha_empleado' => $this->ficha_usuario_seleccionado],
               ['i1' => false, 'i2' => false, 'bb' => false, 'ba' => false, 'ib' => false, 'ia' => false, 'ab' => false, 'aa' => false]
           );
 
-          $registro->$columna = !$registro->$columna;
+          $nuevoValor = !$registro->$columna;
+
+          if ($nuevoValor) {
+               $registro->i1 = false;
+               $registro->i2 = false;
+               $registro->bb = false;
+               $registro->ba = false;
+               $registro->ib = false;
+               $registro->ia = false;
+               $registro->ab = false;
+               $registro->aa = false;
+          }
+
+          $registro->$columna = $nuevoValor;
           $registro->save();
 
           $this->mostrarNotificacion('Nivel de inglés actualizado.');
      }
 
-     public function crearColaborador()
-     {
-          $this->mostrarNotificacion('Colaborador registrado exitosamente.');
-          $this->nueva_ficha = '';
-          $this->nuevo_nombre = '';
-          $this->nuevo_correo = '';
-     }
-
      public function alternarEstado($ficha)
      {
           $this->mostrarNotificacion("Estado modificado para ficha $ficha.");
-     }
-
-     public function eliminarColaborador($ficha)
-     {
-          $this->mostrarNotificacion("Colaborador ficha $ficha eliminado.", 'danger');
      }
 
      public function render()
@@ -178,16 +176,24 @@ class PerfilesView extends Component
               }
 
               if ($this->ficha_usuario_seleccionado) {
-                  $educacionesDb = \App\Models\NivelEducativo::where('ficha_empleado', $this->ficha_usuario_seleccionado)->orderBy('created_at', 'desc')->get();
-                  $experienciasDb = \App\Models\ExperienciaLaboral::where('ficha_empleado', $this->ficha_usuario_seleccionado)->orderBy('desde', 'desc')->get();
-                  $inglesDb = \App\Models\NivelIngles::where('ficha_empleado', $this->ficha_usuario_seleccionado)->first();
+                  $educacionesDb = NivelEducativo::where('ficha_empleado', $this->ficha_usuario_seleccionado)->orderBy('created_at', 'desc')->get();
+                  $experienciasDb = ExperienciaLaboral::where('ficha_empleado', $this->ficha_usuario_seleccionado)->orderBy('desde', 'desc')->get();
+                  $inglesDb = NivelIngles::where('ficha_empleado', $this->ficha_usuario_seleccionado)->first();
               }
           }
+
+          $experienciasInternas = $experienciasDb->filter(function($exp) {
+               return strtoupper($exp->empresa) === 'VENPRECAR';
+          });
+          $experienciasExternas = $experienciasDb->filter(function($exp) {
+               return strtoupper($exp->empresa) !== 'VENPRECAR';
+          });
 
           return view('livewire.perfiles-view', [
               'empleados' => $empleados,
               'educacionesDb' => $educacionesDb,
-              'experienciasDb' => $experienciasDb,
+              'experienciasInternas' => $experienciasInternas,
+              'experienciasExternas' => $experienciasExternas,
               'inglesDb' => $inglesDb
           ])->layout('components.layouts.app');
      }
