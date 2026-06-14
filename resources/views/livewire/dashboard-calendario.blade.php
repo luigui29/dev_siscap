@@ -1,4 +1,4 @@
-<div class="card-corporate shadow-sm border-0 mb-4" wire:loading.class="opacity-50">
+<div class="card-corporate shadow-sm border-0 mb-4 mx-5" wire:loading.class="opacity-50">
     <div class="card-header d-flex justify-content-between align-items-center py-3" style="background-color: #5DADE2; border-bottom: none;">
         <div class="d-flex align-items-center">
             <i class="fas fa-calendar-alt mr-2" style="font-size: 1.25rem; color: #FFFFFF;"></i>

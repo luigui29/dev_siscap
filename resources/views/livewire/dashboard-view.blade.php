@@ -1,6 +1,6 @@
-<div class="container-fluid py-3">
+<div class="container-fluid py-4 mx-auto">
      <!-- Encabezado de página -->
-     <div class="d-flex justify-content-between align-items-center mb-4">
+     <div class="d-flex justify-content-between align-items-center mb-4 mx-5">
           <div>
                <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155; margin: 0;">
                     Dashboard
@@ -12,7 +12,7 @@
      </div>
 
      <!-- Fila de Tarjetas Estadísticas -->
-     <div class="row mb-4">
+     <div class="row mx-5 mb-4">
           
           <!-- Cursos Impartidos este Mes -->
           <div class="col-12 col-md-6 col-lg-3 mb-3 mb-lg-0">
@@ -80,7 +80,7 @@
      <livewire:dashboard-calendario />
 
      <!-- Tabla de Cursos Recientes -->
-     <div class="card-corporate shadow-sm border-0">
+     <div class="card-corporate shadow-sm border-0 mx-5">
           <div class="card-header d-flex justify-content-between align-items-center py-3" style="background-color: #64748B; border-bottom: none;">
                <div class="d-flex align-items-center">
                     <i class="fas fa-chart-line mr-2" style="font-size: 1.25rem; color: #FFFFFF;"></i>
