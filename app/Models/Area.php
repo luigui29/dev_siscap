@@ -10,5 +10,16 @@ class Area extends Model
      use HasFactory;
 
      protected $table = 'tbl_areas';
-     protected $guarded = [];
+     protected $fillable = [
+          'nombre',
+          'descripcion',
+          'estatus'
+     ];
+
+     protected function casts(): array
+    {
+        return [
+            'estatus' => 'boolean',
+        ];
+    }
 }

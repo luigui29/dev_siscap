@@ -7,8 +7,12 @@ use App\Models\RrhhPersonal;
 use App\Models\NivelEducativo;
 use App\Models\ExperienciaLaboral;
 use App\Models\NivelIngles;
+use App\Models\Area;
 use App\Models\GerenciaUnidad;
 use Livewire\Component;
+use App\Exports\ResumenEmpleadoPdf;
+use App\Exports\ResumenEmpleadoExcel;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PerfilesView extends Component
 {
@@ -83,6 +87,27 @@ class PerfilesView extends Component
      public function mostrarNotificacion($mensaje, $tipo = 'success')
      {
           $this->notificacion = ['mensaje' => $mensaje, 'tipo' => $tipo];
+     }
+
+     public function exportarPerfilPdf()
+     {
+          if (!$this->ficha_usuario_seleccionado) {
+               $this->mostrarNotificacion('Seleccione un empleado primero.', 'danger');
+               return;
+          }
+
+          $export = new ResumenEmpleadoPdf($this->ficha_usuario_seleccionado);
+          return $export->download();
+     }
+
+     public function exportarPerfilExcel()
+     {
+          if (!$this->ficha_usuario_seleccionado) {
+               $this->mostrarNotificacion('Seleccione un empleado primero.', 'danger');
+               return;
+          }
+
+          return Excel::download(new ResumenEmpleadoExcel($this->ficha_usuario_seleccionado), 'Resumen_Perfil_' . $this->ficha_usuario_seleccionado . '.csv');
      }
 
      public function cargarEducacionParaEdicion($id)
@@ -252,6 +277,7 @@ class PerfilesView extends Component
           $educacionesDb = collect([]);
           $experienciasDb = collect([]);
           $inglesDb = null;
+          $cursosPorArea = [];
 
           if ($this->pestania_activa === 'individual') {
               $empleados = $this->aplicarFiltrosEmpleados(\App\Models\RrhhPersonal::query())
@@ -269,6 +295,29 @@ class PerfilesView extends Component
                   $educacionesDb = NivelEducativo::where('ficha_empleado', $this->ficha_usuario_seleccionado)->orderBy('created_at', 'desc')->get();
                   $experienciasDb = ExperienciaLaboral::where('ficha_empleado', $this->ficha_usuario_seleccionado)->orderBy('desde', 'desc')->get();
                   $inglesDb = NivelIngles::where('ficha_empleado', $this->ficha_usuario_seleccionado)->first();
+
+                  $areas = Area::where('estatus', true)->orderBy('nombre')->get();
+                  $cursosUsuario = \Illuminate\Support\Facades\DB::table('pl_programaciones')
+                      ->join('tbl_programaciones', 'pl_programaciones.programacion_id', '=', 'tbl_programaciones.id')
+                      ->join('tbl_actividades', 'tbl_programaciones.actividad_id', '=', 'tbl_actividades.id')
+                      ->where('pl_programaciones.ficha_empleado', $this->ficha_usuario_seleccionado)
+                      ->select(
+                          'tbl_programaciones.nombre',
+                          'tbl_programaciones.fecha',
+                          'tbl_programaciones.duracion',
+                          'pl_programaciones.estatus',
+                          'pl_programaciones.causa',
+                          'tbl_actividades.area_id'
+                      )
+                      ->orderBy('tbl_programaciones.fecha', 'desc')
+                      ->get();
+
+                  foreach ($areas as $area) {
+                      $cursosPorArea[] = [
+                          'area_nombre' => $area->nombre,
+                          'cursos' => $cursosUsuario->where('area_id', $area->id)->values()
+                      ];
+                  }
               }
           }
 
@@ -370,7 +419,8 @@ class PerfilesView extends Component
               'gerencias_opciones' => $gerencias_opciones,
               'unidades_opciones' => $unidades_opciones,
               'matriz_datos' => $matriz_datos,
-              'nivel_agrupacion' => $nivel_agrupacion ?? 'gerencia'
+              'nivel_agrupacion' => $nivel_agrupacion ?? 'gerencia',
+              'cursosPorArea' => $cursosPorArea
           ])->layout('components.layouts.app');
      }
 }

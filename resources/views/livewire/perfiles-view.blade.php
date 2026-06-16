@@ -76,11 +76,21 @@
                     </h6>
 
                     <div class="mt-3 mb-2 d-flex">     
-                         <button class="btn btn-sm btn-excel font-weight-bold mr-2" style="width: 100px">
-                         <i class="fas fa-file-excel mr-1"></i> Excel
+                         <button wire:click="exportarPerfilExcel" wire:loading.attr="disabled" class="btn btn-sm btn-excel font-weight-bold mr-2" style="width: 100px">
+                              <span wire:loading.remove wire:target="exportarPerfilExcel">
+                                   <i class="fas fa-file-excel mr-1"></i> Excel
+                              </span>
+                              <span wire:loading wire:target="exportarPerfilExcel">
+                                   <i class="fas fa-spinner fa-spin mr-1"></i> Excel
+                              </span>
                          </button>
-                         <button class="btn btn-sm btn-pdf font-weight-bold" style="width: 100px">
-                         <i class="fas fa-file-pdf mr-1"></i> PDF
+                         <button wire:click="exportarPerfilPdf" wire:loading.attr="disabled" class="btn btn-sm btn-pdf font-weight-bold" style="width: 100px">
+                              <span wire:loading.remove wire:target="exportarPerfilPdf">
+                                   <i class="fas fa-file-pdf mr-1"></i> PDF
+                              </span>
+                              <span wire:loading wire:target="exportarPerfilPdf">
+                                   <i class="fas fa-spinner fa-spin mr-1"></i> PDF
+                              </span>
                          </button>
                     </div>
                </div>
@@ -356,9 +366,58 @@
                                              <label class="custom-control-label font-weight-bold" for="ing_aa">Avanzado Alto (AA)</label>
                                         </div>
                                    </div>
-                              </div>
-                         </div>
-                    </div>
+                               </div>
+
+                               <!-- Sección 4: Cursos de Capacitación -->
+                               <hr class="my-4">
+
+                               <h6 class="font-weight-bold text-dark mb-3">
+                                    <i class="fas fa-chalkboard-teacher text-primary mr-2"></i> Participación en Cursos de Capacitación
+                               </h6>
+
+                               @foreach($cursosPorArea as $areaData)
+                                    <h6 class="font-weight-bold text-dark mt-3 mb-2 small"> ÁREA: {{ $areaData['area_nombre'] }} </h6>
+                                    <div class="table-responsive mb-4 border rounded">
+                                         <table class="table table-sm mb-0">
+                                              <thead class="bg-light">
+                                                   <tr>
+                                                        <th class="p-2" style="font-size: 0.75rem;">CURSO / PROGRAMA</th>
+                                                        <th class="p-2 text-center" style="font-size: 0.75rem; width: 15%;">FECHA</th>
+                                                        <th class="p-2 text-center" style="font-size: 0.75rem; width: 15%;">DURACIÓN</th>
+                                                        <th class="p-2 text-center" style="font-size: 0.75rem; width: 15%;">ESTATUS</th>
+                                                        <th class="p-2 text-center" style="font-size: 0.75rem; width: 20%;">CAUSA</th>
+                                                   </tr>
+                                              </thead>
+                                              <tbody>
+                                                   @forelse($areaData['cursos'] as $curso)
+                                                        <tr>
+                                                             <td class="p-2 font-weight-bold" style="font-size: 0.85rem;">{{ $curso->nombre }}</td>
+                                                             <td class="p-2 text-center" style="font-size: 0.85rem;">{{ \Carbon\Carbon::parse($curso->fecha)->format('Y-m-d') }}</td>
+                                                             <td class="p-2 text-center" style="font-size: 0.85rem;">{{ number_format($curso->duracion, 1) }} Hrs</td>
+                                                             <td class="p-2 text-center" style="font-size: 0.85rem;">
+                                                                  @if(is_null($curso->estatus))
+                                                                       <span class="badge badge-warning px-2 py-1 text-dark" style="border-radius: 4px;">Pendiente</span>
+                                                                  @elseif($curso->estatus)
+                                                                       <span class="badge badge-success px-2 py-1" style="border-radius: 4px;">Asistente</span>
+                                                                  @else
+                                                                       <span class="badge badge-danger px-2 py-1" style="border-radius: 4px;">Inasistente</span>
+                                                                  @endif
+                                                             </td>
+                                                             <td class="p-2 text-center text-muted" style="font-size: 0.85rem;">
+                                                                  {{ $curso->causa ?: 'N/A' }}
+                                                             </td>
+                                                        </tr>
+                                                   @empty
+                                                        <tr>
+                                                             <td colspan="5" class="text-center py-3 text-muted small">No hay participación en cursos de esta área.</td>
+                                                        </tr>
+                                                   @endforelse
+                                              </tbody>
+                                         </table>
+                                    </div>
+                               @endforeach
+                          </div>
+                     </div>
                </div>
           </div>
      @endif
