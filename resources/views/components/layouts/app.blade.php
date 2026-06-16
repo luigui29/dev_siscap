@@ -37,10 +37,9 @@
                         Programación
                     </a>
                     <div class="dropdown-menu" :class="{ 'show': open }" style="margin-top: 0;">
-                        <a class="dropdown-item" href="/programacion/pre">Registro Propuestas</a>
-                        <a class="dropdown-item" href="/programacion/final">Aprobación y Estructura</a>
-                        <a class="dropdown-item" href="/programacion/ejecucion">Control de Ejecución</a>
-                        <a class="dropdown-item" href="/programacion/calendario">Cronograma Adiestramiento</a>
+                        <a class="dropdown-item" href="/programacion/pre">Pre-Programación</a>
+                        <a class="dropdown-item" href="/programacion/final">Programación Final</a>
+                        <a class="dropdown-item" href="/programacion/ejecucion">Ejecución</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown" x-data="{ open: false }" @click.away="open = false">
