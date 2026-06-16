@@ -76,15 +76,7 @@
                     </h6>
 
                     <div class="mt-3 mb-2 d-flex">     
-                         <button wire:click="exportarPerfilExcel" wire:loading.attr="disabled" class="btn btn-sm btn-excel font-weight-bold mr-2" style="width: 100px">
-                              <span wire:loading.remove wire:target="exportarPerfilExcel">
-                                   <i class="fas fa-file-excel mr-1"></i> Excel
-                              </span>
-                              <span wire:loading wire:target="exportarPerfilExcel">
-                                   <i class="fas fa-spinner fa-spin mr-1"></i> Excel
-                              </span>
-                         </button>
-                         <button wire:click="exportarPerfilPdf" wire:loading.attr="disabled" class="btn btn-sm btn-pdf font-weight-bold" style="width: 100px">
+                         <button wire:click="exportarPerfilPdf" wire:loading.attr="disabled" class="btn btn-sm btn-pdf font-weight-bold w-50" style="width: 100px">
                               <span wire:loading.remove wire:target="exportarPerfilPdf">
                                    <i class="fas fa-file-pdf mr-1"></i> PDF
                               </span>
@@ -474,8 +466,8 @@
                          </h6>
 
                          <div class="d-flex mt-2">
-                              <button class="btn btn-sm btn-excel font-weight-bold w-50">
-                                   <i class="fas fa-file-excel mr-1"></i> Excel
+                              <button class="btn btn-sm btn-pdf font-weight-bold w-50">
+                                   <i class="fas fa-file-pdf mr-1"></i> PDF
                               </button>
                          </div>
                     </div>

@@ -11,8 +11,6 @@ use App\Models\Area;
 use App\Models\GerenciaUnidad;
 use Livewire\Component;
 use App\Exports\ResumenEmpleadoPdf;
-use App\Exports\ResumenEmpleadoExcel;
-use Maatwebsite\Excel\Facades\Excel;
 
 class PerfilesView extends Component
 {
@@ -98,16 +96,6 @@ class PerfilesView extends Component
 
           $export = new ResumenEmpleadoPdf($this->ficha_usuario_seleccionado);
           return $export->download();
-     }
-
-     public function exportarPerfilExcel()
-     {
-          if (!$this->ficha_usuario_seleccionado) {
-               $this->mostrarNotificacion('Seleccione un empleado primero.', 'danger');
-               return;
-          }
-
-          return Excel::download(new ResumenEmpleadoExcel($this->ficha_usuario_seleccionado), 'Resumen_Perfil_' . $this->ficha_usuario_seleccionado . '.csv');
      }
 
      public function cargarEducacionParaEdicion($id)

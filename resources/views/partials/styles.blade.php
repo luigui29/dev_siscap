@@ -365,20 +365,6 @@
           border-color: #DB5F52 !important;
      }
 
-     .btn-excel {
-          background-color: #91EC63FF;
-          border-color: #91EC63FF;
-          color: #fff;
-     }
-
-     .btn-excel:hover,
-     .btn-excel:focus,
-     .btn-excel:active {
-          background-color: #64DB52FF !important;
-          border-color: #64DB52FF !important;
-          color: #fff;
-     }
-
      .btn-pdf {
           background-color: #EC8763FF;
           border-color: #EC8763FF;

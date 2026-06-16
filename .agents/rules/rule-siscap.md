@@ -13,7 +13,7 @@ trigger: always_on
 - Frontend: Blade + Livewire + Bootstrap (4.6.1).
 - Backend: PHP (version 8.3.30).
 - Database: PostgresSQL (version 18) with Eloquent ORM.
-- Packages: "maatwebsite/excel" version "^3.1" for exporting datasheets; "dompdf" for exporting pdf files.
+- Packages: "dompdf" for exporting pdf files.
 
 ## Code
 - File names: kebab-case.
@@ -24,7 +24,7 @@ trigger: always_on
 - Indentation: 5 spaces.
 
 ## Arquitecture
-app/Exports/  → Excel export files, namespace "App\Exports"; and PDF export files, include "use Dompdf\Dompdf".
+app/Exports/  → PDF export files, include "use Dompdf\Dompdf".
 app/Http/Controllers/ → Manage HTTP requests.
 app/Livewire/ → Livewire component backend.
 app/Models/   → Entities, relations and validations.
