@@ -11,6 +11,7 @@ use App\Models\Area;
 use App\Models\GerenciaUnidad;
 use Livewire\Component;
 use App\Exports\ResumenEmpleadoPdf;
+use App\Exports\ResumenGerenciaPdf;
 
 class PerfilesView extends Component
 {
@@ -45,14 +46,23 @@ class PerfilesView extends Component
      public $filtro_gerencia = '';
      public $filtro_unidad = '';
 
+     public $busqueda_gerencia = '';
+     public $busqueda_unidad = '';
+
      public function buscarResultados()
      {
-          // Solo refresca el componente
+          $this->busqueda_gerencia = $this->filtro_gerencia;
+          $this->busqueda_unidad = $this->filtro_unidad;
+     }
+
+     public function updatedFiltroGerencia()
+     {
+          $this->filtro_unidad = '';
      }
 
      public function limpiarFiltros()
      {
-          $this->reset(['filtro_gerencia', 'filtro_unidad']);
+          $this->reset(['filtro_gerencia', 'filtro_unidad', 'busqueda_gerencia', 'busqueda_unidad']);
      }
 
      public function mount($pestania = null)
@@ -95,6 +105,16 @@ class PerfilesView extends Component
           }
 
           $export = new ResumenEmpleadoPdf($this->ficha_usuario_seleccionado);
+          return $export->download();
+     }
+
+     public function exportarGerenciaPdf()
+     {
+          if (empty($this->filtro_gerencia)) {
+               $this->mostrarNotificacion('Ingrese una gerencia primero.', 'danger');
+               return;
+          }
+          $export = new ResumenGerenciaPdf($this->filtro_gerencia, $this->filtro_unidad);
           return $export->download();
      }
 
@@ -361,16 +381,16 @@ class PerfilesView extends Component
                }
 
                $empleados_query = \App\Models\RrhhPersonal::select('ficha', 'texto_gerencia', 'texto_unidad');
-               if (!empty($this->filtro_gerencia)) {
-                    $empleados_query->where('texto_gerencia', $this->filtro_gerencia);
+               if (!empty($this->busqueda_gerencia)) {
+                    $empleados_query->where('texto_gerencia', $this->busqueda_gerencia);
                }
-               if (!empty($this->filtro_unidad)) {
-                    $empleados_query->where('texto_unidad', $this->filtro_unidad);
+               if (!empty($this->busqueda_unidad)) {
+                    $empleados_query->where('texto_unidad', $this->busqueda_unidad);
                }
                $empleados_gerencia = $empleados_query->get();
 
                $estadisticas = [];
-               $nivel_agrupacion = (!empty($this->filtro_gerencia)) ? 'unidad' : 'gerencia';
+               $nivel_agrupacion = (!empty($this->busqueda_gerencia)) ? 'unidad' : 'gerencia';
 
                foreach ($empleados_gerencia as $emp) {
                     $key = $nivel_agrupacion === 'unidad' ? $emp->texto_unidad : $emp->texto_gerencia;

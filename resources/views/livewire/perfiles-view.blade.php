@@ -76,7 +76,7 @@
                     </h6>
 
                     <div class="mt-3 mb-2 d-flex">     
-                         <button wire:click="exportarPerfilPdf" wire:loading.attr="disabled" class="btn btn-sm btn-pdf font-weight-bold w-50" style="width: 100px">
+                         <button wire:click="exportarPerfilPdf" wire:loading.attr="disabled" class="btn btn-sm btn-pdf font-weight-bold" style="width: 100px">
                               <span wire:loading.remove wire:target="exportarPerfilPdf">
                                    <i class="fas fa-file-pdf mr-1"></i> PDF
                               </span>
@@ -428,7 +428,7 @@
                               <div class="row">
                                    <div class="col-12 mb-2">
                                         <label class="small font-weight-bold text-muted mb-1"><i class="fas fa-sitemap mr-1"></i> Gerencia</label>
-                                        <input type="text" list="lista_gerencias" class="form-control form-control-sm" wire:model="filtro_gerencia" placeholder="Escriba o seleccione una gerencia...">
+                                        <input type="text" list="lista_gerencias" class="form-control form-control-sm" wire:model.live.debounce.500ms="filtro_gerencia" placeholder="Escriba o seleccione una gerencia...">
                                         <datalist id="lista_gerencias">
                                              @foreach($gerencias_opciones as $opcion_gerencia)
                                                   <option value="{{ $opcion_gerencia }}"></option>
@@ -437,7 +437,7 @@
                                    </div>
                                    <div class="col-12 mb-2">
                                         <label class="small font-weight-bold text-muted mb-1"><i class="fas fa-users-cog mr-1"></i> Unidad</label>
-                                        <input type="text" list="lista_unidades" class="form-control form-control-sm" wire:model="filtro_unidad" placeholder="Escriba o seleccione una unidad...">
+                                        <input type="text" list="lista_unidades" class="form-control form-control-sm" wire:model="filtro_unidad" placeholder="Escriba o seleccione una unidad..." @if(empty($filtro_gerencia)) disabled title="Primero debe seleccionar una gerencia" @endif>
                                         <datalist id="lista_unidades">
                                              @foreach($unidades_opciones as $opcion_unidad)
                                                   <option value="{{ $opcion_unidad }}"></option>
@@ -466,8 +466,13 @@
                          </h6>
 
                          <div class="d-flex mt-2">
-                              <button class="btn btn-sm btn-pdf font-weight-bold w-50">
-                                   <i class="fas fa-file-pdf mr-1"></i> PDF
+                              <button wire:click="exportarGerenciaPdf" wire:loading.attr="disabled" class="btn btn-sm btn-pdf font-weight-bold" style="width: 100px" @if(empty($filtro_gerencia)) disabled title="Ingrese una gerencia primero" @endif>
+                                   <span wire:loading.remove wire:target="exportarGerenciaPdf">
+                                        <i class="fas fa-file-pdf mr-1"></i> PDF
+                                   </span>
+                                   <span wire:loading wire:target="exportarGerenciaPdf">
+                                        <i class="fas fa-spinner fa-spin mr-1"></i> PDF
+                                   </span>
                               </button>
                          </div>
                     </div>
