@@ -38,9 +38,18 @@ class PerfilesView extends Component
      
      public $termino_busqueda = '';
 
-     // Filtros para la matriz de horas gerencias
      public $filtro_gerencia = '';
      public $filtro_unidad = '';
+
+     public function buscarResultados()
+     {
+          // Solo refresca el componente
+     }
+
+     public function limpiarFiltros()
+     {
+          $this->reset(['filtro_gerencia', 'filtro_unidad']);
+     }
 
      public function mount($pestania = null)
      {
@@ -197,19 +206,83 @@ class PerfilesView extends Component
           // Variables para la matriz de gerencias
           $gerencias_opciones = collect([]);
           $unidades_opciones = collect([]);
+          $matriz_datos = collect([]);
           
           if ($this->pestania_activa === 'gerencia') {
                // Cargar gerencias únicas
-               $gerencias_opciones = GerenciaUnidad::select('texto_gerencia')->distinct()->orderBy('texto_gerencia')->pluck('texto_gerencia');
+               $gerencias_opciones = GerenciaUnidad::select('texto_gerencia')
+                    ->whereNotNull('texto_gerencia')
+                    ->where('texto_gerencia', '!=', '')
+                    ->distinct()
+                    ->orderBy('texto_gerencia')
+                    ->pluck('texto_gerencia');
                
-               // Si hay una gerencia seleccionada, cargar sus unidades
-               if ($this->filtro_gerencia) {
-                    $unidades_opciones = GerenciaUnidad::where('texto_gerencia', $this->filtro_gerencia)
-                         ->select('texto_unidad')
-                         ->distinct()
-                         ->orderBy('texto_unidad')
-                         ->pluck('texto_unidad');
+               // Cargar unidades de acuerdo al filtro
+               $unidades_query = GerenciaUnidad::select('texto_unidad')
+                    ->whereNotNull('texto_unidad')
+                    ->where('texto_unidad', '!=', '');
+               
+               if (!empty($this->filtro_gerencia)) {
+                    $unidades_query->where('texto_gerencia', $this->filtro_gerencia);
                }
+               
+               $unidades_opciones = $unidades_query->distinct()
+                    ->orderBy('texto_unidad')
+                    ->pluck('texto_unidad');
+
+               // Calcular estadísticas reales
+               $participaciones = \Illuminate\Support\Facades\DB::table('pl_programaciones')
+                    ->join('tbl_programaciones', 'pl_programaciones.programacion_id', '=', 'tbl_programaciones.id')
+                    ->select('pl_programaciones.ficha_empleado', 'tbl_programaciones.duracion', 'tbl_programaciones.aprobado', 'tbl_programaciones.ejecutado')
+                    ->get();
+
+               $agregados = [];
+               foreach ($participaciones as $p) {
+                    $ficha = $p->ficha_empleado;
+                    if (!isset($agregados[$ficha])) {
+                         $agregados[$ficha] = ['horas' => 0, 'aprobados' => 0, 'ejecutados' => 0];
+                    }
+                    $agregados[$ficha]['horas'] += (float) $p->duracion;
+                    if ($p->aprobado) $agregados[$ficha]['aprobados']++;
+                    if ($p->ejecutado) $agregados[$ficha]['ejecutados']++;
+               }
+
+               $empleados_query = \App\Models\RrhhPersonal::select('ficha', 'texto_gerencia', 'texto_unidad');
+               if (!empty($this->filtro_gerencia)) {
+                    $empleados_query->where('texto_gerencia', $this->filtro_gerencia);
+               }
+               if (!empty($this->filtro_unidad)) {
+                    $empleados_query->where('texto_unidad', $this->filtro_unidad);
+               }
+               $empleados_gerencia = $empleados_query->get();
+
+               $estadisticas = [];
+               $nivel_agrupacion = (!empty($this->filtro_gerencia)) ? 'unidad' : 'gerencia';
+
+               foreach ($empleados_gerencia as $emp) {
+                    $key = $nivel_agrupacion === 'unidad' ? $emp->texto_unidad : $emp->texto_gerencia;
+                    if (empty($key)) $key = 'NO DEFINIDO';
+
+                    if (!isset($estadisticas[$key])) {
+                         $estadisticas[$key] = [
+                              'nombre' => $key,
+                              'trabajadores' => 0,
+                              'horas' => 0,
+                              'aprobados' => 0,
+                              'ejecutados' => 0,
+                         ];
+                    }
+
+                    $estadisticas[$key]['trabajadores']++;
+
+                    if (isset($agregados[$emp->ficha])) {
+                         $estadisticas[$key]['horas'] += $agregados[$emp->ficha]['horas'];
+                         $estadisticas[$key]['aprobados'] += $agregados[$emp->ficha]['aprobados'];
+                         $estadisticas[$key]['ejecutados'] += $agregados[$emp->ficha]['ejecutados'];
+                    }
+               }
+
+               $matriz_datos = collect($estadisticas)->sortBy('nombre')->values();
           }
 
           return view('livewire.perfiles-view', [
@@ -219,7 +292,9 @@ class PerfilesView extends Component
               'experienciasExternas' => $experienciasExternas,
               'inglesDb' => $inglesDb,
               'gerencias_opciones' => $gerencias_opciones,
-              'unidades_opciones' => $unidades_opciones
+              'unidades_opciones' => $unidades_opciones,
+              'matriz_datos' => $matriz_datos,
+              'nivel_agrupacion' => $nivel_agrupacion ?? 'gerencia'
           ])->layout('components.layouts.app');
      }
 }

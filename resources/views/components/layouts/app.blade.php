@@ -29,7 +29,7 @@
                     </a>
                     <div class="dropdown-menu" :class="{ 'show': open }" style="margin-top: 0;">
                         <a class="dropdown-item" href="/perfiles/individual">Perfil Individual</a>
-                        <a class="dropdown-item" href="/perfiles/gerencia">Matriz Horas Gerencias</a>
+                        <a class="dropdown-item" href="/perfiles/gerencia">Perfil Gerencial</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown" x-data="{ open: false }" @click.away="open = false">

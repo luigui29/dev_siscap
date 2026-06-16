@@ -340,66 +340,47 @@
 
      <!-- TAB 2: MATRIZ HORAS GERENCIAS -->
      @if($pestania_activa === 'gerencia')
-          <div class="row text-dark">
+          <div class="row mx-5 text-dark">
                <div class="col-12 mb-4">
                     <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
                          <div class="border-bottom p-3 d-flex justify-content-between align-items-center" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
-                                   <i class="fas fa-th-large mr-2"></i> Matriz de Indicadores de Adiestramiento por Unidad Gerencial
+                                   <i class="fas fa-th-large mr-2"></i> Perfil Gerencial
                               </h5>
                               <button class="btn btn-sm btn-light font-weight-bold" onclick="alert('Exportando matriz consolidada...')">
-                                   <i class="fas fa-file-excel mr-1"></i> Despachar Excel
+                                   <i class="fas fa-file-excel mr-1"></i> Excel
                               </button>
                          </div>
 
                          <div class="card-body">
-                              <p class="text-secondary small mb-4">
-                                   Visualización de la distribución acumulada de Horas-Hombre de adiestramiento formal registradas en las unidades organizativas de la factoría.
-                              </p>
 
                               <!-- Filtros de Gerencia y Unidad -->
                               <div class="row mb-4 p-3 bg-light rounded border mx-0">
-                                   <div class="col-md-5">
-                                        <label class="small font-weight-bold text-muted mb-1"><i class="fas fa-sitemap mr-1"></i> Filtrar por Gerencia</label>
-                                        <select class="form-control form-control-sm" wire:model.live="filtro_gerencia">
-                                             <option value="">-- Todas las Gerencias --</option>
+                                   <div class="col-md-4">
+                                        <label class="small font-weight-bold text-muted mb-1"><i class="fas fa-sitemap mr-1"></i> Gerencia</label>
+                                        <input type="text" list="lista_gerencias" class="form-control form-control-sm" wire:model="filtro_gerencia" placeholder="Escriba o seleccione una gerencia...">
+                                        <datalist id="lista_gerencias">
                                              @foreach($gerencias_opciones as $opcion_gerencia)
                                                   <option value="{{ $opcion_gerencia }}">{{ $opcion_gerencia }}</option>
                                              @endforeach
-                                        </select>
+                                        </datalist>
                                    </div>
-                                   <div class="col-md-5">
-                                        <label class="small font-weight-bold text-muted mb-1"><i class="fas fa-users-cog mr-1"></i> Filtrar por Unidad</label>
-                                        <select class="form-control form-control-sm" wire:model.live="filtro_unidad" @if(!$filtro_gerencia) disabled @endif>
-                                             <option value="">-- Todas las Unidades --</option>
+                                   <div class="col-md-4">
+                                        <label class="small font-weight-bold text-muted mb-1"><i class="fas fa-users-cog mr-1"></i> Unidad</label>
+                                        <input type="text" list="lista_unidades" class="form-control form-control-sm" wire:model="filtro_unidad" placeholder="Escriba o seleccione una unidad...">
+                                        <datalist id="lista_unidades">
                                              @foreach($unidades_opciones as $opcion_unidad)
                                                   <option value="{{ $opcion_unidad }}">{{ $opcion_unidad }}</option>
                                              @endforeach
-                                        </select>
+                                        </datalist>
                                    </div>
-                                   <div class="col-md-2 d-flex align-items-end">
-                                        <button class="btn btn-sm btn-outline-secondary w-100" wire:click="$set('filtro_gerencia', ''); $set('filtro_unidad', '');">Limpiar</button>
-                                   </div>
-                              </div>
-
-                              <div class="row mb-4">
-                                   <div class="col-12 col-md-4 mb-3">
-                                        <div class="p-3 border rounded text-center bg-light">
-                                             <span class="text-muted small font-weight-bold">GERENCIA DE PLANTA</span>
-                                             <h3 class="font-weight-bold mt-1 mb-0 text-dark">412 Hrs/Hombre</h3>
-                                        </div>
-                                   </div>
-                                   <div class="col-12 col-md-4 mb-3">
-                                        <div class="p-3 border rounded text-center bg-light">
-                                             <span class="text-muted small font-weight-bold">GERENCIA DE PROCESOS</span>
-                                             <h3 class="font-weight-bold mt-1 mb-0 text-dark">350 Hrs/Hombre</h3>
-                                        </div>
-                                   </div>
-                                   <div class="col-12 col-md-4 mb-3">
-                                        <div class="p-3 border rounded text-center bg-light">
-                                             <span class="text-muted small font-weight-bold">GERENCIA GENERAL DE SHA</span>
-                                             <h3 class="font-weight-bold mt-1 mb-0 text-dark">280 Hrs/Hombre</h3>
-                                        </div>
+                                   <div class="col-md-4 d-flex align-items-end">
+                                        <button class="btn btn-sm btn-primary w-50 mr-2" wire:click="buscarResultados">
+                                             <i class="fas fa-search mr-1"></i> Buscar
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary w-50" wire:click="limpiarFiltros">
+                                             <i class="fas fa-eraser mr-1"></i> Limpiar
+                                        </button>
                                    </div>
                               </div>
 
@@ -407,7 +388,7 @@
                                    <table class="table table-hover mb-0">
                                         <thead class="bg-light">
                                              <tr>
-                                                  <th class="p-3">DIVISIONAL GERENCIA</th>
+                                                  <th class="p-3">{{ strtoupper($nivel_agrupacion) }}</th>
                                                   <th class="p-3 text-center">Nº TRABAJADORES</th>
                                                   <th class="p-3 text-center">CURSOS APROBADOS</th>
                                                   <th class="p-3 text-center">CURSOS EJECUTADOS</th>
@@ -415,27 +396,19 @@
                                              </tr>
                                         </thead>
                                         <tbody>
+                                             @forelse($matriz_datos as $fila)
                                              <tr>
-                                                  <td class="p-3"><strong>GERENCIA PLANTA DE HOMOGENEIZACIÓN</strong></td>
-                                                  <td class="p-3 text-center">26 Trabajadores</td>
-                                                  <td class="p-3 text-center"><span class="badge badge-primary px-2 font-weight-bold">12</span></td>
-                                                  <td class="p-3 text-center"><span class="badge badge-success px-2 font-weight-bold">8</span></td>
-                                                  <td class="p-3 text-center font-weight-bold text-dark">256 Horas</td>
+                                                  <td class="p-3"><strong>{{ $fila['nombre'] }}</strong></td>
+                                                  <td class="p-3 text-center">{{ $fila['trabajadores'] }} Trabajadores</td>
+                                                  <td class="p-3 text-center"><span class="badge badge-primary px-2 font-weight-bold">{{ $fila['aprobados'] }}</span></td>
+                                                  <td class="p-3 text-center"><span class="badge badge-success px-2 font-weight-bold">{{ $fila['ejecutados'] }}</span></td>
+                                                  <td class="p-3 text-center font-weight-bold text-dark">{{ $fila['horas'] }} Horas</td>
                                              </tr>
+                                             @empty
                                              <tr>
-                                                  <td class="p-3"><strong>GERENCIA INDUSTRIAL DE SERVICIOS GENERALES</strong></td>
-                                                  <td class="p-3 text-center">18 Trabajadores</td>
-                                                  <td class="p-3 text-center"><span class="badge badge-primary px-2 font-weight-bold">8</span></td>
-                                                  <td class="p-3 text-center"><span class="badge badge-success px-2 font-weight-bold">6</span></td>
-                                                  <td class="p-3 text-center font-weight-bold text-dark">180 Horas</td>
+                                                  <td colspan="5" class="text-center py-3 text-muted small">No hay datos registrados para mostrar.</td>
                                              </tr>
-                                             <tr>
-                                                  <td class="p-3"><strong>DIVISIÓN DE ELECTROMECÁNICA Y AUTOMATIZACIÓN</strong></td>
-                                                  <td class="p-3 text-center">15 Trabajadores</td>
-                                                  <td class="p-3 text-center"><span class="badge badge-primary px-2 font-weight-bold">14</span></td>
-                                                  <td class="p-3 text-center"><span class="badge badge-success px-2 font-weight-bold">11</span></td>
-                                                  <td class="p-3 text-center font-weight-bold text-dark">320 Horas</td>
-                                             </tr>
+                                             @endforelse
                                         </tbody>
                                    </table>
                               </div>

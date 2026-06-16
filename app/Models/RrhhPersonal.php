@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Builder;
 class RrhhPersonal extends Model
 {
     protected $connection = 'pgsql_sap';
@@ -22,6 +22,13 @@ class RrhhPersonal extends Model
         'centro_costo',
         'centro_txt'
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope('active', function (Builder $builder) {
+            $builder->where('texto_status', 'ACTIVO');
+        });
+    }
 
     public function user()
     {
