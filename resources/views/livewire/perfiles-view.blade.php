@@ -76,8 +76,11 @@
                     </h6>
 
                     <div class="mt-3 mb-2 d-flex">     
-                         <button class="btn btn-sm btn-light font-weight-bold">
+                         <button class="btn btn-sm btn-excel font-weight-bold mr-2" style="width: 100px">
                          <i class="fas fa-file-excel mr-1"></i> Excel
+                         </button>
+                         <button class="btn btn-sm btn-pdf font-weight-bold" style="width: 100px">
+                         <i class="fas fa-file-pdf mr-1"></i> PDF
                          </button>
                     </div>
                </div>
@@ -157,21 +160,22 @@
                                              <input type="text" class="form-control form-control-sm" wire:model="edu_instituto" placeholder="Instituto/Universidad (Opcional)">
                                         </div>
                                         <div class="col-md-3 form-group mb-2">
-                                             <input type="date" class="form-control form-control-sm" wire:model="edu_fecha_culminado" placeholder="Fecha Culminado">
+                                             <label for="educacion_fecha_culminado" class="small text-muted mb-0">Culminación (Opcional)</label>
+                                             <input id="educacion_fecha_culminado" type="date" class="form-control form-control-sm" wire:model="edu_fecha_culminado" placeholder="Fecha Culminado">
                                         </div>
-                                        <div class="col-md-3 form-group mb-2 d-flex align-items-center">
+                                        <div class="col-md-3 form-group mb-2 d-flex align-items-end justify-content-center">
                                              <div class="custom-control custom-switch">
                                                   <input type="checkbox" class="custom-control-input" id="edu_graduado" wire:model="edu_graduado">
                                                   <label class="custom-control-label font-weight-bold small" for="edu_graduado">Graduado</label>
                                              </div>
                                         </div>
-                                        <div class="col-md-3 form-group mb-2 d-flex align-items-center">
+                                        <div class="col-md-3 form-group mb-2 d-flex align-items-end justify-content-center">
                                              <div class="custom-control custom-switch">
                                                   <input type="checkbox" class="custom-control-input" id="edu_ultimo_nivel" wire:model="edu_ultimo_nivel">
                                                   <label class="custom-control-label font-weight-bold small" for="edu_ultimo_nivel">Último Nivel</label>
                                              </div>
                                         </div>
-                                        <div class="col-md-3 mb-2 d-flex align-items-center">
+                                        <div class="col-md-3 mb-2 d-flex align-items-end justify-content-center">
                                              @if($edu_id_editando)
                                                   <div class="btn-group w-100">
                                                        <button wire:click="agregarEducacion" class="btn btn-sm btn-success">Actualizar</button>
@@ -263,24 +267,26 @@
                               <div class="p-3 border rounded bg-light mb-4">
                                    <strong class="d-block text-dark small mb-2"><i class="fas fa-{{ $exp_id_editando ? 'edit' : 'plus-circle' }} text-primary"></i> {{ $exp_id_editando ? 'Editar Experiencia Laboral' : 'Ingresar Experiencia Laboral' }}</strong>
                                    <div class="row">
-                                        <div class="col-md-4 form-group mb-2">
+                                        <div class="col-md-3 form-group mb-2">
                                              <input type="text" class="form-control form-control-sm" wire:model="exp_cargo" placeholder="Cargo Desempeñado">
                                         </div>
-                                        <div class="col-md-4 form-group mb-2">
+                                        <div class="col-md-3 form-group mb-2">
                                              <input type="text" class="form-control form-control-sm" wire:model="exp_empresa" placeholder="Empresa (Opcional)">
                                         </div>
-                                        <div class="col-md-4 form-group mb-2">
+                                   </div>
+                                   <div class="row">
+                                        <div class="col-md-3 form-group mb-2 d-flex align-items-end">
                                              <input type="text" class="form-control form-control-sm" wire:model="exp_observacion" placeholder="Observaciones (Opcional)">
                                         </div>
-                                        <div class="col-md-4 form-group mb-2">
-                                             <label class="small text-muted mb-0">Desde</label>
-                                             <input type="date" class="form-control form-control-sm" wire:model="exp_desde">
+                                        <div class="col-md-3 form-group mb-2">
+                                             <label for="experiencia_desde" class="small text-muted mb-0">Desde</label>
+                                             <input id="experiencia_desde" type="date" class="form-control form-control-sm" wire:model="exp_desde">
                                         </div>
-                                        <div class="col-md-4 form-group mb-2">
-                                             <label class="small text-muted mb-0">Hasta (Opcional)</label>
-                                             <input type="date" class="form-control form-control-sm" wire:model="exp_hasta">
+                                        <div class="col-md-3 form-group mb-2">
+                                             <label for="experiencia_hasta" class="small text-muted mb-0">Hasta (Opcional)</label>
+                                             <input id="experiencia_hasta" type="date" class="form-control form-control-sm" wire:model="exp_hasta">
                                         </div>
-                                        <div class="col-md-4 mb-2 d-flex align-items-end">
+                                        <div class="col-md-3 mb-2 d-flex align-items-end">
                                              @if($exp_id_editando)
                                                   <div class="btn-group w-100">
                                                        <button wire:click="agregarExperiencia" class="btn btn-sm btn-success">Actualizar</button>
@@ -409,7 +415,7 @@
                          </h6>
 
                          <div class="d-flex mt-2">
-                              <button class="btn btn-sm btn-light font-weight-bold w-50">
+                              <button class="btn btn-sm btn-excel font-weight-bold w-50">
                                    <i class="fas fa-file-excel mr-1"></i> Excel
                               </button>
                          </div>

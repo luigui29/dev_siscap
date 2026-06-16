@@ -364,6 +364,34 @@
           background-color: #DB5F52 !important;
           border-color: #DB5F52 !important;
      }
+
+     .btn-excel {
+          background-color: #91EC63FF;
+          border-color: #91EC63FF;
+          color: #fff;
+     }
+
+     .btn-excel:hover,
+     .btn-excel:focus,
+     .btn-excel:active {
+          background-color: #64DB52FF !important;
+          border-color: #64DB52FF !important;
+          color: #fff;
+     }
+
+     .btn-pdf {
+          background-color: #EC8763FF;
+          border-color: #EC8763FF;
+          color: #fff;
+     }
+
+     .btn-pdf:hover,
+     .btn-pdf:focus,
+     .btn-pdf:active {
+          background-color: #DB8B52FF !important;
+          border-color: #DB8B52FF !important;
+          color: #fff;
+     }
      
      /* Etiquetas de estatus y colores */
      .status-badge {
@@ -437,10 +465,6 @@
      .avatar-circle:hover {
           transform: scale(1.1) rotate(5deg);
      }
-     
-
-     /* Efectos para subniveles del menu de navegacion */
-    
 
      /* Estilos para Bootstrap Modals */
       .modal-content {
