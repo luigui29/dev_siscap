@@ -100,7 +100,7 @@
                               <!-- Sección 1: Nivel Educativo  -->
                               <div class="d-flex justify-content-between align-items-center mb-3">
                                    <h6 class="font-weight-bold text-dark mb-0">
-                                        <i class="fas fa-graduation-cap text-primary mr-2"></i> Formación Educativa / Títulos Obtenidos
+                                        <i class="fas fa-graduation-cap text-primary mr-2"></i> Formación Educativa y Títulos Obtenidos
                                    </h6>
                               </div>
 
@@ -305,7 +305,7 @@
                               <hr class="my-4">
 
                               <h6 class="font-weight-bold text-dark mb-2">
-                                   <i class="fas fa-language text-primary mr-2"></i> Nivel de Competencia en Inglés Técnico
+                                   <i class="fas fa-language text-primary mr-2"></i> Nivel de Competencia en Inglés
                               </h6>
                               <p class="text-secondary small mb-3">Marque los niveles correspondientes aprobados validamente según directrices de RRHH:</p>
 
