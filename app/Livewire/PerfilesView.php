@@ -21,6 +21,7 @@ class PerfilesView extends Component
     public $usuarios = [];
      
      // Campos para nivel educativo
+     public $edu_id_editando = null;
      public $edu_nivel_educativo = '';
      public $edu_titulo = '';
      public $edu_especialidad = '';
@@ -30,6 +31,7 @@ class PerfilesView extends Component
      public $edu_ultimo_nivel = false;
 
      // Campos para experiencia laboral
+     public $exp_id_editando = null;
      public $exp_cargo = '';
      public $exp_empresa = '';
      public $exp_desde = '';
@@ -83,6 +85,21 @@ class PerfilesView extends Component
           $this->notificacion = ['mensaje' => $mensaje, 'tipo' => $tipo];
      }
 
+     public function cargarEducacionParaEdicion($id)
+     {
+          $edu = NivelEducativo::find($id);
+          if ($edu) {
+               $this->edu_id_editando = $edu->id;
+               $this->edu_nivel_educativo = $edu->nivel_educativo;
+               $this->edu_titulo = $edu->titulo;
+               $this->edu_especialidad = $edu->especialidad;
+               $this->edu_instituto = $edu->instituto;
+               $this->edu_graduado = (bool)$edu->graduado;
+               $this->edu_fecha_culminado = $edu->fecha_culminado ? $edu->fecha_culminado . '-01-01' : '';
+               $this->edu_ultimo_nivel = (bool)$edu->ultimo_nivel;
+          }
+     }
+
      public function agregarEducacion()
      {
           if (!$this->ficha_usuario_seleccionado) {
@@ -90,25 +107,62 @@ class PerfilesView extends Component
                return;
           }
 
-          NivelEducativo::create([
-               'ficha_empleado' => $this->ficha_usuario_seleccionado,
-               'nivel_educativo' => $this->edu_nivel_educativo,
-               'titulo' => $this->edu_titulo ?: null,
-               'especialidad' => $this->edu_especialidad ?: null,
-               'instituto' => $this->edu_instituto ?: null,
-               'graduado' => $this->edu_graduado,
-               'fecha_culminado' => $this->edu_fecha_culminado ? date('Y', strtotime($this->edu_fecha_culminado)) : null,
-               'ultimo_nivel' => $this->edu_ultimo_nivel,
-          ]);
+          if ($this->edu_id_editando) {
+               $edu = NivelEducativo::find($this->edu_id_editando);
+               if ($edu) {
+                    $edu->update([
+                         'nivel_educativo' => $this->edu_nivel_educativo,
+                         'titulo' => $this->edu_titulo ?: null,
+                         'especialidad' => $this->edu_especialidad ?: null,
+                         'instituto' => $this->edu_instituto ?: null,
+                         'graduado' => $this->edu_graduado,
+                         'fecha_culminado' => $this->edu_fecha_culminado ? date('Y', strtotime($this->edu_fecha_culminado)) : null,
+                         'ultimo_nivel' => $this->edu_ultimo_nivel,
+                    ]);
+                    $this->mostrarNotificacion('Educación actualizada con éxito.');
+               }
+          } else {
+               NivelEducativo::create([
+                    'ficha_empleado' => $this->ficha_usuario_seleccionado,
+                    'nivel_educativo' => $this->edu_nivel_educativo,
+                    'titulo' => $this->edu_titulo ?: null,
+                    'especialidad' => $this->edu_especialidad ?: null,
+                    'instituto' => $this->edu_instituto ?: null,
+                    'graduado' => $this->edu_graduado,
+                    'fecha_culminado' => $this->edu_fecha_culminado ? date('Y', strtotime($this->edu_fecha_culminado)) : null,
+                    'ultimo_nivel' => $this->edu_ultimo_nivel,
+               ]);
+               $this->mostrarNotificacion('Educación registrada con éxito.');
+          }
           
-          $this->reset(['edu_nivel_educativo', 'edu_titulo', 'edu_especialidad', 'edu_instituto', 'edu_graduado', 'edu_fecha_culminado', 'edu_ultimo_nivel']);
-          $this->mostrarNotificacion('Educación registrada con éxito.');
+          $this->cancelarEdicionEducacion();
+     }
+
+     public function cancelarEdicionEducacion()
+     {
+          $this->reset(['edu_id_editando', 'edu_nivel_educativo', 'edu_titulo', 'edu_especialidad', 'edu_instituto', 'edu_graduado', 'edu_fecha_culminado', 'edu_ultimo_nivel']);
      }
 
      public function eliminarEducacion($id)
      {
+          if ($this->edu_id_editando == $id) {
+               $this->cancelarEdicionEducacion();
+          }
           NivelEducativo::where('id', $id)->delete();
           $this->mostrarNotificacion('Registro educativo eliminado.', 'danger');
+     }
+
+     public function cargarExperienciaParaEdicion($id)
+     {
+          $exp = ExperienciaLaboral::find($id);
+          if ($exp) {
+               $this->exp_id_editando = $exp->id;
+               $this->exp_cargo = $exp->cargo_desempeñado;
+               $this->exp_empresa = $exp->empresa;
+               $this->exp_desde = $exp->desde ? \Carbon\Carbon::parse($exp->desde)->format('Y-m-d') : '';
+               $this->exp_hasta = $exp->hasta ? \Carbon\Carbon::parse($exp->hasta)->format('Y-m-d') : '';
+               $this->exp_observacion = $exp->observacion;
+          }
      }
 
      public function agregarExperiencia()
@@ -118,21 +172,43 @@ class PerfilesView extends Component
                return;
           }
 
-          ExperienciaLaboral::create([
-               'ficha_empleado' => $this->ficha_usuario_seleccionado,
-               'cargo_desempeñado' => $this->exp_cargo,
-               'empresa' => $this->exp_empresa ?: null,
-               'desde' => $this->exp_desde,
-               'hasta' => $this->exp_hasta ?: null,
-               'observacion' => $this->exp_observacion ?: ''
-          ]);
+          if ($this->exp_id_editando) {
+               $exp = ExperienciaLaboral::find($this->exp_id_editando);
+               if ($exp) {
+                    $exp->update([
+                         'cargo_desempeñado' => $this->exp_cargo,
+                         'empresa' => $this->exp_empresa ?: null,
+                         'desde' => $this->exp_desde,
+                         'hasta' => $this->exp_hasta ?: null,
+                         'observacion' => $this->exp_observacion ?: ''
+                    ]);
+                    $this->mostrarNotificacion('Experiencia laboral actualizada.');
+               }
+          } else {
+               ExperienciaLaboral::create([
+                    'ficha_empleado' => $this->ficha_usuario_seleccionado,
+                    'cargo_desempeñado' => $this->exp_cargo,
+                    'empresa' => $this->exp_empresa ?: null,
+                    'desde' => $this->exp_desde,
+                    'hasta' => $this->exp_hasta ?: null,
+                    'observacion' => $this->exp_observacion ?: ''
+               ]);
+               $this->mostrarNotificacion('Experiencia laboral registrada.');
+          }
 
-          $this->reset(['exp_cargo', 'exp_empresa', 'exp_desde', 'exp_hasta', 'exp_observacion']);
-          $this->mostrarNotificacion('Experiencia laboral registrada.');
+          $this->cancelarEdicionExperiencia();
+     }
+
+     public function cancelarEdicionExperiencia()
+     {
+          $this->reset(['exp_id_editando', 'exp_cargo', 'exp_empresa', 'exp_desde', 'exp_hasta', 'exp_observacion']);
      }
 
      public function eliminarExperiencia($id)
      {
+          if ($this->exp_id_editando == $id) {
+               $this->cancelarEdicionExperiencia();
+          }
           ExperienciaLaboral::where('id', $id)->delete();
           $this->mostrarNotificacion('Experiencia laboral eliminada.', 'danger');
      }
@@ -197,10 +273,10 @@ class PerfilesView extends Component
           }
 
           $experienciasInternas = $experienciasDb->filter(function($exp) {
-               return strtoupper($exp->empresa) === 'VENPRECAR';
+               return trim(strtoupper($exp->empresa)) === 'VENPRECAR';
           });
           $experienciasExternas = $experienciasDb->filter(function($exp) {
-               return strtoupper($exp->empresa) !== 'VENPRECAR';
+               return trim(strtoupper($exp->empresa)) !== 'VENPRECAR';
           });
 
           // Variables para la matriz de gerencias

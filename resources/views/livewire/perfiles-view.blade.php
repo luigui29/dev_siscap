@@ -67,6 +67,19 @@
                               @endif
                          </div>
                     </div>
+
+                    <!-- Exportar Resumen del Trabajador -->
+                    <hr class="my-4">
+
+                    <h6 class="font-weight-bold text-dark my-2">
+                         Exportar Resumen del Trabajador
+                    </h6>
+
+                    <div class="mt-3 mb-2 d-flex">     
+                         <button class="btn btn-sm btn-light font-weight-bold">
+                         <i class="fas fa-file-excel mr-1"></i> Excel
+                         </button>
+                    </div>
                </div>
 
                <div class="col-12 col-lg-8 mb-4">
@@ -93,6 +106,8 @@
                                                   <th class="p-2" style="font-size: 0.75rem;">NIVEL DE EDUCACIÓN</th>
                                                   <th class="p-2" style="font-size: 0.75rem;">TÍTULO / CARRERA TÉCNICA</th>
                                                   <th class="p-2" style="font-size: 0.75rem;">INSTITUTO</th>
+                                                  <th class="p-2 text-center" style="font-size: 0.75rem;">GRADUADO</th>
+                                                  <th class="p-2 text-center" style="font-size: 0.75rem;">ULTIMO NIVEL</th>
                                                   <th class="p-2 text-center" style="font-size: 0.75rem;">AÑO</th>
                                                   <th class="p-2 text-center" style="font-size: 0.75rem; width: 40px;"></th>
                                              </tr>
@@ -102,17 +117,18 @@
                                                   <tr>
                                                        <td class="p-2 font-weight-bold" style="font-size: 0.85rem;">
                                                             {{ $edu->nivel_educativo }}
-                                                            @if($edu->graduado)<span class="badge badge-success ml-1" style="font-size: 0.65rem;">Graduado</span>@endif
-                                                            @if($edu->ultimo_nivel)<span class="badge badge-primary ml-1" style="font-size: 0.65rem;">Último Nivel</span>@endif
                                                        </td>
                                                        <td class="p-2" style="font-size: 0.85rem;">
                                                             {{ $edu->titulo }} <br>
                                                             @if($edu->especialidad)<small class="text-muted">{{ $edu->especialidad }}</small>@endif
                                                        </td>
                                                        <td class="p-2" style="font-size: 0.85rem;">{{ $edu->instituto }}</td>
+                                                       <td class="p-2 text-center" style="font-size: 0.85rem;">@if($edu->graduado) &#10003 @endif</td>
+                                                       <td class="p-2 text-center" style="font-size: 0.85rem;">@if($edu->ultimo_nivel) &#10003 @endif</td>
                                                        <td class="p-2 text-center" style="font-size: 0.85rem;">{{ $edu->fecha_culminado }}</td>
-                                                       <td class="p-2 text-center">
-                                                            <button wire:click="eliminarEducacion({{ $edu->id }})" class="btn btn-sm btn-link text-danger p-0 m-0"><i class="fas fa-trash"></i></button>
+                                                       <td class="p-2 text-center" style="white-space: nowrap;">
+                                                            <button wire:click="cargarEducacionParaEdicion({{ $edu->id }})" class="btn btn-sm btn-link text-primary p-0 m-0 mr-2"><i class="fas fa-edit"></i></button>
+                                                            <button wire:confirm="¿Está seguro de que desea eliminar este registro de educación?" wire:click="eliminarEducacion({{ $edu->id }})" class="btn btn-sm btn-link text-danger p-0 m-0"><i class="fas fa-trash"></i></button>
                                                        </td>
                                                   </tr>
                                              @empty
@@ -126,7 +142,7 @@
 
                               <!-- Añadir Educación -->
                               <div class="p-3 border rounded bg-light mb-4">
-                                   <strong class="d-block text-dark small mb-2"><i class="fas fa-plus-circle text-primary"></i> Ingresar Registro de Educación</strong>
+                                   <strong class="d-block text-dark small mb-2"><i class="fas fa-{{ $edu_id_editando ? 'edit' : 'plus-circle' }} text-primary"></i> {{ $edu_id_editando ? 'Editar Registro de Educación' : 'Ingresar Registro de Educación' }}</strong>
                                    <div class="row">
                                         <div class="col-md-3 form-group mb-2">
                                              <input type="text" class="form-control form-control-sm" wire:model="edu_nivel_educativo" placeholder="Nivel Educativo">
@@ -156,7 +172,14 @@
                                              </div>
                                         </div>
                                         <div class="col-md-3 mb-2 d-flex align-items-center">
-                                             <button wire:click="agregarEducacion" class="btn btn-sm btn-primary w-100">Cargar</button>
+                                             @if($edu_id_editando)
+                                                  <div class="btn-group w-100">
+                                                       <button wire:click="agregarEducacion" class="btn btn-sm btn-success">Actualizar</button>
+                                                       <button wire:click="cancelarEdicionEducacion" class="btn btn-sm btn-secondary">Cancelar</button>
+                                                  </div>
+                                             @else
+                                                  <button wire:click="agregarEducacion" class="btn btn-sm btn-primary w-100">Cargar</button>
+                                             @endif
                                         </div>
                                    </div>
                               </div>
@@ -189,8 +212,9 @@
                                                        <td class="p-2" style="font-size: 0.85rem;">{{ $exp->empresa }}</td>
                                                        <td class="p-2 text-center" style="font-size: 0.85rem;">{{ $exp->desde ? \Carbon\Carbon::parse($exp->desde)->format('Y-m-d') : '' }} / {{ $exp->hasta ? \Carbon\Carbon::parse($exp->hasta)->format('Y-m-d') : 'Actualidad' }}</td>
                                                        <td class="p-2 text-muted small" style="font-size: 0.85rem;">{{ $exp->observacion }}</td>
-                                                       <td class="p-2 text-center">
-                                                            <button wire:click="eliminarExperiencia({{ $exp->id }})" class="btn btn-sm btn-link text-danger p-0 m-0"><i class="fas fa-trash"></i></button>
+                                                       <td class="p-2 text-center" style="white-space: nowrap;">
+                                                            <button wire:click="cargarExperienciaParaEdicion({{ $exp->id }})" class="btn btn-sm btn-link text-primary p-0 m-0 mr-2"><i class="fas fa-edit"></i></button>
+                                                            <button wire:confirm="¿Está seguro de que desea eliminar esta experiencia laboral interna?" wire:click="eliminarExperiencia({{ $exp->id }})" class="btn btn-sm btn-link text-danger p-0 m-0"><i class="fas fa-trash"></i></button>
                                                        </td>
                                                   </tr>
                                              @empty
@@ -221,8 +245,9 @@
                                                        <td class="p-2" style="font-size: 0.85rem;">{{ $exp->empresa }}</td>
                                                        <td class="p-2 text-center" style="font-size: 0.85rem;">{{ $exp->desde ? \Carbon\Carbon::parse($exp->desde)->format('Y-m-d') : '' }} / {{ $exp->hasta ? \Carbon\Carbon::parse($exp->hasta)->format('Y-m-d') : 'Actualidad' }}</td>
                                                        <td class="p-2 text-muted small" style="font-size: 0.85rem;">{{ $exp->observacion }}</td>
-                                                       <td class="p-2 text-center">
-                                                            <button wire:click="eliminarExperiencia({{ $exp->id }})" class="btn btn-sm btn-link text-danger p-0 m-0"><i class="fas fa-trash"></i></button>
+                                                       <td class="p-2 text-center" style="white-space: nowrap;">
+                                                            <button wire:click="cargarExperienciaParaEdicion({{ $exp->id }})" class="btn btn-sm btn-link text-primary p-0 m-0 mr-2"><i class="fas fa-edit"></i></button>
+                                                            <button wire:confirm="¿Está seguro de que desea eliminar esta experiencia laboral externa?" wire:click="eliminarExperiencia({{ $exp->id }})" class="btn btn-sm btn-link text-danger p-0 m-0"><i class="fas fa-trash"></i></button>
                                                        </td>
                                                   </tr>
                                              @empty
@@ -236,7 +261,7 @@
 
                               <!-- Añadir Experiencia Laboral -->
                               <div class="p-3 border rounded bg-light mb-4">
-                                   <strong class="d-block text-dark small mb-2"><i class="fas fa-plus-circle text-primary"></i> Ingresar Experiencia Laboral</strong>
+                                   <strong class="d-block text-dark small mb-2"><i class="fas fa-{{ $exp_id_editando ? 'edit' : 'plus-circle' }} text-primary"></i> {{ $exp_id_editando ? 'Editar Experiencia Laboral' : 'Ingresar Experiencia Laboral' }}</strong>
                                    <div class="row">
                                         <div class="col-md-4 form-group mb-2">
                                              <input type="text" class="form-control form-control-sm" wire:model="exp_cargo" placeholder="Cargo Desempeñado">
@@ -256,7 +281,14 @@
                                              <input type="date" class="form-control form-control-sm" wire:model="exp_hasta">
                                         </div>
                                         <div class="col-md-4 mb-2 d-flex align-items-end">
-                                             <button wire:click="agregarExperiencia" class="btn btn-sm btn-primary w-100">Cargar</button>
+                                             @if($exp_id_editando)
+                                                  <div class="btn-group w-100">
+                                                       <button wire:click="agregarExperiencia" class="btn btn-sm btn-success">Actualizar</button>
+                                                       <button wire:click="cancelarEdicionExperiencia" class="btn btn-sm btn-secondary">Cancelar</button>
+                                                  </div>
+                                             @else
+                                                  <button wire:click="agregarExperiencia" class="btn btn-sm btn-primary w-100">Cargar</button>
+                                             @endif
                                         </div>
                                    </div>
                               </div>
@@ -319,19 +351,6 @@
                                         </div>
                                    </div>
                               </div>
-
-                              <!-- Sección 4: Exportar Resumen del Trabajador -->
-                              <hr class="my-4">
-
-                              <h6 class="font-weight-bold text-dark my-2">
-                                   Exportar Resumen del Trabajador
-                              </h6>
-
-                              <div class="mt-3 mb-2 d-flex">     
-                                   <button class="btn btn-sm btn-light font-weight-bold">
-                                   <i class="fas fa-file-excel mr-1"></i> Excel
-                                   </button>
-                              </div>
                          </div>
                     </div>
                </div>
@@ -341,68 +360,89 @@
      <!-- TAB 2: MATRIZ HORAS GERENCIAS -->
      @if($pestania_activa === 'gerencia')
           <div class="row mx-5 text-dark">
-               <div class="col-12 mb-4">
+               <div class="col-3 pr-2 pl-0">
+                    <div class="card shadow-sm border-0 mb-4 bg-white" style="border-radius: 8px;">
+                         <div class="border-bottom p-3 d-flex justify-content-between align-items-center" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+                              <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
+                                   <i class="fas fa-filter mr-2"></i> Filtro de Gerencias
+                              </h5>
+                         </div>
+                         <div class="card-body p-3 bg-light">
+                              <div class="row">
+                                   <div class="col-12 mb-2">
+                                        <label class="small font-weight-bold text-muted mb-1"><i class="fas fa-sitemap mr-1"></i> Gerencia</label>
+                                        <input type="text" list="lista_gerencias" class="form-control form-control-sm" wire:model="filtro_gerencia" placeholder="Escriba o seleccione una gerencia...">
+                                        <datalist id="lista_gerencias">
+                                             @foreach($gerencias_opciones as $opcion_gerencia)
+                                                  <option value="{{ $opcion_gerencia }}"></option>
+                                             @endforeach
+                                        </datalist>
+                                   </div>
+                                   <div class="col-12 mb-2">
+                                        <label class="small font-weight-bold text-muted mb-1"><i class="fas fa-users-cog mr-1"></i> Unidad</label>
+                                        <input type="text" list="lista_unidades" class="form-control form-control-sm" wire:model="filtro_unidad" placeholder="Escriba o seleccione una unidad...">
+                                        <datalist id="lista_unidades">
+                                             @foreach($unidades_opciones as $opcion_unidad)
+                                                  <option value="{{ $opcion_unidad }}"></option>
+                                             @endforeach
+                                        </datalist>
+                                   </div>
+                                   <div class="col-12 my-2">
+                                        <div class="d-flex">
+                                             <button class="btn btn-sm btn-primary w-50 mr-2" wire:click="buscarResultados">
+                                                  <i class="fas fa-search mr-1"></i> Buscar
+                                             </button>
+                                             <button class="btn btn-sm btn-outline-secondary w-50" wire:click="limpiarFiltros">
+                                                  <i class="fas fa-eraser mr-1"></i> Limpiar
+                                             </button>
+                                        </div>
+                                   </div>
+                              </div>
+                         </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="container mt-2">
+                         <h6 class="font-weight-bold text-dark my-2">
+                              Exportar Resumen de Gerencia
+                         </h6>
+
+                         <div class="d-flex mt-2">
+                              <button class="btn btn-sm btn-light font-weight-bold w-50">
+                                   <i class="fas fa-file-excel mr-1"></i> Excel
+                              </button>
+                         </div>
+                    </div>
+               </div>
+               <div class="col-9 pl-2 pr-0">
                     <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
                          <div class="border-bottom p-3 d-flex justify-content-between align-items-center" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
                                    <i class="fas fa-th-large mr-2"></i> Perfil Gerencial
                               </h5>
-                              <button class="btn btn-sm btn-light font-weight-bold" onclick="alert('Exportando matriz consolidada...')">
-                                   <i class="fas fa-file-excel mr-1"></i> Excel
-                              </button>
                          </div>
 
                          <div class="card-body">
-
-                              <!-- Filtros de Gerencia y Unidad -->
-                              <div class="row mb-4 p-3 bg-light rounded border mx-0">
-                                   <div class="col-md-4">
-                                        <label class="small font-weight-bold text-muted mb-1"><i class="fas fa-sitemap mr-1"></i> Gerencia</label>
-                                        <input type="text" list="lista_gerencias" class="form-control form-control-sm" wire:model="filtro_gerencia" placeholder="Escriba o seleccione una gerencia...">
-                                        <datalist id="lista_gerencias">
-                                             @foreach($gerencias_opciones as $opcion_gerencia)
-                                                  <option value="{{ $opcion_gerencia }}">{{ $opcion_gerencia }}</option>
-                                             @endforeach
-                                        </datalist>
-                                   </div>
-                                   <div class="col-md-4">
-                                        <label class="small font-weight-bold text-muted mb-1"><i class="fas fa-users-cog mr-1"></i> Unidad</label>
-                                        <input type="text" list="lista_unidades" class="form-control form-control-sm" wire:model="filtro_unidad" placeholder="Escriba o seleccione una unidad...">
-                                        <datalist id="lista_unidades">
-                                             @foreach($unidades_opciones as $opcion_unidad)
-                                                  <option value="{{ $opcion_unidad }}">{{ $opcion_unidad }}</option>
-                                             @endforeach
-                                        </datalist>
-                                   </div>
-                                   <div class="col-md-4 d-flex align-items-end">
-                                        <button class="btn btn-sm btn-primary w-50 mr-2" wire:click="buscarResultados">
-                                             <i class="fas fa-search mr-1"></i> Buscar
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-secondary w-50" wire:click="limpiarFiltros">
-                                             <i class="fas fa-eraser mr-1"></i> Limpiar
-                                        </button>
-                                   </div>
-                              </div>
-
                               <div class="table-responsive border rounded">
                                    <table class="table table-hover mb-0">
                                         <thead class="bg-light">
                                              <tr>
-                                                  <th class="p-3">{{ strtoupper($nivel_agrupacion) }}</th>
-                                                  <th class="p-3 text-center">Nº TRABAJADORES</th>
-                                                  <th class="p-3 text-center">CURSOS APROBADOS</th>
-                                                  <th class="p-3 text-center">CURSOS EJECUTADOS</th>
-                                                  <th class="p-3 text-center">HORAS HOMBRE TOTAL</th>
+                                                  <th class="p-2">{{ strtoupper($nivel_agrupacion) }}</th>
+                                                  <th class="p-2 text-center">Nº TRABAJADORES</th>
+                                                  <th class="p-2 text-center">CURSOS APROBADOS</th>
+                                                  <th class="p-2 text-center">CURSOS EJECUTADOS</th>
+                                                  <th class="p-2 text-center">HORAS HOMBRE TOTAL</th>
                                              </tr>
                                         </thead>
                                         <tbody>
                                              @forelse($matriz_datos as $fila)
                                              <tr>
-                                                  <td class="p-3"><strong>{{ $fila['nombre'] }}</strong></td>
-                                                  <td class="p-3 text-center">{{ $fila['trabajadores'] }} Trabajadores</td>
-                                                  <td class="p-3 text-center"><span class="badge badge-primary px-2 font-weight-bold">{{ $fila['aprobados'] }}</span></td>
-                                                  <td class="p-3 text-center"><span class="badge badge-success px-2 font-weight-bold">{{ $fila['ejecutados'] }}</span></td>
-                                                  <td class="p-3 text-center font-weight-bold text-dark">{{ $fila['horas'] }} Horas</td>
+                                                  <td class="p-2"><strong>{{ $fila['nombre'] }}</strong></td>
+                                                  <td class="p-2 text-center">{{ $fila['trabajadores'] }} Trabajadores</td>
+                                                  <td class="p-2 text-center"><span class="badge badge-primary px-2 font-weight-bold">{{ $fila['aprobados'] }}</span></td>
+                                                  <td class="p-2 text-center"><span class="badge badge-success px-2 font-weight-bold">{{ $fila['ejecutados'] }}</span></td>
+                                                  <td class="p-2 text-center font-weight-bold text-dark">{{ $fila['horas'] }} Horas</td>
                                              </tr>
                                              @empty
                                              <tr>

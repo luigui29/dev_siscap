@@ -3,9 +3,6 @@
         <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
             <i class="fas fa-filter mr-2"></i> Filtro de Empleados
         </h5>
-        <button type="button" class="btn btn-sm btn-light font-weight-bold" wire:click="limpiarFiltrosEmpleados" style="border-radius: 5px;">
-            <i class="fas fa-eraser mr-1"></i> Limpiar
-        </button>
     </div>
     <div class="card-body p-3 bg-light">
         <div class="row">
@@ -34,8 +31,11 @@
                 <input type="text" class="form-control form-control-sm" wire:model="filtro_unidad" placeholder="Ej. Departamento TI" style="border-radius: 4px;">
             </div>
             <div class="col-12 mt-2 d-flex justify-content-end">
-                <button type="button" class="btn btn-sm btn-primary font-weight-bold" wire:click="$refresh" style="border-radius: 5px; min-width: 120px;">
+                <button type="button" class="btn btn-sm btn-primary mr-2" wire:click="$refresh">
                     <i class="fas fa-search mr-1"></i> Buscar
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" wire:click="limpiarFiltrosEmpleados">
+                    <i class="fas fa-eraser mr-1"></i> Limpiar
                 </button>
             </div>
         </div>
