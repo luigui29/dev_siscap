@@ -8,27 +8,27 @@
         <div class="row">
             <div class="col-md-2 mb-2">
                 <label class="font-weight-bold small text-muted mb-1">Ficha</label>
-                <input type="text" class="form-control form-control-sm" wire:model="filtro_ficha" placeholder="Ej. 12345" style="border-radius: 4px;">
+                <input type="text" class="form-control form-control-sm" wire:model.defer="filtro_ficha" placeholder="Ej. 12345" style="border-radius: 4px;">
             </div>
             <div class="col-md-2 mb-2">
                 <label class="font-weight-bold small text-muted mb-1">Cédula</label>
-                <input type="text" class="form-control form-control-sm" wire:model="filtro_cedula" placeholder="Ej. 15392091" style="border-radius: 4px;">
+                <input type="text" class="form-control form-control-sm" wire:model.defer="filtro_cedula" placeholder="Ej. 15392091" style="border-radius: 4px;">
             </div>
             <div class="col-md-4 mb-2">
                 <label class="font-weight-bold small text-muted mb-1">Nombre</label>
-                <input type="text" class="form-control form-control-sm" wire:model="filtro_nombre" placeholder="Nombre del empleado" style="border-radius: 4px;">
+                <input type="text" class="form-control form-control-sm" wire:model.defer="filtro_nombre" placeholder="Nombre del empleado" style="border-radius: 4px;">
             </div>
             <div class="col-md-4 mb-2">
                 <label class="font-weight-bold small text-muted mb-1">Cargo</label>
-                <input type="text" class="form-control form-control-sm" wire:model="filtro_cargo" placeholder="Ej. Analista" style="border-radius: 4px;">
+                <input type="text" class="form-control form-control-sm" wire:model.defer="filtro_cargo" placeholder="Ej. Analista" style="border-radius: 4px;">
             </div>
             <div class="col-md-6 mb-2">
                 <label class="font-weight-bold small text-muted mb-1">Gerencia</label>
-                <input type="text" class="form-control form-control-sm" wire:model="filtro_gerencia" placeholder="Ej. Gerencia de Adiestramiento" style="border-radius: 4px;">
+                <input type="text" class="form-control form-control-sm" wire:model.defer="filtro_gerencia" placeholder="Ej. Gerencia de Adiestramiento" style="border-radius: 4px;">
             </div>
             <div class="col-md-6 mb-2">
                 <label class="font-weight-bold small text-muted mb-1">Unidad</label>
-                <input type="text" class="form-control form-control-sm" wire:model="filtro_unidad" placeholder="Ej. Departamento TI" style="border-radius: 4px;">
+                <input type="text" class="form-control form-control-sm" wire:model.defer="filtro_unidad" placeholder="Ej. Departamento TI" style="border-radius: 4px;">
             </div>
             <div class="col-12 mt-2 d-flex justify-content-end">
                 <button type="button" class="btn btn-sm btn-primary mr-2" wire:click="$refresh">

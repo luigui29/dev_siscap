@@ -1,5 +1,5 @@
-<div class="container-fluid py-4" style="background-color: #F2F2F2; max-width: 1440px; margin: 0 auto;">
-     <!-- Toast Notification -->
+<div class="container-fluid py-4 mx-auto" style="background-color: #F2F2F2;">
+     <!-- Notification (Toast) -->
      @if($notificacion)
           <div class="alert alert-{{ $notificacion['tipo'] === 'success' ? 'success' : ($notificacion['tipo'] === 'danger' ? 'danger' : 'info') }} alert-dismissible fade show shadow border-0 position-fixed d-flex align-items-center" role="alert" style="right: 20px; top: 80px; z-index: 1060; gap: 10px; border-radius: 8px; min-width: 320px;">
                <i class="fas fa-info-circle" style="font-size: 1.25rem;"></i>
@@ -10,75 +10,86 @@
           </div>
      @endif
 
-     <!-- Pantalla con Cabecera -->
-     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 text-dark">
+     <!-- Cabecera -->
+     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 mx-5 text-dark">
           <div>
+               @if($pestania_activa === 'pre')
                <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155; margin: 0;">
-                    Planificación y Control de Cursos (SISCAP)
+                    Pre-Programaciones 
                </h3>
-               <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                    Predimensionamiento, aprobación de adiestramiento, firmas físicas de asistencia y confirmación del calendario de capacitación.
-               </p>
+               @elseif($pestania_activa === 'final')
+               <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155; margin: 0;">   
+                    Programaciones Finales
+               </h3>
+               @elseif($pestania_activa === 'ejecucion')
+               <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155; margin: 0;">
+                    Ejecutados 
+               </h3>
+               @endif
           </div>
      </div>
 
-     <!-- TAB 1: PRE-PROGRAMACIÓN FORM -->
+     <!-- PRE-PROGRAMACIÓN -->
      @if($pestania_activa === 'pre')
-          <div class="row text-dark">
+          <div class="row mx-5 text-dark">
                
                <!-- Formulario Form Panel Left -->
-               <div class="col-12 col-lg-7 mb-4 order-2 order-lg-2">
+               <div class="col-12 col-lg-7 mb-4">
                     <div class="card shadow-sm border-0 bg-white h-100 mb-0" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
-                                   <i class="fas fa-clipboard-list mr-2"></i> Nuevo Predimensionamiento (Propuesta de Capacitación)
+                                   <i class="fas fa-clipboard-list mr-2"></i> {{ $id_propuesta_editando ? 'Editar Pre-Programacion' : 'Nueva Pre-Programacion' }}
                               </h5>
                          </div>
 
                          <form wire:submit.prevent="guardarPropuesta" class="card-body">
-                              <p class="text-secondary small mb-4">
-                                   * Diseñe una propuesta técnica definiendo la subactividad y asignando las fichas participantes. El curso quedará guardado como <strong>PRE-PROGRAMADO</strong>.
-                              </p>
-
                               <div class="row">
                                    <div class="col-md-6 form-group">
                                         <label class="font-weight-bold small">ÁREA DE CAPACITACIÓN</label>
                                         <select class="form-control" wire:model.live="id_area_seleccionada" style="height: 40px;">
-                                             <option value="1">Formación General y Técnica</option>
-                                             <option value="2">Mantenimiento y Confiabilidad Industrial</option>
-                                             <option value="3">Seguridad y Salud Laboral SHA</option>
+                                             <option value="">Seleccione un Área</option>
+                                             @foreach($this->areas as $area)
+                                                  <option value="{{ $area->id }}">{{ $area->nombre }}</option>
+                                             @endforeach
                                         </select>
                                    </div>
 
                                    <div class="col-md-6 form-group">
-                                        <label class="font-weight-bold small">CATEGORÍA DE ACTIVIDAD</label>
-                                        <select class="form-control" wire:model.live="id_act_seleccionada" style="height: 40px;">
-                                             <option value="101">Curso de Confiabilidad Vibracional</option>
-                                             <option value="102">Taller Práctico de PLC Siemens S7</option>
-                                             <option value="103">Inducción General de Ingreso SISCAP</option>
-                                        </select>
+                                        <label class="font-weight-bold small">ACTIVIDAD</label>
+                                        <input type="text" class="form-control" wire:model="actividad_input" list="actividades-list" style="height: 40px;" placeholder="Escriba o seleccione...">
+                                        <datalist id="actividades-list">
+                                             @foreach($this->actividades->where('area_id', $id_area_seleccionada) as $act)
+                                                  <option value="{{ $act->nombre }}">
+                                             @endforeach
+                                        </datalist>
                                    </div>
                               </div>
 
                               <div class="row">
                                    <div class="col-md-6 form-group">
-                                        <label class="font-weight-bold small">ACTIVIDAD ADIESTRAMIENTO</label>
-                                        <select class="form-control" wire:model="id_subact_seleccionada" style="height: 40px;">
-                                             <option value="1011">Análisis por Ultrasonido Acústico Pasivo</option>
-                                             <option value="1012">Introducción de Ensayos No Destructivos (NDT)</option>
-                                             <option value="1021">Arquitectura Profinet & Redes de Planta</option>
-                                        </select>
+                                        <label class="font-weight-bold small">SUBACTIVIDAD</label>
+                                        <input type="text" class="form-control" wire:model="subactividad_input" list="subactividades-list" style="height: 40px;" placeholder="Escriba o seleccione...">
+                                        <datalist id="subactividades-list">
+                                             @foreach($this->subactividades as $sub)
+                                                  <option value="{{ $sub->nombre }}">
+                                             @endforeach
+                                        </datalist>
                                    </div>
 
                                    <div class="col-md-6 form-group">
-                                        <label class="font-weight-bold small">FACILITADOR / INSTRUCTOR</label>
-                                        <input type="text" class="form-control" wire:model="facilitador_ficha" style="height: 40px;" placeholder="Ej. Dr. Carlos Mendoza">
+                                        <label class="font-weight-bold small">FACILITADOR</label>
+                                        <input type="text" class="form-control" wire:model="facilitador_input" list="facilitadores-list" style="height: 40px;" placeholder="Ej. Dr. Carlos Mendoza">
+                                        <datalist id="facilitadores-list">
+                                             @foreach($this->facilitadores as $fac)
+                                                  <option value="{{ $fac->nombre }}">
+                                             @endforeach
+                                        </datalist>
                                    </div>
                               </div>
 
                               <div class="row">
                                    <div class="col-md-8 form-group">
-                                        <label class="font-weight-bold small">INSTITUCIÓN EXECUTORA / ADIESTRADORA</label>
+                                        <label class="font-weight-bold small">INSTITUCIÓN</label>
                                         <input type="text" class="form-control" wire:model="institucion_input" style="height: 40px;">
                                    </div>
 
@@ -90,58 +101,59 @@
 
                               <div class="row">
                                    <div class="col-md-6 form-group">
-                                        <label class="font-weight-bold small">LUGAR / SALÓN</label>
+                                        <label class="font-weight-bold small">LUGAR </label>
                                         <input type="text" class="form-control" wire:model="lugar_input" style="height: 40px;">
                                    </div>
 
                                    <div class="col-md-3 form-group">
-                                        <label class="font-weight-bold small">HORA DESDE</label>
+                                        <label class="font-weight-bold small">DESDE</label>
                                         <input type="time" class="form-control" wire:model="desde_input" style="height: 40px;">
                                    </div>
 
                                    <div class="col-md-3 form-group">
-                                        <label class="font-weight-bold small">HORA HASTA</label>
+                                        <label class="font-weight-bold small">HASTA</label>
                                         <input type="time" class="form-control" wire:model="hasta_input" style="height: 40px;">
                                    </div>
                               </div>
 
                               <div class="row align-items-center">
-                                   <div class="col-md-6 form-group">
-                                        <label class="font-weight-bold small">DURACIÓN (HORAS ACADÉMICAS)</label>
-                                        <input type="number" class="form-control" wire:model="duracion_input" style="height: 40px;">
-                                   </div>
-
                                    <div class="col-md-6 form-group mt-3 mt-md-0">
                                         <div class="custom-control custom-switch">
                                              <input type="checkbox" class="custom-control-input" id="esEntradaExtra" wire:model="es_entrada_extra">
-                                             <label class="custom-control-label text-muted font-weight-bold" for="esEntradaExtra" style="padding-top: 2px;">¿Es actividad extraordinaria / Sabatina?</label>
+                                             <label class="custom-control-label text-muted font-weight-bold" for="esEntradaExtra" style="padding-top: 2px;">¿Es extra?</label>
                                         </div>
                                    </div>
                               </div>
 
-                              <!-- Participant Multi Selection -->
+                              <!-- Selección de Participantes -->
                               <hr class="my-4">
-                              <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-users text-primary mr-2"></i> Seleccionar Colaboradores Convocados</h6>
+                              <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-users text-primary mr-2"></i> Seleccionar Empleados </h6>
                               
+                              @include('partials.filtro-empleados')
+
                               <div class="table-responsive border rounded" style="max-height: 250px; overflow-y: auto;">
                                    <table class="table table-sm mb-0 table-hover">
                                         <thead class="bg-light">
                                              <tr>
-                                                  <th style="width: 40px;" class="p-2 text-center">CONVOCADO</th>
-                                                  <th class="p-2">COLABORADOR</th>
+                                                  <th style="width: 50px;" class="p-2 text-center">
+                                                       <input type="checkbox" wire:model.live="seleccionar_todos" style="transform: scale(1.15);">
+                                                  </th>
+                                                  <th class="p-2">NOMBRE</th>
                                                   <th class="p-2">FICHA</th>
+                                                  <th class="p-2">CARGO</th>
                                                   <th class="p-2">GERENCIA</th>
                                              </tr>
                                         </thead>
                                         <tbody>
-                                             @foreach($colaboradores as $c)
-                                                  <tr class="cursor-pointer" wire:click="alternarParticipante('{{ $c->ficha }}')">
+                                             @foreach($this->empleadosFiltrados as $e)
+                                                  <tr class="hover-bg-light">
                                                        <td class="text-center p-2">
-                                                            <input type="checkbox" class="pointer" value="{{ $c->ficha }}" wire:model="participantes_seleccionados" style="transform: scale(1.15);">
+                                                            <input type="checkbox" class="pointer" value="{{ $e->ficha }}" wire:model.defer="participantes_seleccionados" style="transform: scale(1.15);">
                                                        </td>
-                                                       <td class="p-2 font-weight-bold text-dark" style="font-size: 0.85rem;">{{ $c->name }}</td>
-                                                       <td class="p-2" style="font-size: 0.85rem;"><span class="badge badge-light px-2 py-1">{{ $c->ficha }}</span></td>
-                                                       <td class="p-2" style="font-size: 0.85rem; color: #475569;">{{ $c->texto_gerencia ?? 'GERENCIA DE PLANTAS' }}</td>
+                                                       <td class="p-2 font-weight-bold text-dark" style="font-size: 0.85rem;">{{ $e->nombre_empleado }}</td>
+                                                       <td class="p-2" style="font-size: 0.85rem;"><span class="badge badge-light px-2 py-1">{{ $e->ficha }}</span></td>
+                                                       <td class="p-2" style="font-size: 0.85rem;">{{ $e->texto_cargo }}</td>
+                                                       <td class="p-2" style="font-size: 0.85rem; color: #475569;">{{ $e->texto_gerencia }}</td>
                                                   </tr>
                                              @endforeach
                                         </tbody>
@@ -149,38 +161,55 @@
                               </div>
 
                               <div class="mt-4 pt-3 border-top text-right">
-                                   <button type="submit" class="btn btn-primary px-5 py-2 font-weight-bold" style="border-radius: 6px;">
-                                        <i class="fas fa-save mr-1"></i> Pre-programar Propuesta
-                                   </button>
+                                   @if($id_propuesta_editando)
+                                        <button type="button" wire:click="cancelarEdicionPropuesta" class="btn btn-secondary px-4 py-2 font-weight-bold mr-2" style="border-radius: 6px;">
+                                             <i class="fas fa-times mr-1"></i> Cancelar
+                                        </button>
+                                        <button type="submit" class="btn btn-success px-5 py-2 font-weight-bold" style="border-radius: 6px;">
+                                             <i class="fas fa-save mr-1"></i> Actualizar
+                                        </button>
+                                   @else
+                                        <button type="submit" class="btn btn-primary px-5 py-2 font-weight-bold" style="border-radius: 6px;">
+                                             <i class="fas fa-save mr-1"></i> Pre-programar
+                                        </button>
+                                   @endif
                               </div>
                          </form>
                     </div>
                </div>
 
-               <!-- Draft Proposals Right Column -->
-               <div class="col-12 col-lg-5 mb-4 order-1 order-lg-1">
+               <!-- Pre-Programaciones Registradas -->
+               <div class="col-12 col-lg-5 mb-4">
                     <div class="card shadow-sm border-0 bg-white h-100" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
-                                   <i class="fas fa-folder-open mr-2"></i> Propuestas Registradas
+                                   <i class="fas fa-folder-open mr-2"></i> Pre-Programaciones Registradas
                               </h5>
                          </div>
 
                          <div class="card-body p-0">
                               <div style="max-height: 700px; overflow-y: auto;">
-                                   @forelse($propuestas->whereNull('aprobado') as $p)
+                                   @forelse($this->propuestas->whereNull('aprobado') as $p)
                                         <div class="p-3 border-bottom hover-gradient-soft">
                                              <div class="d-flex justify-content-between align-items-start">
-                                                  <strong class="text-dark" style="font-size: 0.95rem;">#{{ $p->id }} - ID Act: {{ $p->actividad_id }}</strong>
-                                                  <span class="badge badge-warning text-uppercase" style="font-size: 0.68rem; padding: 0.25rem 0.5rem; border-radius: 50px;">EVALUACIÓN</span>
+                                                  <strong class="text-dark" style="font-size: 0.95rem;">#{{ $p->id }} - {{ $p->nombre }}</strong>
+                                                  <div class="d-flex align-items-center" style="gap: 12px;">
+                                                       <span class="badge badge-warning text-uppercase" style="font-size: 0.68rem; padding: 0.25rem 0.5rem; border-radius: 50px;">EVALUACIÓN</span>
+                                                       <button type="button" wire:click="cargarPropuestaParaEdicion({{ $p->id }})" class="btn btn-sm btn-link text-primary p-0 m-0"><i class="fas fa-edit" style="font-size: 1.1rem;"></i></button>
+                                                       <button type="button" wire:confirm="¿Está seguro de que desea eliminar esta pre-programación?" wire:click="eliminarPropuesta({{ $p->id }})" class="btn btn-sm btn-link text-danger p-0 m-0"><i class="fas fa-trash" style="font-size: 1.1rem;"></i></button>
+                                                  </div>
                                              </div>
                                              <span class="text-secondary small d-block my-1">
-                                                  <i class="far fa-user mr-1"></i> Facilitador: {{ $p->facilitador }} <br>
+                                                  @php
+                                                       $fac_name = \Illuminate\Support\Facades\DB::table('tbl_facilitadores')->where('id', $p->facilitador_id)->value('nombre');
+                                                       $participantes_count = \Illuminate\Support\Facades\DB::table('pl_programaciones')->where('programacion_id', $p->id)->count();
+                                                  @endphp
+                                                  <i class="far fa-user mr-1"></i> Facilitador: {{ $fac_name }} <br>
                                                   <i class="far fa-calendar mr-1"></i> Fecha: {{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}
                                              </span>
                                              <div class="d-flex justify-content-between align-items-center mt-2">
                                                   <span class="badge badge-info text-dark" style="background-color: #E0F2FE;">{{ $p->duracion }} Horas / Hombre</span>
-                                                  <span class="text-muted small"><i class="fas fa-users"></i> {{ count($p->participantes ?? []) }} Convocados</span>
+                                                  <span class="text-muted small"><i class="fas fa-users"></i> {{ $participantes_count }} Empleados</span>
                                              </div>
                                         </div>
                                    @empty
@@ -197,7 +226,7 @@
           </div>
      @endif
 
-     <!-- TAB 2: APROBACIONES FINALES -->
+     <!-- PROGRAMACIONES FINALES -->
      @if($pestania_activa === 'final')
           <div class="row text-dark">
                <div class="col-12 col-lg-9 mb-4">
@@ -220,19 +249,23 @@
                                         </tr>
                                    </thead>
                                    <tbody>
-                                        @forelse($propuestas as $p)
+                                        @forelse($this->propuestas as $p)
+                                             @php
+                                                  $fac_name = \Illuminate\Support\Facades\DB::table('tbl_facilitadores')->where('id', $p->facilitador_id)->value('nombre');
+                                                  $participantes_count = \Illuminate\Support\Facades\DB::table('pl_programaciones')->where('programacion_id', $p->id)->count();
+                                             @endphp
                                              <tr>
                                                   <td class="p-3">
-                                                       <strong class="text-dark d-block" style="font-size: 0.9rem;">#{{ $p->id }} - ID Act: {{ $p->actividad_id }}</strong>
+                                                       <strong class="text-dark d-block" style="font-size: 0.9rem;">#{{ $p->id }} - {{ $p->nombre }}</strong>
                                                        <small class="text-muted">{{ $p->lugar }} | {{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}</small>
                                                   </td>
                                                   <td class="p-3">
-                                                       <span class="small d-block text-dark"><strong>Facilitador:</strong> {{ $p->facilitador }}</span>
+                                                       <span class="small d-block text-dark"><strong>Facilitador:</strong> {{ $fac_name }}</span>
                                                        <span class="small text-secondary"><strong>Institución:</strong> {{ $p->institucion }}</span>
                                                   </td>
                                                   <td class="p-3">
                                                        <span class="badge badge-light border text-dark font-weight-bold" style="font-size: 0.8rem;">
-                                                            <i class="fas fa-users text-primary mr-1"></i> {{ count($p->participantes ?? []) }} Trabajadores
+                                                            <i class="fas fa-users text-primary mr-1"></i> {{ $participantes_count }} Trabajadores
                                                        </span>
                                                   </td>
                                                   <td class="p-3 text-center">
@@ -288,7 +321,7 @@
                               </div>
                               <div>
                                    <span class="text-secondary small d-block uppercase font-weight-bold" style="font-size: 0.65rem;">PROPUESTAS REGISTRADAS</span>
-                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $propuestas->count() }} Planificaciones</span>
+                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $this->propuestas->count() }} Planificaciones</span>
                               </div>
                          </div>
 
@@ -299,7 +332,7 @@
                               </div>
                               <div>
                                    <span class="text-secondary small d-block uppercase font-weight-bold" style="font-size: 0.65rem;">APROBACIONES FIRMES</span>
-                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $propuestas->where('aprobado', true)->count() }} Cursos Listos</span>
+                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $this->propuestas->where('aprobado', true)->count() }} Cursos Listos</span>
                               </div>
                          </div>
 
@@ -310,7 +343,7 @@
                               </div>
                               <div>
                                    <span class="text-secondary small d-block uppercase font-weight-bold" style="font-size: 0.65rem;">PROPUESTAS PENDIENTES</span>
-                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $propuestas->whereNull('aprobado')->count() }} en Evaluación</span>
+                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $this->propuestas->whereNull('aprobado')->count() }} en Evaluación</span>
                               </div>
                          </div>
 
@@ -337,7 +370,10 @@
                               </div>
 
                               <div class="row" style="max-height: 420px; overflow-y: auto;">
-                                   @forelse($propuestas->where('aprobado', true) as $p)
+                                   @forelse($this->propuestas->where('aprobado', true) as $p)
+                                        @php
+                                             $fac_name = \Illuminate\Support\Facades\DB::table('tbl_facilitadores')->where('id', $p->facilitador_id)->value('nombre');
+                                        @endphp
                                         <div class="col-12 col-md-6 col-lg-4 mb-3">
                                              <div 
                                                   wire:click="iniciarEjecucion({{ $p->id }})"
@@ -346,12 +382,12 @@
                                              >
                                                   <div>
                                                        <div class="d-flex justify-content-between align-items-start">
-                                                            <strong class="text-dark d-block text-truncate" style="max-width: 85%; font-size: 0.92rem;">#{{ $p->id }} - ID Act: {{ $p->actividad_id }}</strong>
+                                                            <strong class="text-dark d-block text-truncate" style="max-width: 85%; font-size: 0.92rem;">#{{ $p->id }} - {{ $p->nombre }}</strong>
                                                             @if(!$p->ejecutado && $id_ejecucion_seleccionada === $p->id)
                                                                  <span class="text-primary font-weight-bold" style="font-size: 0.75rem;"><i class="fas fa-chevron-circle-down"></i> Activo</span>
                                                             @endif
                                                        </div>
-                                                       <span class="text-secondary small d-block mb-1">Facilitador: {{ $p->facilitador }} <br> Fecha: {{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}</span>
+                                                       <span class="text-secondary small d-block mb-1">Facilitador: {{ $fac_name }} <br> Fecha: {{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}</span>
                                                   </div>
                                                   <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
                                                        <span class="badge badge-info text-dark font-weight-bold" style="font-size: 0.72rem; background-color: #E0F2FE;">{{ $p->duracion }} Horas</span>
@@ -402,19 +438,18 @@
                                              </thead>
                                              <tbody>
                                                   @php
-                                                       $active_course = $propuestas->firstWhere('id', $id_ejecucion_seleccionada);
-                                                       $participants = $active_course ? ($active_course->participantes ?? []) : [];
+                                                       $participants = $id_ejecucion_seleccionada ? \Illuminate\Support\Facades\DB::table('pl_programaciones')->where('programacion_id', $id_ejecucion_seleccionada)->pluck('ficha_empleado')->toArray() : [];
                                                   @endphp
                                                   @forelse($participants as $p_ficha)
                                                        @php
-                                                            $colab = $colaboradores->firstWhere('ficha', $p_ficha);
+                                                            $colab = \App\Models\RrhhPersonal::where('ficha', $p_ficha)->first();
                                                        @endphp
                                                        <tr class="cursor-pointer" wire:click="alternarAsistencia('{{ $p_ficha }}')">
                                                             <td class="text-center p-3">
-                                                                 <input type="checkbox" checked="{{ in_array($p_ficha, $asistentes_fichas) }}" style="transform: scale(1.35);">
+                                                                 <input type="checkbox" checked="{{ in_array($p_ficha, $asistentes_fichas) ? 'checked' : '' }}" style="transform: scale(1.35);">
                                                             </td>
                                                             <td class="p-3">
-                                                                 <strong class="text-dark">{{ $colab ? $colab->name : 'Trabajador no especificado' }}</strong>
+                                                                 <strong class="text-dark">{{ $colab ? $colab->nombre_empleado : 'Trabajador no especificado' }}</strong>
                                                             </td>
                                                             <td class="p-3"><span class="badge badge-light border">{{ $p_ficha }}</span></td>
                                                             <td class="p-3 text-secondary">{{ $colab ? ($colab->texto_gerencia ?? 'SOPORTE MECÁNICO') : 'N/A' }}</td>
