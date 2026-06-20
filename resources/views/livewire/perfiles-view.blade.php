@@ -1,4 +1,4 @@
-<div class="container-fluid py-4 mx-auto" style="background-color: #F2F2F2;">
+<div class="container-fluid py-4 mx-auto">
      <!-- Notificacion (Toast) -->
      @if($notificacion)
           <div class="alert alert-{{ $notificacion['tipo'] === 'success' ? 'success' : ($notificacion['tipo'] === 'danger' ? 'danger' : 'info') }} alert-dismissible fade show shadow border-0 position-fixed d-flex align-items-center" role="alert" style="right: 20px; top: 80px; z-index: 1060; gap: 10px; border-radius: 8px; min-width: 320px;">

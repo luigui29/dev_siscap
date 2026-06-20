@@ -1,4 +1,4 @@
-<div class="container-fluid py-4 mx-auto" style="background-color: #F2F2F2;">
+<div class="container-fluid py-4 mx-auto">
      <!-- Notification (Toast) -->
      @if($notificacion)
           <div class="alert alert-{{ $notificacion['tipo'] === 'success' ? 'success' : ($notificacion['tipo'] === 'danger' ? 'danger' : 'info') }} alert-dismissible fade show shadow border-0 position-fixed d-flex align-items-center" role="alert" style="right: 20px; top: 80px; z-index: 1060; gap: 10px; border-radius: 8px; min-width: 320px;">
@@ -19,7 +19,7 @@
                </h3>
                @elseif($pestania_activa === 'final')
                <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155;">   
-                    Programaciones Finales
+                    Programaciones
                </h3>
                @elseif($pestania_activa === 'ejecucion')
                <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155;">
@@ -43,17 +43,31 @@
                          </div>
 
                          <!-- Toggle Registro / Búsqueda -->
-                         <div class="d-flex justify-content-end align-items-center px-3 pb-2 pt-1" style="background-color: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                         <div class="d-flex justify-content-end align-items-center px-3 py-2" style="background-color: #f8fafc; border-bottom: 1px solid #e2e8f0;">
                               <div class="btn-group btn-group-sm" role="group">
                                    <button type="button"
                                              class="btn {{ $modo === 'registro' ? 'btn-primary' : 'btn-outline-secondary' }}"
-                                             wire:click="cambiarModo('registro')">
-                                        <i class="fas fa-pen mr-1"></i> Registro
+                                             wire:click="cambiarModo('registro')"
+                                             wire:loading.attr="disabled"
+                                             wire:target="cambiarModo('registro')">
+                                        <span wire:loading.remove wire:target="cambiarModo('registro')">
+                                             <i class="fas fa-pen mr-1"></i> Registro
+                                        </span>
+                                        <span wire:loading wire:target="cambiarModo('registro')">
+                                             <i class="fas fa-spinner fa-spin mr-1"></i> Cargando...
+                                        </span>
                                    </button>
                                    <button type="button"
                                              class="btn {{ $modo === 'busqueda' ? 'btn-primary' : 'btn-outline-secondary' }}"
-                                             wire:click="cambiarModo('busqueda')">
-                                        <i class="fas fa-search mr-1"></i> Búsqueda
+                                             wire:click="cambiarModo('busqueda')"
+                                             wire:loading.attr="disabled"
+                                             wire:target="cambiarModo('busqueda')">
+                                        <span wire:loading.remove wire:target="cambiarModo('busqueda')">
+                                             <i class="fas fa-search mr-1"></i> Búsqueda
+                                        </span>
+                                        <span wire:loading wire:target="cambiarModo('busqueda')">
+                                             <i class="fas fa-spinner fa-spin mr-1"></i> Cargando...
+                                        </span>
                                    </button>
                               </div>
                          </div>
@@ -188,20 +202,43 @@
                               <div class="mt-4 pt-3 border-top text-right">
                               @if($modo === 'registro')
                                    @if($id_propuesta_editando)
-                                        <button type="button" wire:click="cancelarEdicionPropuesta" class="btn btn-secondary px-4 py-2 font-weight-bold mr-2" style="border-radius: 6px;">
-                                             <i class="fas fa-times mr-1"></i> Cancelar
-                                        </button>
-                                        <button type="submit" class="btn btn-success px-5 py-2 font-weight-bold" style="border-radius: 6px;">
-                                             <i class="fas fa-save mr-1"></i> Actualizar
+                                   <button type="button" class="btn btn-secondary px-5 py-2 font-weight-bold" wire:click="cancelarEdicionPropuesta" ...>Cancelar</button>
+                                        <button type="submit" class="btn btn-success px-5 py-2 font-weight-bold"
+                                                  wire:loading.attr="disabled"
+                                                  wire:target="guardarPropuesta"
+                                                  style="border-radius: 6px;">
+                                             <span wire:loading.remove wire:target="guardarPropuesta">
+                                                  <i class="fas fa-save mr-1"></i> Actualizar
+                                             </span>
+                                             <span wire:loading wire:target="guardarPropuesta">
+                                                  <i class="fas fa-spinner fa-spin mr-1"></i> Guardando...
+                                             </span>
                                         </button>
                                    @else
-                                        <button type="submit" class="btn btn-primary px-5 py-2 font-weight-bold" style="border-radius: 6px;">
+                                   <button type="submit" class="btn btn-primary px-5 py-2 font-weight-bold"
+                                             wire:loading.attr="disabled"
+                                             wire:target="guardarPropuesta"
+                                             style="border-radius: 6px;">
+                                        <span wire:loading.remove wire:target="guardarPropuesta">
                                              <i class="fas fa-save mr-1"></i> Pre-programar
-                                        </button>
+                                        </span>
+                                        <span wire:loading wire:target="guardarPropuesta">
+                                             <i class="fas fa-spinner fa-spin mr-1"></i> Guardando...
+                                        </span>
+                                   </button>
                                    @endif
                               @else
-                                   <button type="button" class="btn btn-info px-5 py-2 font-weight-bold" wire:click="buscarPropuestas" style="border-radius: 6px;">
-                                        <i class="fas fa-search mr-1"></i> Buscar
+                                   <button type="button" class="btn btn-info px-5 py-2 font-weight-bold"
+                                        wire:click="buscarPropuestas"
+                                        wire:loading.attr="disabled"
+                                        wire:target="buscarPropuestas"
+                                        style="border-radius: 6px;">
+                                        <span wire:loading.remove wire:target="buscarPropuestas">
+                                             <i class="fas fa-search mr-1"></i> Buscar
+                                        </span>
+                                        <span wire:loading wire:target="buscarPropuestas">
+                                             <i class="fas fa-spinner fa-spin mr-1"></i> Buscando...
+                                        </span>
                                    </button>
                               @endif
                               </div>
@@ -229,7 +266,6 @@
                                              <div class="d-flex justify-content-between align-items-start">
                                                   <strong class="text-dark" style="font-size: 0.95rem;">#{{ $p->id }} - {{ $p->nombre }}</strong>
                                                   <div class="d-flex align-items-center" style="gap: 12px;">
-                                                       <span class="badge badge-warning text-uppercase" style="font-size: 0.68rem; padding: 0.25rem 0.5rem; border-radius: 50px;">EVALUACIÓN</span>
                                                        <button type="button" wire:click="cargarPropuestaParaEdicion({{ $p->id }})" class="btn btn-sm btn-link text-primary p-0 m-0"><i class="fas fa-edit" style="font-size: 1.1rem;"></i></button>
                                                        <button type="button" wire:confirm="¿Está seguro de que desea eliminar esta pre-programación?" wire:click="eliminarPropuesta({{ $p->id }})" class="btn btn-sm btn-link text-danger p-0 m-0"><i class="fas fa-trash" style="font-size: 1.1rem;"></i></button>
                                                   </div>
@@ -251,7 +287,7 @@
                                         <div class="text-center py-5 text-muted">
                                              <i class="fas fa-inbox text-muted mb-2" style="font-size: 2.5rem;"></i>
                                              <p class="mb-0 font-weight-bold">
-                                                  {{ $modo === 'busqueda' ? 'No se encontraron resultados' : 'No hay propuestas pendientes de evaluación' }}
+                                                  {{ $modo === 'busqueda' ? 'No se encontraron resultados' : 'No hay pre-programaciones pendientes' }}
                                              </p>
                                         </div>
                                    @endforelse
@@ -265,23 +301,23 @@
 
      <!-- PROGRAMACIONES FINALES -->
      @if($pestania_activa === 'final')
-          <div class="row text-dark">
+          <div class="row text-dark mx-5">
                <div class="col-12 col-lg-9 mb-4">
                     <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1.05rem;">
-                                   <i class="fas fa-shield-alt mr-2"></i> Bandeja de Decisiones del Coordinador y Gerencia de SISCAP
+                                   <i class="fas fa-shield-alt mr-2"></i> Programaciones y Estatus
                               </h5>
                          </div>
 
                          <div class="table-responsive">
-                              <table class="table table-hover mb-0 align-middle">
+                              <table class="table mb-0 align-middle">
                                    <thead class="bg-light">
                                         <tr>
-                                             <th class="p-3">CURSO / ACTIVIDAD</th>
-                                             <th class="p-3">COORDINACIÓN</th>
-                                             <th class="p-3">CONVOCADOS</th>
-                                             <th class="p-3 text-center">APROBACIÓN</th>
+                                             <th class="p-3">CURSO</th>
+                                             <th class="p-3">LUGAR</th>
+                                             <th class="p-3 text-center">PARTICIPANTES</th>
+                                             <th class="p-3 text-center">ESTATUS</th>
                                              <th class="p-3 text-right">ACCIONES</th>
                                         </tr>
                                    </thead>
@@ -294,27 +330,33 @@
                                              <tr>
                                                   <td class="p-3">
                                                        <strong class="text-dark d-block" style="font-size: 0.9rem;">#{{ $p->id }} - {{ $p->nombre }}</strong>
-                                                       <small class="text-muted">{{ $p->lugar }} | {{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}</small>
+                                                       <small class="text-muted">Facilitador: {{ $fac_name }}</span>
                                                   </td>
                                                   <td class="p-3">
-                                                       <span class="small d-block text-dark"><strong>Facilitador:</strong> {{ $fac_name }}</span>
-                                                       <span class="small text-secondary"><strong>Institución:</strong> {{ $p->institucion }}</span>
+                    
+                                                       <span class="small d-block text-dark"><strong>Institución:</strong> {{ $p->institucion }}</span>
+                                                       <span class="small text-secibdart">{{ $p->lugar }} | {{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}</small>
                                                   </td>
-                                                  <td class="p-3">
-                                                       <span class="badge badge-light border text-dark font-weight-bold" style="font-size: 0.8rem;">
-                                                            <i class="fas fa-users text-primary mr-1"></i> {{ $participantes_count }} Trabajadores
-                                                       </span>
+                                                  <td class="p-3 text-center align-middle">
+                                                       <button wire:click="modalProgramacionEmpleados({{ $p->id }})" wire:loading.attr="disabled" wire:target="modalProgramacionEmpleados({{ $p->id }})" class="btn btn-sm btn-primary font-weight-bold" style="font-size: 0.8rem;">
+                                                            <span wire:loading.remove wire:target="modalProgramacionEmpleados({{ $p->id }})">
+                                                                 <i class="fas fa-solid fa-eye text-white mr-1"></i> {{ $participantes_count }} Trabajadores
+                                                            </span>
+                                                            <span wire:loading wire:target="modalProgramacionEmpleados({{ $p->id }})">
+                                                                 <i class="fas fa-spinner fa-spin mr-1"></i> Cargando...
+                                                            </span>
+                                                       </button>
                                                   </td>
-                                                  <td class="p-3 text-center">
+                                                  <td class="p-3 text-center align-middle">
                                                        @if($p->aprobado === true)
-                                                            <span class="badge badge-success text-uppercase font-weight-bold py-2 px-3" style="font-size: 0.72rem; border-radius: 50px;">Aprobado</span>
+                                                            <span class="badge badge-success text-uppercase font-weight-bold p-2" style="font-size: 0.72rem; border-radius: 50px;">Aprobado</span>
                                                        @elseif($p->aprobado === false)
-                                                            <span class="badge badge-danger text-uppercase font-weight-bold py-2 px-3" style="font-size: 0.72rem; border-radius: 50px;">Evaluado NO</span>
+                                                            <span class="badge badge-danger text-uppercase font-weight-bold p-2" style="font-size: 0.72rem; border-radius: 50px;">Rechazado</span>
                                                        @else
-                                                            <span class="badge badge-warning text-uppercase font-weight-bold py-2 px-3 animate-pulse" style="font-size: 0.72rem; border-radius: 50px;">Evaluación</span>
+                                                            <span class="badge badge-warning text-uppercase font-weight-bold p-2 animate-pulse" style="font-size: 0.72rem; border-radius: 50px;">Pendiente</span>
                                                        @endif
                                                   </td>
-                                                  <td class="p-3 text-right">
+                                                  <td class="p-3 text-right align-middle">
                                                        <div class="d-flex justify-content-end" style="gap: 6px;">
                                                             @if($p->aprobado === null)
                                                                  <button wire:click="aprobarPropuesta({{ $p->id }})" class="btn btn-sm btn-outline-success border font-weight-bold">
@@ -325,9 +367,18 @@
                                                                  </button>
                                                             @endif
 
+                                                            @if($p->aprobado === false)
+                                                                 <button wire:confirm="¿Está seguro de que desea cambiar el estatus de este curso?" wire:click="nulificarPropuesta({{ $p->id }})" class="btn btn-sm btn-secondary font-weight-bold">
+                                                                      <i class="fas fa-redo"></i> Cambiar
+                                                                 </button>
+                                                            @endif
+                                                            
                                                             @if($p->aprobado === true)
-                                                                 <button class="btn btn-sm btn-secondary font-weight-bold" onclick="alert('Descargando planilla de asistencia firmada para este curso')">
-                                                                      <i class="fas fa-print"></i> Planilla Firmas
+                                                                 <button class="btn btn-sm btn-primary font-weight-bold" onclick="alert('Descargando planilla de asistencia para este curso')">
+                                                                      <i class="fas fa-print"></i> Control de Asistencia
+                                                                 </button>
+                                                                 <button wire:confirm="¿Está seguro de que desea cambiar el estatus de este curso?" wire:click="nulificarPropuesta({{ $p->id }})" class="btn btn-sm btn-secondary font-weight-bold">
+                                                                      <i class="fas fa-redo"></i> Cambiar
                                                                  </button>
                                                             @endif
                                                        </div>
@@ -337,7 +388,7 @@
                                              <tr>
                                                   <td colspan="5" class="text-center py-5">
                                                        <i class="fas fa-folder text-muted mb-2" style="font-size: 2rem;"></i>
-                                                       <p class="mb-0 text-secondary">No se registran planificaciones</p>
+                                                       <p class="mb-0 text-secondary">No se encontraron programaciones</p>
                                                   </td>
                                              </tr>
                                         @endforelse
@@ -512,5 +563,67 @@
 
           </div>
      @endif
+
+     <!-- Modal Trabajadores -->
+     <div class="modal fade" id="modalProgramacionTrabajadores" tabindex="-1" aria-labelledby="modalProgramacionTrabajadoresLabel" aria-hidden="true" wire:ignore.self>
+          <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+               <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
+                    <div class="modal-header text-white" style="background-color: #64748B; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                         <h5 class="modal-title font-weight-bold" id="modalProgramacionTrabajadoresLabel">
+                              <i class="fas fa-users mr-2"></i> Trabajadores del Curso: {{ $programacion_modal_nombre }}
+                         </h5>
+                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="outline: none;">
+                              <span aria-hidden="true">&times;</span>
+                         </button>
+                    </div>
+                    <div class="modal-body p-0">
+                         <div class="table-responsive">
+                              <table class="table table-hover mb-0">
+                                   <thead class="bg-light">
+                                        <tr>
+                                             <th class="p-3">FICHA</th>
+                                             <th class="p-3">CÉDULA</th>
+                                             <th class="p-3">NOMBRE</th>
+                                             <th class="p-3">UNIDAD</th>
+                                             <th class="p-3">CARGO</th>
+                                             <th class="p-3">GERENCIA</th>
+                                        </tr>
+                                   </thead>
+                                   <tbody>
+                                        @forelse($programacion_modal_trabajadores as $trabajador)
+                                             <tr>
+                                                  <td class="p-3"><span class="badge badge-light border">{{ $trabajador->ficha }}</span></td>
+                                                  <td class="p-3">{{ $trabajador->cedula ?? 'N/A' }}</td>
+                                                  <td class="p-3 font-weight-bold text-dark">{{ $trabajador->nombre_empleado }}</td>
+                                                  <td class="p-3 small text-secondary">{{ $trabajador->texto_unidad }}</td>
+                                                  <td class="p-3 small">{{ $trabajador->texto_cargo }}</td>
+                                                  <td class="p-3 small text-secondary">{{ $trabajador->texto_gerencia }}</td>
+                                             </tr>
+                                        @empty
+                                             <tr>
+                                                  <td colspan="6" class="text-center py-4 text-muted">No hay trabajadores matriculados en este curso.</td>
+                                             </tr>
+                                        @endforelse
+                                   </tbody>
+                              </table>
+                         </div>
+                    </div>
+                    <div class="modal-footer" style="background-color: #f8fafc; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
+                         <button type="button" class="btn btn-secondary font-weight-bold px-4" data-dismiss="modal">Cerrar</button>
+                    </div>
+               </div>
+          </div>
+     </div>
+
+     <script>
+          document.addEventListener('livewire:initialized', () => {
+               @this.on('abrir-modal-programacion-trabajadores', () => {
+                    $('#modalProgramacionTrabajadores').modal('show');
+               });
+          });
+          window.addEventListener('abrir-modal-programacion-trabajadores', event => {
+               $('#modalProgramacionTrabajadores').modal('show');
+          });
+     </script>
 
 </div>

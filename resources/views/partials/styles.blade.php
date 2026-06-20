@@ -289,10 +289,6 @@
           border: none !important;
      }
 
-     .table-corporate tbody tr:hover {
-          background-color: #F1F5F9 !important;
-     }
-
      .table-corporate td {
           padding: 1.25rem 1.5rem !important;
           vertical-align: middle !important;

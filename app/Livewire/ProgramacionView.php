@@ -7,6 +7,7 @@ use App\Models\Actividad;
 use App\Models\Subactividad;
 use App\Models\Area;
 use App\Models\RrhhPersonal;
+use App\Models\PersonalProgramacion;
 use App\Models\User;
 use App\Models\Facilitador;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,9 @@ class ProgramacionView extends Component
 {
      public $pestania_activa = 'pre';
      public $notificacion = null;
+     
+     public $programacion_modal_trabajadores = [];
+     public $programacion_modal_nombre = '';
      
      // Campos para rellenar
      public $id_area_seleccionada = '';
@@ -397,6 +401,27 @@ class ProgramacionView extends Component
           if ($propuesta) {
                $propuesta->update(['aprobado' => false]);
                $this->mostrarNotificacion("Propuesta #$id rechazada.", 'danger');
+          }
+     }
+
+     public function nulificarPropuesta($id)
+     {
+          $propuesta = Programacion::find($id);
+          if ($propuesta) {
+               $propuesta->update(['aprobado' => null]);
+               $this->mostrarNotificacion("Estatus de propuesta #$id cambiado", 'danger');
+          }
+     }
+
+     public function modalProgramacionEmpleados($id)
+     {
+          $propuesta = Programacion::find($id);
+          if ($propuesta) {
+               $this->programacion_modal_nombre = $propuesta->nombre;
+               $fichas = PersonalProgramacion::where('programacion_id', $propuesta->id)->pluck('ficha_empleado');
+               $this->programacion_modal_trabajadores = RrhhPersonal::whereIn('ficha', $fichas)->orderBy('nombre_empleado', 'asc')->get();
+               
+               $this->dispatch('abrir-modal-programacion-trabajadores');
           }
      }
 
