@@ -102,13 +102,9 @@
                               <div class="row">
                                    <div class="col-md-6 form-group">
                                         <label class="font-weight-bold small">SUBACTIVIDAD</label>
-                                        @php
-                                             $actividadSeleccionada = collect($this->actividades)->where('nombre', $actividad_input)->first();
-                                             $idActividadSeleccionada = $actividadSeleccionada ? $actividadSeleccionada->id : null;
-                                        @endphp
                                         <select class="form-control" wire:model="subactividad_input" style="height: 40px;" {{ !$actividad_input ? 'disabled' : '' }}>
                                              <option value="">Seleccione una subactividad</option>
-                                             @foreach($this->subactividades->where('actividad_id', $idActividadSeleccionada) as $sub)
+                                             @foreach($this->subactividadesOpciones as $sub)
                                                   <option value="{{ $sub->nombre }}">{{ $sub->nombre }}</option>
                                              @endforeach
                                         </select>
@@ -191,9 +187,9 @@
                                         </thead>
                                         <tbody>
                                              @foreach($this->empleadosFiltrados as $e)
-                                                  <tr class="hover-bg-light">
+                                                  <tr class="hover-bg-light" wire:key="empleado-{{ $e->ficha }}">
                                                        <td class="text-center p-2">
-                                                            <input type="checkbox" class="pointer" value="{{ $e->ficha }}" wire:model.defer="participantes_seleccionados" style="transform: scale(1.15);">
+                                                            <input type="checkbox" class="pointer" value="{{ $e->ficha }}" wire:model.live="participantes_seleccionados" style="transform: scale(1.15);">
                                                        </td>
                                                        <td class="p-2 font-weight-bold text-dark" style="font-size: 0.85rem;">{{ $e->nombre_empleado }}</td>
                                                        <td class="p-2" style="font-size: 0.85rem;"><span class="badge badge-light px-2 py-1">{{ $e->ficha }}</span></td>
@@ -207,7 +203,7 @@
 
                               <div class="mt-4 pt-3 border-top text-right">
                                    @if($id_propuesta_editando)
-                                   <button type="button" class="btn btn-secondary px-5 py-2 font-weight-bold" wire:click="cancelarEdicionPropuesta" ...>Cancelar</button>
+                                   <button type="button" class="btn btn-secondary px-5 py-2 font-weight-bold" wire:click="cancelarEdicionPropuesta">Cancelar</button>
                                         <button type="submit" class="btn btn-success px-5 py-2 font-weight-bold"
                                                   wire:loading.attr="disabled"
                                                   wire:target="guardarPropuesta"
@@ -253,30 +249,22 @@
                                    <h6 class="text-muted font-weight-bold">Buscando pre-programaciones...</h6>
                               </div>
                               <div style="max-height: 700px; overflow-y: auto;" wire:loading.class="d-none" wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda">
-                                   @php
-                                        $lista = ($modo === 'busqueda') ? collect($resultados_busqueda)->map(fn($item) => (object) $item) : $this->propuestas->whereNull('aprobado');
-                                   @endphp     
-                              
-                                   @forelse($lista as $p)
+                                   @forelse($this->listaPre as $p)
                                         <div class="p-3 border-bottom hover-gradient-soft">
                                              <div class="d-flex justify-content-between align-items-start">
-                                                  <strong class="text-dark" style="font-size: 0.95rem;">#{{ $p->id }} - {{ $p->nombre }}</strong>
+                                                  <strong class="text-dark" style="font-size: 0.95rem;">{{ $p->nombre }}</strong>
                                                   <div class="d-flex align-items-center" style="gap: 12px;">
                                                        <button type="button" wire:click="cargarPropuestaParaEdicion({{ $p->id }})" class="btn btn-sm btn-link text-primary p-0 m-0"><i class="fas fa-edit" style="font-size: 1.1rem;"></i></button>
                                                        <button type="button" wire:confirm="¿Está seguro de que desea eliminar esta pre-programación?" wire:click="eliminarPropuesta({{ $p->id }})" class="btn btn-sm btn-link text-danger p-0 m-0"><i class="fas fa-trash" style="font-size: 1.1rem;"></i></button>
                                                   </div>
                                              </div>
                                              <span class="text-secondary small d-block my-1">
-                                                  @php
-                                                       $fac_name = \Illuminate\Support\Facades\DB::table('tbl_facilitadores')->where('id', $p->facilitador_id)->value('nombre');
-                                                       $participantes_count = \Illuminate\Support\Facades\DB::table('pl_programaciones')->where('programacion_id', $p->id)->count();
-                                                  @endphp
-                                                  <i class="far fa-user mr-1"></i> Facilitador: {{ $fac_name }} <br>
-                                                  <i class="far fa-calendar mr-1"></i> Fecha: {{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}
+                                                  <i class="far fa-user mr-1"></i> Facilitador: {{ $p->facilitador->nombre ?? 'N/A' }} <br>
+                                                  <i class="far fa-calendar mr-1"></i> Fecha: {{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }} <br>
+                                                  <i class="fas fa-regular fa-clock mr-1"></i>{{ $p->duracion }} Horas 
                                              </span>
-                                             <div class="d-flex justify-content-between align-items-center mt-2">
-                                                  <span class="badge badge-info text-dark" style="background-color: #E0F2FE;">{{ $p->duracion }} Horas / Hombre</span>
-                                                  <span class="text-muted small"><i class="fas fa-users"></i> {{ $participantes_count }} Empleados</span>
+                                             <div class="d-flex justify-content-end align-items-center mt-2">
+                                                  <span class="text-muted small"><i class="fas fa-users mr-1"></i> {{ $p->participantes_count }} Empleado(s)</span>
                                              </div>
                                         </div>
                                    @empty
@@ -367,28 +355,19 @@
                                         </tr>
                                    </thead>
                                    <tbody>
-                                        @php
-                                             $listaFinal = $this->busqueda_activa ? collect($resultados_busqueda)->map(fn($item) => (object) $item) : $this->propuestas;
-                                        @endphp
-                                        @forelse($listaFinal as $p)
-                                             @php
-                                                  $fac_name = \Illuminate\Support\Facades\DB::table('tbl_facilitadores')->where('id', $p->facilitador_id)->value('nombre');
-                                                  $participantes_count = \Illuminate\Support\Facades\DB::table('pl_programaciones')->where('programacion_id', $p->id)->count();
-                                             @endphp
+                                        @forelse($this->listaFinal as $p)
                                              <tr>
                                                   <td class="p-3">
                                                        <strong class="text-dark d-block" style="font-size: 0.9rem;">{{ $p->nombre }}</strong>
-                                                       <small class="text-muted">Facilitador: {{ $fac_name }}</span>
+                                                       <span class="small d-block text-dark"><strong>Institución:</strong> {{ $p->institucion }}</span>
                                                   </td>
                                                   <td class="p-3">
-                    
-                                                       <span class="small d-block text-dark"><strong>Institución:</strong> {{ $p->institucion }}</span>
-                                                       <span class="small text-secibdart">{{ $p->lugar }} | {{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}</small>
+                                                       <span class="small">{{ $p->lugar }} | {{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}</span>
                                                   </td>
                                                   <td class="p-3 text-center align-middle">
                                                        <button wire:click="modalProgramacionEmpleados({{ $p->id }})" wire:loading.attr="disabled" wire:target="modalProgramacionEmpleados({{ $p->id }})" class="btn btn-sm btn-primary font-weight-bold" style="font-size: 0.8rem;">
                                                             <span wire:loading.remove wire:target="modalProgramacionEmpleados({{ $p->id }})">
-                                                                 <i class="fas fa-solid fa-eye text-white mr-1"></i> {{ $participantes_count }} Trabajadores
+                                                                 <i class="fas fa-solid fa-eye text-white mr-1"></i> {{ $p->participantes_count }} Trabajadores
                                                             </span>
                                                             <span wire:loading wire:target="modalProgramacionEmpleados({{ $p->id }})">
                                                                  <i class="fas fa-spinner fa-spin mr-1"></i> Cargando...
@@ -468,9 +447,6 @@
 
                               <div class="row" style="max-height: 420px; overflow-y: auto;">
                                    @forelse($this->propuestas->where('aprobado', true) as $p)
-                                        @php
-                                             $fac_name = \Illuminate\Support\Facades\DB::table('tbl_facilitadores')->where('id', $p->facilitador_id)->value('nombre');
-                                        @endphp
                                         <div class="col-12 col-md-6 col-lg-4 mb-3">
                                              <div 
                                                   wire:click="iniciarEjecucion({{ $p->id }})"
@@ -534,22 +510,16 @@
                                                   </tr>
                                              </thead>
                                              <tbody>
-                                                  @php
-                                                       $participants = $id_ejecucion_seleccionada ? \Illuminate\Support\Facades\DB::table('pl_programaciones')->where('programacion_id', $id_ejecucion_seleccionada)->pluck('ficha_empleado')->toArray() : [];
-                                                  @endphp
-                                                  @forelse($participants as $p_ficha)
-                                                       @php
-                                                            $colab = \App\Models\RrhhPersonal::where('ficha', $p_ficha)->first();
-                                                       @endphp
-                                                       <tr class="cursor-pointer" wire:click="alternarAsistencia('{{ $p_ficha }}')">
+                                                  @forelse($this->participantesAsistencia as $colab)
+                                                       <tr class="cursor-pointer" wire:click="alternarAsistencia('{{ $colab->ficha }}')">
                                                             <td class="text-center p-3">
-                                                                 <input type="checkbox" checked="{{ in_array($p_ficha, $asistentes_fichas) ? 'checked' : '' }}" style="transform: scale(1.35);">
+                                                                 <input type="checkbox" checked="{{ in_array($colab->ficha, $asistentes_fichas) ? 'checked' : '' }}" style="transform: scale(1.35);">
                                                             </td>
                                                             <td class="p-3">
-                                                                 <strong class="text-dark">{{ $colab ? $colab->nombre_empleado : 'Trabajador no especificado' }}</strong>
+                                                                 <strong class="text-dark">{{ $colab->nombre_empleado ?? 'Trabajador no especificado' }}</strong>
                                                             </td>
-                                                            <td class="p-3"><span class="badge badge-light border">{{ $p_ficha }}</span></td>
-                                                            <td class="p-3 text-secondary">{{ $colab ? ($colab->texto_gerencia ?? 'SOPORTE MECÁNICO') : 'N/A' }}</td>
+                                                            <td class="p-3"><span class="badge badge-light border">{{ $colab->ficha }}</span></td>
+                                                            <td class="p-3 text-secondary">{{ $colab->texto_gerencia ?? 'SOPORTE MECÁNICO' }}</td>
                                                        </tr>
                                                   @empty
                                                        <tr>

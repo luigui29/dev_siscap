@@ -35,4 +35,9 @@ class Programacion extends Model
      {
           return $this->belongsTo(Facilitador::class, 'facilitador_id');
      }
+
+     public function participantes()
+     {
+          return $this->hasMany(PersonalProgramacion::class, 'programacion_id');
+     }
 }

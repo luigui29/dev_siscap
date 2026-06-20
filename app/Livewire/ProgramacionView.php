@@ -109,7 +109,30 @@ class ProgramacionView extends Component
 
      public function getPropuestasProperty()
      {
-          return Programacion::orderBy('id', 'desc')->get();
+          return Programacion::with(['facilitador'])->withCount('participantes')->orderBy('id', 'desc')->get();
+     }
+
+     public function getSubactividadesOpcionesProperty()
+     {
+          $actividadSeleccionada = collect($this->actividades)->where('nombre', $this->actividad_input)->first();
+          return $actividadSeleccionada ? $this->subactividades->where('actividad_id', $actividadSeleccionada->id) : collect([]);
+     }
+
+     public function getListaPreProperty()
+     {
+          return ($this->busqueda_activa) ? collect($this->resultados_busqueda)->map(fn($item) => (object) $item) : $this->propuestas->whereNull('aprobado');
+     }
+
+     public function getListaFinalProperty()
+     {
+          return $this->busqueda_activa ? collect($this->resultados_busqueda)->map(fn($item) => (object) $item) : $this->propuestas;
+     }
+
+     public function getParticipantesAsistenciaProperty()
+     {
+          if (!$this->id_ejecucion_seleccionada) return collect([]);
+          $fichas = PersonalProgramacion::where('programacion_id', $this->id_ejecucion_seleccionada)->pluck('ficha_empleado');
+          return RrhhPersonal::whereIn('ficha', $fichas)->get();
      }
 
      public function getEmpleadosFiltradosProperty()
@@ -135,7 +158,7 @@ class ProgramacionView extends Component
           return $query->orderBy('nombre_empleado', 'asc')->take(50)->get();
      }
 
-     // Hook para detectar cambios en las variables de filtro y ejecutar la búsqueda dinámicamente
+     // Detectar cambios en las variables de filtro y ejecutar la búsqueda dinámicamente
      public function updated($propertyName)
      {
           if (str_starts_with($propertyName, 'filtro_')) {
@@ -148,7 +171,7 @@ class ProgramacionView extends Component
      // Método para buscar programaciones según los filtros del formulario
      public function buscarPropuestas()
      {
-          // Eager load relationships to prevent N+1 issues
+          // Eager load para prevenir problemas N+1 
           $query = Programacion::with(['actividad', 'subactividad', 'facilitador']);
 
           // Filtro por área (unimos con actividades)
