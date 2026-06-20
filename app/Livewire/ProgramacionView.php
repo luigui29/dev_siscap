@@ -38,6 +38,18 @@ class ProgramacionView extends Component
      public $modo = 'registro';              // 'registro' o 'busqueda'
      public $resultados_busqueda = [];     
 
+     // Filtros para la búsqueda
+     public $busqueda_activa = false;
+     public $filtro_area = '';
+     public $filtro_actividad = '';
+     public $filtro_subactividad = '';
+     public $filtro_facilitador = '';
+     public $filtro_institucion = '';
+     public $filtro_fecha = '';
+     public $filtro_lugar = '';
+     public $filtro_desde = '';
+     public $filtro_hasta = '';
+
      // Filtros para empleados
      public $filtro_ficha = '';
      public $filtro_cedula = '';
@@ -64,6 +76,7 @@ class ProgramacionView extends Component
      {
           $this->cancelarEdicionPropuesta();
           $this->modo = $modo;
+          $this->busqueda_activa = false;
           
           if ($modo === 'busqueda') {
                $this->participantes_seleccionados = [];
@@ -128,54 +141,60 @@ class ProgramacionView extends Component
           $query = Programacion::query();
 
           // Filtro por área (unimos con actividades)
-          if ($this->id_area_seleccionada) {
+          if ($this->filtro_area) {
                $query->whereHas('actividad', function ($q) {
-                    $q->where('area_id', $this->id_area_seleccionada);
+                    $q->where('area_id', $this->filtro_area);
                });
           }
 
           // Filtro por nombre de actividad
-          if ($this->actividad_input) {
+          if ($this->filtro_actividad) {
                $query->whereHas('actividad', function ($q) {
-                    $q->where('nombre', 'ilike', '%' . $this->actividad_input . '%');
+                    $q->where('nombre', 'ilike', '%' . $this->filtro_actividad . '%');
                });
           }
 
           // Filtro por nombre de subactividad
-          if ($this->subactividad_input) {
+          if ($this->filtro_subactividad) {
                $query->whereHas('subactividad', function ($q) {
-                    $q->where('nombre', 'ilike', '%' . $this->subactividad_input . '%');
+                    $q->where('nombre', 'ilike', '%' . $this->filtro_subactividad . '%');
                });
           }
 
           // Filtro por nombre de facilitador
-          if ($this->facilitador_input) {
+          if ($this->filtro_facilitador) {
                $query->whereHas('facilitador', function ($q) {
-                    $q->where('nombre', 'ilike', '%' . $this->facilitador_input . '%');
+                    $q->where('nombre', 'ilike', '%' . $this->filtro_facilitador . '%');
                });
           }
-
+          
           // Filtro por fecha exacta
-          if ($this->fecha_input) {
-               $query->whereDate('fecha', $this->fecha_input);
+          if ($this->filtro_fecha) {
+               $query->whereDate('fecha', $this->filtro_fecha);
           }
 
           // Filtro por lugar (texto parcial)
-          if ($this->lugar_input) {
-               $query->where('lugar', 'ilike', '%' . $this->lugar_input . '%');
+          if ($this->filtro_lugar) {
+               $query->where('lugar', 'ilike', '%' . $this->filtro_lugar . '%');
+          }
+          
+          // Filtro por institución (texto parcial)
+          if ($this->filtro_institucion) {
+               $query->where('institucion', 'ilike', '%' . $this->filtro_institucion . '%');
           }
 
           // Filtro por hora desde (mayor o igual)
-          if ($this->desde_input) {
-               $query->whereTime('desde', '>=', $this->desde_input);
+          if ($this->filtro_desde) {
+               $query->whereTime('desde', '>=', $this->filtro_desde);
           }
 
           // Filtro por hora hasta (menor o igual)
-          if ($this->hasta_input) {
-               $query->whereTime('hasta', '<=', $this->hasta_input);
+          if ($this->filtro_hasta) {
+               $query->whereTime('hasta', '<=', $this->filtro_hasta);
           }
 
           $this->resultados_busqueda = $query->orderBy('id', 'desc')->get();
+          $this->busqueda_activa = true;
 
           if ($this->resultados_busqueda->isEmpty()) {
                $this->mostrarNotificacion('No se encontraron programaciones con esos filtros.', 'info');
@@ -187,15 +206,17 @@ class ProgramacionView extends Component
      // Método para limpiar los filtros de búsqueda
      public function limpiarFiltrosBusqueda()
      {
-          $this->id_area_seleccionada = '';
-          $this->actividad_input = '';
-          $this->subactividad_input = '';
-          $this->facilitador_input = '';
-          $this->fecha_input = '';
-          $this->lugar_input = '';
-          $this->desde_input = '';
-          $this->hasta_input = '';
+          $this->filtro_area = '';
+          $this->filtro_actividad = '';
+          $this->filtro_subactividad = '';
+          $this->filtro_facilitador = '';
+          $this->filtro_institucion = '';
+          $this->filtro_fecha = '';
+          $this->filtro_lugar = '';
+          $this->filtro_desde = '';
+          $this->filtro_hasta = '';
           $this->resultados_busqueda = [];
+          $this->busqueda_activa = false;
           $this->mostrarNotificacion('Filtros de búsqueda limpiados.', 'info');
      }
 
@@ -244,6 +265,17 @@ class ProgramacionView extends Component
      public function updatedActividadInput()
      {
           $this->subactividad_input = '';
+     }
+     
+     public function updatedFiltroArea()
+     {
+          $this->filtro_actividad = '';
+          $this->filtro_subactividad = '';
+     }
+
+     public function updatedFiltroActividad()
+     {
+          $this->filtro_subactividad = '';
      }
 
      public function calcularDuracion()

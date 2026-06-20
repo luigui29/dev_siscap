@@ -1,5 +1,5 @@
 <div class="container-fluid py-4 mx-auto">
-     <!-- Notification (Toast) -->
+     <!-- Notificación (Toast) -->
      @if($notificacion)
           <div class="alert alert-{{ $notificacion['tipo'] === 'success' ? 'success' : ($notificacion['tipo'] === 'danger' ? 'danger' : 'info') }} alert-dismissible fade show shadow border-0 position-fixed d-flex align-items-center" role="alert" style="right: 20px; top: 80px; z-index: 1060; gap: 10px; border-radius: 8px; min-width: 320px;">
                <i class="fas fa-info-circle" style="font-size: 1.25rem;"></i>
@@ -15,15 +15,15 @@
           <div>
                @if($pestania_activa === 'pre')
                <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155;">
-                    Pre-Programaciones 
+                    Pre-Programación 
                </h3>
                @elseif($pestania_activa === 'final')
                <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155;">   
-                    Programaciones
+                    Programación
                </h3>
                @elseif($pestania_activa === 'ejecucion')
                <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155;">
-                    Ejecutados 
+                    Ejecución 
                </h3>
                @endif
           </div>
@@ -34,44 +34,47 @@
           <div class="row mx-5 text-dark">
                
                <!-- Formulario Form Panel Left -->
-               <div class="col-12 col-lg-7 mb-4">
-                    <div class="card shadow-sm border-0 bg-white h-100 mb-0" style="border-radius: 8px;">
+               <div class="col-12 col-lg-8 mb-4">
+
+                    <!-- Toggle Registro / Búsqueda -->
+                    <div class="d-flex justify-content-end align-items-center py-2">
+                         <div class="btn-group btn-group-sm" role="group">
+                              <button type="button"
+                                        class="btn {{ $modo === 'registro' ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                        wire:click="cambiarModo('registro')"
+                                        wire:loading.attr="disabled"
+                                        wire:target="cambiarModo('registro')">
+                                   <span wire:loading.remove wire:target="cambiarModo('registro')">
+                                        <i class="fas fa-pen mr-1"></i> Registro
+                                   </span>
+                                   <span wire:loading wire:target="cambiarModo('registro')">
+                                        <i class="fas fa-spinner fa-spin mr-1"></i> Cargando...
+                                   </span>
+                              </button>
+                              <button type="button"
+                                        class="btn {{ $modo === 'busqueda' ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                        wire:click="cambiarModo('busqueda')"
+                                        wire:loading.attr="disabled"
+                                        wire:target="cambiarModo('busqueda')">
+                                   <span wire:loading.remove wire:target="cambiarModo('busqueda')">
+                                        <i class="fas fa-search mr-1"></i> Búsqueda
+                                   </span>
+                                   <span wire:loading wire:target="cambiarModo('busqueda')">
+                                        <i class="fas fa-spinner fa-spin mr-1"></i> Cargando...
+                                   </span>
+                              </button>
+                         </div>
+                    </div>
+                    @if($modo === 'busqueda')
+                         @include('partials.filtro-programaciones')
+                    @elseif($modo === 'registro')
+                    <div class="card shadow-sm border-0 bg-white mb-2" style="border-radius: 8px;">
+                         
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
-                                   <i class="fas fa-clipboard-list mr-2"></i> {{ $modo === 'busqueda' ? 'Búsqueda de Pre-Programaciones' : ($id_propuesta_editando ? 'Editar Pre-Programacion' : 'Nueva Pre-Programacion') }}
+                                   <i class="fas fa-clipboard-list mr-2"></i> {{ ($id_propuesta_editando ? 'Editar Pre-Programacion' : 'Nueva Pre-Programacion') }}
                               </h5>
                          </div>
-
-                         <!-- Toggle Registro / Búsqueda -->
-                         <div class="d-flex justify-content-end align-items-center px-3 py-2" style="background-color: #f8fafc; border-bottom: 1px solid #e2e8f0;">
-                              <div class="btn-group btn-group-sm" role="group">
-                                   <button type="button"
-                                             class="btn {{ $modo === 'registro' ? 'btn-primary' : 'btn-outline-secondary' }}"
-                                             wire:click="cambiarModo('registro')"
-                                             wire:loading.attr="disabled"
-                                             wire:target="cambiarModo('registro')">
-                                        <span wire:loading.remove wire:target="cambiarModo('registro')">
-                                             <i class="fas fa-pen mr-1"></i> Registro
-                                        </span>
-                                        <span wire:loading wire:target="cambiarModo('registro')">
-                                             <i class="fas fa-spinner fa-spin mr-1"></i> Cargando...
-                                        </span>
-                                   </button>
-                                   <button type="button"
-                                             class="btn {{ $modo === 'busqueda' ? 'btn-primary' : 'btn-outline-secondary' }}"
-                                             wire:click="cambiarModo('busqueda')"
-                                             wire:loading.attr="disabled"
-                                             wire:target="cambiarModo('busqueda')">
-                                        <span wire:loading.remove wire:target="cambiarModo('busqueda')">
-                                             <i class="fas fa-search mr-1"></i> Búsqueda
-                                        </span>
-                                        <span wire:loading wire:target="cambiarModo('busqueda')">
-                                             <i class="fas fa-spinner fa-spin mr-1"></i> Cargando...
-                                        </span>
-                                   </button>
-                              </div>
-                         </div>
-
                          <form wire:submit.prevent="guardarPropuesta" class="card-body">
                               <div class="row">
                                    <div class="col-md-6 form-group">
@@ -86,9 +89,9 @@
 
                                    <div class="col-md-6 form-group">
                                         <label class="font-weight-bold small">ACTIVIDAD</label>
-                                        <select class="form-control" wire:model.live="actividad_input" style="height: 40px;" {{ !$id_area_seleccionada && $modo === 'registro' ? 'disabled' : '' }}>
+                                        <select class="form-control" wire:model.live="actividad_input" style="height: 40px;" {{ !$id_area_seleccionada ? 'disabled' : '' }}>
                                              <option value="">Seleccione una actividad</option>
-                                             @foreach($modo === 'busqueda' && empty($id_area_seleccionada) ? $this->actividades : $this->actividades->where('area_id', $id_area_seleccionada) as $act)
+                                             @foreach($this->actividades->where('area_id', $id_area_seleccionada) as $act)
                                                   <option value="{{ $act->nombre }}">{{ $act->nombre }}</option>
                                              @endforeach
                                         </select>
@@ -103,9 +106,9 @@
                                              $actividadSeleccionada = collect($this->actividades)->where('nombre', $actividad_input)->first();
                                              $idActividadSeleccionada = $actividadSeleccionada ? $actividadSeleccionada->id : null;
                                         @endphp
-                                        <select class="form-control" wire:model="subactividad_input" style="height: 40px;" {{ !$actividad_input && $modo === 'registro' ? 'disabled' : '' }}>
+                                        <select class="form-control" wire:model="subactividad_input" style="height: 40px;" {{ !$actividad_input ? 'disabled' : '' }}>
                                              <option value="">Seleccione una subactividad</option>
-                                             @foreach($modo === 'busqueda' && empty($actividad_input) ? $this->subactividades : $this->subactividades->where('actividad_id', $idActividadSeleccionada) as $sub)
+                                             @foreach($this->subactividades->where('actividad_id', $idActividadSeleccionada) as $sub)
                                                   <option value="{{ $sub->nombre }}">{{ $sub->nombre }}</option>
                                              @endforeach
                                         </select>
@@ -114,7 +117,7 @@
 
                                    <div class="col-md-6 form-group">
                                         <label class="font-weight-bold small">FACILITADOR</label>
-                                        <select class="form-control" wire:model="facilitador_input" style="height: 40px;" {{ !$id_area_seleccionada && $modo === 'registro' ? 'disabled' : '' }}>
+                                        <select class="form-control" wire:model="facilitador_input" style="height: 40px;">
                                              <option value="">Seleccione un facilitador</option>
                                              @foreach($this->facilitadores as $fac)
                                                   <option value="{{ $fac->nombre }}">{{ $fac->nombre }}</option>
@@ -163,7 +166,6 @@
                               </div>
 
                               <!-- Selección de Participantes -->
-                              @if($modo === 'registro')
                               <hr class="my-4">
                               <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-users text-primary mr-2"></i> Seleccionar Empleados </h6>
                               
@@ -197,10 +199,8 @@
                                         </tbody>
                                    </table>
                               </div>
-                              @endif
 
                               <div class="mt-4 pt-3 border-top text-right">
-                              @if($modo === 'registro')
                                    @if($id_propuesta_editando)
                                    <button type="button" class="btn btn-secondary px-5 py-2 font-weight-bold" wire:click="cancelarEdicionPropuesta" ...>Cancelar</button>
                                         <button type="submit" class="btn btn-success px-5 py-2 font-weight-bold"
@@ -227,27 +227,14 @@
                                         </span>
                                    </button>
                                    @endif
-                              @else
-                                   <button type="button" class="btn btn-info px-5 py-2 font-weight-bold"
-                                        wire:click="buscarPropuestas"
-                                        wire:loading.attr="disabled"
-                                        wire:target="buscarPropuestas"
-                                        style="border-radius: 6px;">
-                                        <span wire:loading.remove wire:target="buscarPropuestas">
-                                             <i class="fas fa-search mr-1"></i> Buscar
-                                        </span>
-                                        <span wire:loading wire:target="buscarPropuestas">
-                                             <i class="fas fa-spinner fa-spin mr-1"></i> Buscando...
-                                        </span>
-                                   </button>
-                              @endif
                               </div>
                          </form>
                     </div>
+                    @endif
                </div>
 
                <!-- Pre-Programaciones Registradas -->
-               <div class="col-12 col-lg-5 mb-4">
+               <div class="col-12 col-lg-4 mb-4">
                     <div class="card shadow-sm border-0 bg-white h-100" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
@@ -299,9 +286,53 @@
           </div>
      @endif
 
-     <!-- PROGRAMACIONES FINALES -->
+     <!-- PROGRAMACIÓN -->
      @if($pestania_activa === 'final')
           <div class="row text-dark mx-5">
+               <div class="col-12 col-lg-9 d-flex justify-content-end align-items-center py-2">
+                    @include('partials.filtro-programaciones')
+               </div>
+
+               <!-- Estadisticas sobre cursos programados -->
+               <div class="col-12 col-lg-3 mb-4">
+                    <div class="d-flex flex-column" style="gap: 16px;">
+                         
+                         <!-- Pre-Programaciones Registradas -->
+                         <div class="p-3 bg-white border rounded shadow-sm d-flex align-items-center" style="gap: 12px; min-height: 80px;">
+                              <div style="width: 36px; height: 36px; border-radius: 50%; background-color: #E0F2FE; color: #0369A1; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
+                                   <i class="fas fa-folder" style="font-size: 0.9rem; color: #0369A1;"></i>
+                              </div>
+                              <div>
+                                   <span class="text-secondary small d-block uppercase font-weight-bold" style="font-size: 0.65rem;">PRE-PROGRAMACIONES TOTALES</span>
+                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $this->propuestas->count() }} Curso(s) Planificado(s)</span>
+                              </div>
+                         </div>
+
+                         <!-- Pre-Programaciones Aprobadas -->
+                         <div class="p-3 bg-white border rounded shadow-sm d-flex align-items-center" style="gap: 12px; min-height: 80px;">
+                              <div style="width: 36px; height: 36px; border-radius: 50%; background-color: #DCFCE7; color: #15803D; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
+                                   <i class="fas fa-check-circle" style="font-size: 0.9rem; color: #15803D;"></i>
+                              </div>
+                              <div>
+                                   <span class="text-secondary small d-block uppercase font-weight-bold" style="font-size: 0.65rem;">PROGRAMACIONES APROBADAS</span>
+                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $this->propuestas->where('aprobado', true)->count() }} Curso(s) Listo(s)</span>
+                              </div>
+                         </div>
+
+                         <!-- Pre-Programaciones Pendientes -->
+                         <div class="p-3 bg-white border rounded shadow-sm d-flex align-items-center" style="gap: 12px; min-height: 80px;">
+                              <div style="width: 36px; height: 36px; border-radius: 50%; background-color: #FEF3C7; color: #B45309; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
+                                   <i class="fas fa-hourglass-half" style="font-size: 0.9rem; color: #B45309;"></i>
+                              </div>
+                              <div>
+                                   <span class="text-secondary small d-block uppercase font-weight-bold" style="font-size: 0.65rem;">PROGRAMACIONES PENDIENTES</span>
+                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $this->propuestas->whereNull('aprobado')->count() }} Curso(s) Pendiente(s)</span>
+                              </div>
+                         </div>
+
+                    </div>
+               </div>
+
                <div class="col-12 col-lg-9 mb-4">
                     <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
@@ -310,7 +341,12 @@
                               </h5>
                          </div>
 
-                         <div class="table-responsive">
+                         <div wire:loading wire:target="buscarPropuestas, limpiarFiltrosBusqueda" class="w-100 text-center py-5">
+                              <i class="fas fa-spinner fa-spin text-primary mb-2" style="font-size: 2rem;"></i>
+                              <h6 class="text-muted font-weight-bold">Cargando resultados...</h6>
+                         </div>
+
+                         <div class="table-responsive" wire:loading.class="d-none" wire:target="buscarPropuestas, limpiarFiltrosBusqueda">
                               <table class="table mb-0 align-middle">
                                    <thead class="bg-light">
                                         <tr>
@@ -322,14 +358,17 @@
                                         </tr>
                                    </thead>
                                    <tbody>
-                                        @forelse($this->propuestas as $p)
+                                        @php
+                                             $listaFinal = $this->busqueda_activa ? collect($resultados_busqueda)->map(fn($item) => (object) $item) : $this->propuestas;
+                                        @endphp
+                                        @forelse($listaFinal as $p)
                                              @php
                                                   $fac_name = \Illuminate\Support\Facades\DB::table('tbl_facilitadores')->where('id', $p->facilitador_id)->value('nombre');
                                                   $participantes_count = \Illuminate\Support\Facades\DB::table('pl_programaciones')->where('programacion_id', $p->id)->count();
                                              @endphp
                                              <tr>
                                                   <td class="p-3">
-                                                       <strong class="text-dark d-block" style="font-size: 0.9rem;">#{{ $p->id }} - {{ $p->nombre }}</strong>
+                                                       <strong class="text-dark d-block" style="font-size: 0.9rem;">{{ $p->nombre }}</strong>
                                                        <small class="text-muted">Facilitador: {{ $fac_name }}</span>
                                                   </td>
                                                   <td class="p-3">
@@ -374,8 +413,8 @@
                                                             @endif
                                                             
                                                             @if($p->aprobado === true)
-                                                                 <button class="btn btn-sm btn-primary font-weight-bold" onclick="alert('Descargando planilla de asistencia para este curso')">
-                                                                      <i class="fas fa-print"></i> Control de Asistencia
+                                                                 <button class="btn btn-sm btn-pdf font-weight-bold" onclick="alert('Descargando planilla de asistencia para este curso')">
+                                                                      <i class="fas fa-file-pdf mr-1"></i> Control de Asistencia
                                                                  </button>
                                                                  <button wire:confirm="¿Está seguro de que desea cambiar el estatus de este curso?" wire:click="nulificarPropuesta({{ $p->id }})" class="btn btn-sm btn-secondary font-weight-bold">
                                                                       <i class="fas fa-redo"></i> Cambiar
@@ -398,49 +437,10 @@
                     </div>
                </div>
 
-               <!-- Stats Sidebar Right Column -->
-               <div class="col-12 col-lg-3 mb-4">
-                    <div class="d-flex flex-column" style="gap: 16px;">
-                         
-                         <!-- Stats Card 1 -->
-                         <div class="p-3 bg-white border rounded shadow-sm d-flex align-items-center" style="gap: 12px; min-height: 80px;">
-                              <div style="width: 36px; height: 36px; border-radius: 50%; background-color: #E0F2FE; color: #0369A1; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
-                                   <i class="fas fa-folder" style="font-size: 0.9rem; color: #0369A1;"></i>
-                              </div>
-                              <div>
-                                   <span class="text-secondary small d-block uppercase font-weight-bold" style="font-size: 0.65rem;">PROPUESTAS REGISTRADAS</span>
-                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $this->propuestas->count() }} Planificaciones</span>
-                              </div>
-                         </div>
-
-                         <!-- Stats Card 2 -->
-                         <div class="p-3 bg-white border rounded shadow-sm d-flex align-items-center" style="gap: 12px; min-height: 80px;">
-                              <div style="width: 36px; height: 36px; border-radius: 50%; background-color: #DCFCE7; color: #15803D; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
-                                   <i class="fas fa-check-circle" style="font-size: 0.9rem; color: #15803D;"></i>
-                              </div>
-                              <div>
-                                   <span class="text-secondary small d-block uppercase font-weight-bold" style="font-size: 0.65rem;">APROBACIONES FIRMES</span>
-                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $this->propuestas->where('aprobado', true)->count() }} Cursos Listos</span>
-                              </div>
-                         </div>
-
-                         <!-- Stats Card 3 -->
-                         <div class="p-3 bg-white border rounded shadow-sm d-flex align-items-center" style="gap: 12px; min-height: 80px;">
-                              <div style="width: 36px; height: 36px; border-radius: 50%; background-color: #FEF3C7; color: #B45309; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
-                                   <i class="fas fa-hourglass-half" style="font-size: 0.9rem; color: #B45309;"></i>
-                              </div>
-                              <div>
-                                   <span class="text-secondary small d-block uppercase font-weight-bold" style="font-size: 0.65rem;">PROPUESTAS PENDIENTES</span>
-                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $this->propuestas->whereNull('aprobado')->count() }} en Evaluación</span>
-                              </div>
-                         </div>
-
-                    </div>
-               </div>
           </div>
      @endif
 
-     <!-- TAB 3: CONTROL DE EJECUCIÓN -->
+     <!-- EJECUCIÓN -->
      @if($pestania_activa === 'ejecucion')
           <div class="row text-dark">
                
@@ -564,66 +564,6 @@
           </div>
      @endif
 
-     <!-- Modal Trabajadores -->
-     <div class="modal fade" id="modalProgramacionTrabajadores" tabindex="-1" aria-labelledby="modalProgramacionTrabajadoresLabel" aria-hidden="true" wire:ignore.self>
-          <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-               <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
-                    <div class="modal-header text-white" style="background-color: #64748B; border-top-left-radius: 12px; border-top-right-radius: 12px;">
-                         <h5 class="modal-title font-weight-bold" id="modalProgramacionTrabajadoresLabel">
-                              <i class="fas fa-users mr-2"></i> Trabajadores del Curso: {{ $programacion_modal_nombre }}
-                         </h5>
-                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="outline: none;">
-                              <span aria-hidden="true">&times;</span>
-                         </button>
-                    </div>
-                    <div class="modal-body p-0">
-                         <div class="table-responsive">
-                              <table class="table table-hover mb-0">
-                                   <thead class="bg-light">
-                                        <tr>
-                                             <th class="p-3">FICHA</th>
-                                             <th class="p-3">CÉDULA</th>
-                                             <th class="p-3">NOMBRE</th>
-                                             <th class="p-3">UNIDAD</th>
-                                             <th class="p-3">CARGO</th>
-                                             <th class="p-3">GERENCIA</th>
-                                        </tr>
-                                   </thead>
-                                   <tbody>
-                                        @forelse($programacion_modal_trabajadores as $trabajador)
-                                             <tr>
-                                                  <td class="p-3"><span class="badge badge-light border">{{ $trabajador->ficha }}</span></td>
-                                                  <td class="p-3">{{ $trabajador->cedula ?? 'N/A' }}</td>
-                                                  <td class="p-3 font-weight-bold text-dark">{{ $trabajador->nombre_empleado }}</td>
-                                                  <td class="p-3 small text-secondary">{{ $trabajador->texto_unidad }}</td>
-                                                  <td class="p-3 small">{{ $trabajador->texto_cargo }}</td>
-                                                  <td class="p-3 small text-secondary">{{ $trabajador->texto_gerencia }}</td>
-                                             </tr>
-                                        @empty
-                                             <tr>
-                                                  <td colspan="6" class="text-center py-4 text-muted">No hay trabajadores matriculados en este curso.</td>
-                                             </tr>
-                                        @endforelse
-                                   </tbody>
-                              </table>
-                         </div>
-                    </div>
-                    <div class="modal-footer" style="background-color: #f8fafc; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
-                         <button type="button" class="btn btn-secondary font-weight-bold px-4" data-dismiss="modal">Cerrar</button>
-                    </div>
-               </div>
-          </div>
-     </div>
-
-     <script>
-          document.addEventListener('livewire:initialized', () => {
-               @this.on('abrir-modal-programacion-trabajadores', () => {
-                    $('#modalProgramacionTrabajadores').modal('show');
-               });
-          });
-          window.addEventListener('abrir-modal-programacion-trabajadores', event => {
-               $('#modalProgramacionTrabajadores').modal('show');
-          });
-     </script>
-
+     <!-- Modal: Trabajadores Matriculados en un Curso (Vista: Programación) -->
+     @include('partials.modals.modal-programacion-trabajadores', ['nombre' => $programacion_modal_nombre, 'trabajadores' => $programacion_modal_trabajadores])
 </div>
