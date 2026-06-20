@@ -8,6 +8,7 @@ use App\Models\Subactividad;
 use App\Models\Area;
 use App\Models\RrhhPersonal;
 use App\Models\User;
+use App\Models\Facilitador;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Carbon\Carbon;
@@ -17,7 +18,7 @@ class ProgramacionView extends Component
      public $pestania_activa = 'pre';
      public $notificacion = null;
      
-     // Form fields
+     // Campos para rellenar
      public $id_area_seleccionada = '';
      public $actividad_input = '';
      public $subactividad_input = '';
@@ -30,8 +31,10 @@ class ProgramacionView extends Component
      public $duracion_input = 0;
      public $es_entrada_extra = false;
      public $id_propuesta_editando = null;
+     public $modo = 'registro';              // 'registro' o 'busqueda'
+     public $resultados_busqueda = [];     
 
-     // Employees filter properties
+     // Filtros para empleados
      public $filtro_ficha = '';
      public $filtro_cedula = '';
      public $filtro_nombre = '';
@@ -44,13 +47,26 @@ class ProgramacionView extends Component
      
      public $id_ejecucion_seleccionada = null;
      public $asistentes_fichas = [];
-     
-     public $mes_calendario = 'junio';
 
      public function mount($pestania = null)
      {
           if ($pestania) {
                $this->pestania_activa = $pestania;
+          }
+     }
+
+     // Método para cambiar de modo (registro o búsqueda)
+     public function cambiarModo($modo)
+     {
+          $this->cancelarEdicionPropuesta();
+          $this->modo = $modo;
+          
+          if ($modo === 'busqueda') {
+               $this->participantes_seleccionados = [];
+               $this->limpiarFiltrosEmpleados();
+               $this->resultados_busqueda = [];
+          } else {
+               $this->resultados_busqueda = [];
           }
      }
 
@@ -71,7 +87,7 @@ class ProgramacionView extends Component
 
      public function getFacilitadoresProperty()
      {
-          return DB::table('tbl_facilitadores')->get();
+          return Facilitador::all();
      }
 
      public function getPropuestasProperty()
@@ -100,6 +116,83 @@ class ProgramacionView extends Component
           // Assuming cedula is not in RrhhPersonal, but if it is, we could add it. For now we skip filtering by cedula if it doesn't exist, or search in a user relation if needed.
           
           return $query->orderBy('nombre_empleado', 'asc')->get();
+     }
+
+     // Método para buscar programaciones según los filtros del formulario
+     public function buscarPropuestas()
+     {
+          $query = Programacion::query();
+
+          // Filtro por área (unimos con actividades)
+          if ($this->id_area_seleccionada) {
+               $query->whereHas('actividad', function ($q) {
+                    $q->where('area_id', $this->id_area_seleccionada);
+               });
+          }
+
+          // Filtro por nombre de actividad
+          if ($this->actividad_input) {
+               $query->whereHas('actividad', function ($q) {
+                    $q->where('nombre', 'ilike', '%' . $this->actividad_input . '%');
+               });
+          }
+
+          // Filtro por nombre de subactividad
+          if ($this->subactividad_input) {
+               $query->whereHas('subactividad', function ($q) {
+                    $q->where('nombre', 'ilike', '%' . $this->subactividad_input . '%');
+               });
+          }
+
+          // Filtro por nombre de facilitador
+          if ($this->facilitador_input) {
+               $query->whereHas('facilitador', function ($q) {
+                    $q->where('nombre', 'ilike', '%' . $this->facilitador_input . '%');
+               });
+          }
+
+          // Filtro por fecha exacta
+          if ($this->fecha_input) {
+               $query->whereDate('fecha', $this->fecha_input);
+          }
+
+          // Filtro por lugar (texto parcial)
+          if ($this->lugar_input) {
+               $query->where('lugar', 'ilike', '%' . $this->lugar_input . '%');
+          }
+
+          // Filtro por hora desde (mayor o igual)
+          if ($this->desde_input) {
+               $query->whereTime('desde', '>=', $this->desde_input);
+          }
+
+          // Filtro por hora hasta (menor o igual)
+          if ($this->hasta_input) {
+               $query->whereTime('hasta', '<=', $this->hasta_input);
+          }
+
+          $this->resultados_busqueda = $query->orderBy('id', 'desc')->get();
+
+          if ($this->resultados_busqueda->isEmpty()) {
+               $this->mostrarNotificacion('No se encontraron programaciones con esos filtros.', 'info');
+          } else {
+               $this->mostrarNotificacion('Se encontraron ' . $this->resultados_busqueda->count() . ' programaciones.', 'success');
+          }
+     }
+
+     // Método para limpiar los filtros de búsqueda
+     public function limpiarFiltrosBusqueda()
+     {
+          $this->id_area_seleccionada = '';
+          $this->actividad_input = '';
+          $this->subactividad_input = '';
+          $this->facilitador_input = '';
+          $this->fecha_input = '';
+          $this->lugar_input = '';
+          $this->desde_input = '';
+          $this->hasta_input = '';
+          $this->resultados_busqueda = [];
+          $this->mostrarNotificacion('Filtros de búsqueda limpiados.', 'info');
      }
 
      public function limpiarFiltrosEmpleados()
@@ -138,6 +231,17 @@ class ProgramacionView extends Component
           $this->calcularDuracion();
      }
 
+     public function updatedIdAreaSeleccionada()
+     {
+          $this->actividad_input = '';
+          $this->subactividad_input = '';
+     }
+
+     public function updatedActividadInput()
+     {
+          $this->subactividad_input = '';
+     }
+
      public function calcularDuracion()
      {
           if ($this->desde_input && $this->hasta_input) {
@@ -149,6 +253,10 @@ class ProgramacionView extends Component
 
      public function guardarPropuesta()
      {
+          if ($this->modo === 'busqueda') {
+               return; 
+          }
+
           $this->validate([
                'id_area_seleccionada' => 'required',
                'actividad_input' => 'required',
@@ -174,16 +282,10 @@ class ProgramacionView extends Component
                'nombre' => $this->subactividad_input
           ]);
 
-          $facilitador = DB::table('tbl_facilitadores')->where('nombre', $this->facilitador_input)->first();
-          if (!$facilitador) {
-               $facilitadorId = DB::table('tbl_facilitadores')->insertGetId([
-                    'nombre' => $this->facilitador_input,
-                    'created_at' => now(),
-                    'updated_at' => now()
-               ]);
-          } else {
-               $facilitadorId = $facilitador->id;
-          }
+          $facilitador = Facilitador::firstOrCreate([
+               'nombre' => $this->facilitador_input
+          ]);
+          $facilitadorId = $facilitador->id;
 
           $datos = [
                'actividad_id' => $actividad->id,
@@ -231,13 +333,15 @@ class ProgramacionView extends Component
 
      public function cargarPropuestaParaEdicion($id)
      {
+          $this->modo = 'registro'; 
+
           $propuesta = Programacion::find($id);
           if ($propuesta) {
                $this->id_propuesta_editando = $propuesta->id;
                
                $actividad = Actividad::find($propuesta->actividad_id);
                $subactividad = Subactividad::find($propuesta->subactividad_id);
-               $facilitador = DB::table('tbl_facilitadores')->where('id', $propuesta->facilitador_id)->first();
+               $facilitador = Facilitador::find($propuesta->facilitador_id);
                
                $this->id_area_seleccionada = $actividad ? $actividad->area_id : '';
                $this->actividad_input = $actividad ? $actividad->nombre : '';
@@ -263,6 +367,10 @@ class ProgramacionView extends Component
      public function cancelarEdicionPropuesta()
      {
           $this->reset(['id_propuesta_editando', 'id_area_seleccionada', 'actividad_input', 'subactividad_input', 'facilitador_input', 'institucion_input', 'fecha_input', 'lugar_input', 'desde_input', 'hasta_input', 'duracion_input', 'es_entrada_extra', 'participantes_seleccionados']);
+          $this->modo = 'registro';
+          $this->resultados_busqueda = [];
+          $this->participantes_seleccionados = [];
+          $this->limpiarFiltrosEmpleados();
      }
 
      public function eliminarPropuesta($id)

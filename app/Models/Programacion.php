@@ -20,4 +20,19 @@ class Programacion extends Model
           'ejecutado' => 'boolean',
           'extra' => 'boolean',
      ];
+
+     public function actividad()
+     {
+          return $this->belongsTo(Actividad::class, 'actividad_id');
+     }
+
+     public function subactividad()
+     {
+          return $this->belongsTo(Subactividad::class, 'subactividad_id');
+     }
+
+     public function facilitador()
+     {
+          return $this->belongsTo(Facilitador::class, 'facilitador_id');
+     }
 }

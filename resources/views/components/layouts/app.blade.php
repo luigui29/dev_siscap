@@ -49,6 +49,8 @@
                     <div class="dropdown-menu" :class="{ 'show': open }" style="margin-top: 0;">
                         <a class="dropdown-item" href="/configuracion/roles">Roles y Permisos</a>
                         <a class="dropdown-item" href="/configuracion/areas">Áreas de Capacitación</a>
+                        <a class="dropdown-item" href="/configuracion/actividades">Actividades y Subactividades</a>
+                        <a class="dropdown-item" href="/configuracion/facilitadores">Facilitadores</a>
                         <a class="dropdown-item" href="/configuracion/ajustes">Ajustes Generales</a>
                     </div>
                 </li>

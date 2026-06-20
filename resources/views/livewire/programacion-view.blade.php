@@ -14,15 +14,15 @@
      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 mx-5 text-dark">
           <div>
                @if($pestania_activa === 'pre')
-               <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155; margin: 0;">
+               <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155;">
                     Pre-Programaciones 
                </h3>
                @elseif($pestania_activa === 'final')
-               <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155; margin: 0;">   
+               <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155;">   
                     Programaciones Finales
                </h3>
                @elseif($pestania_activa === 'ejecucion')
-               <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155; margin: 0;">
+               <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155;">
                     Ejecutados 
                </h3>
                @endif
@@ -38,8 +38,24 @@
                     <div class="card shadow-sm border-0 bg-white h-100 mb-0" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
-                                   <i class="fas fa-clipboard-list mr-2"></i> {{ $id_propuesta_editando ? 'Editar Pre-Programacion' : 'Nueva Pre-Programacion' }}
+                                   <i class="fas fa-clipboard-list mr-2"></i> {{ $modo === 'busqueda' ? 'Búsqueda de Pre-Programaciones' : ($id_propuesta_editando ? 'Editar Pre-Programacion' : 'Nueva Pre-Programacion') }}
                               </h5>
+                         </div>
+
+                         <!-- Toggle Registro / Búsqueda -->
+                         <div class="d-flex justify-content-end align-items-center px-3 pb-2 pt-1" style="background-color: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                              <div class="btn-group btn-group-sm" role="group">
+                                   <button type="button"
+                                             class="btn {{ $modo === 'registro' ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                             wire:click="cambiarModo('registro')">
+                                        <i class="fas fa-pen mr-1"></i> Registro
+                                   </button>
+                                   <button type="button"
+                                             class="btn {{ $modo === 'busqueda' ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                             wire:click="cambiarModo('busqueda')">
+                                        <i class="fas fa-search mr-1"></i> Búsqueda
+                                   </button>
+                              </div>
                          </div>
 
                          <form wire:submit.prevent="guardarPropuesta" class="card-body">
@@ -56,34 +72,41 @@
 
                                    <div class="col-md-6 form-group">
                                         <label class="font-weight-bold small">ACTIVIDAD</label>
-                                        <input type="text" class="form-control" wire:model="actividad_input" list="actividades-list" style="height: 40px;" placeholder="Escriba o seleccione...">
-                                        <datalist id="actividades-list">
-                                             @foreach($this->actividades->where('area_id', $id_area_seleccionada) as $act)
-                                                  <option value="{{ $act->nombre }}">
+                                        <select class="form-control" wire:model.live="actividad_input" style="height: 40px;" {{ !$id_area_seleccionada && $modo === 'registro' ? 'disabled' : '' }}>
+                                             <option value="">Seleccione una actividad</option>
+                                             @foreach($modo === 'busqueda' && empty($id_area_seleccionada) ? $this->actividades : $this->actividades->where('area_id', $id_area_seleccionada) as $act)
+                                                  <option value="{{ $act->nombre }}">{{ $act->nombre }}</option>
                                              @endforeach
-                                        </datalist>
+                                        </select>
+                                        @error('actividad_input') <span class="text-danger small">{{ $message }}</span> @enderror
                                    </div>
                               </div>
 
                               <div class="row">
                                    <div class="col-md-6 form-group">
                                         <label class="font-weight-bold small">SUBACTIVIDAD</label>
-                                        <input type="text" class="form-control" wire:model="subactividad_input" list="subactividades-list" style="height: 40px;" placeholder="Escriba o seleccione...">
-                                        <datalist id="subactividades-list">
-                                             @foreach($this->subactividades as $sub)
-                                                  <option value="{{ $sub->nombre }}">
+                                        @php
+                                             $actividadSeleccionada = collect($this->actividades)->where('nombre', $actividad_input)->first();
+                                             $idActividadSeleccionada = $actividadSeleccionada ? $actividadSeleccionada->id : null;
+                                        @endphp
+                                        <select class="form-control" wire:model="subactividad_input" style="height: 40px;" {{ !$actividad_input && $modo === 'registro' ? 'disabled' : '' }}>
+                                             <option value="">Seleccione una subactividad</option>
+                                             @foreach($modo === 'busqueda' && empty($actividad_input) ? $this->subactividades : $this->subactividades->where('actividad_id', $idActividadSeleccionada) as $sub)
+                                                  <option value="{{ $sub->nombre }}">{{ $sub->nombre }}</option>
                                              @endforeach
-                                        </datalist>
+                                        </select>
+                                        @error('subactividad_input') <span class="text-danger small">{{ $message }}</span> @enderror
                                    </div>
 
                                    <div class="col-md-6 form-group">
                                         <label class="font-weight-bold small">FACILITADOR</label>
-                                        <input type="text" class="form-control" wire:model="facilitador_input" list="facilitadores-list" style="height: 40px;" placeholder="Ej. Dr. Carlos Mendoza">
-                                        <datalist id="facilitadores-list">
+                                        <select class="form-control" wire:model="facilitador_input" style="height: 40px;" {{ !$id_area_seleccionada && $modo === 'registro' ? 'disabled' : '' }}>
+                                             <option value="">Seleccione un facilitador</option>
                                              @foreach($this->facilitadores as $fac)
-                                                  <option value="{{ $fac->nombre }}">
+                                                  <option value="{{ $fac->nombre }}">{{ $fac->nombre }}</option>
                                              @endforeach
-                                        </datalist>
+                                        </select>
+                                        @error('facilitador_input') <span class="text-danger small">{{ $message }}</span> @enderror
                                    </div>
                               </div>
 
@@ -126,6 +149,7 @@
                               </div>
 
                               <!-- Selección de Participantes -->
+                              @if($modo === 'registro')
                               <hr class="my-4">
                               <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-users text-primary mr-2"></i> Seleccionar Empleados </h6>
                               
@@ -159,8 +183,10 @@
                                         </tbody>
                                    </table>
                               </div>
+                              @endif
 
                               <div class="mt-4 pt-3 border-top text-right">
+                              @if($modo === 'registro')
                                    @if($id_propuesta_editando)
                                         <button type="button" wire:click="cancelarEdicionPropuesta" class="btn btn-secondary px-4 py-2 font-weight-bold mr-2" style="border-radius: 6px;">
                                              <i class="fas fa-times mr-1"></i> Cancelar
@@ -173,6 +199,11 @@
                                              <i class="fas fa-save mr-1"></i> Pre-programar
                                         </button>
                                    @endif
+                              @else
+                                   <button type="button" class="btn btn-info px-5 py-2 font-weight-bold" wire:click="buscarPropuestas" style="border-radius: 6px;">
+                                        <i class="fas fa-search mr-1"></i> Buscar
+                                   </button>
+                              @endif
                               </div>
                          </form>
                     </div>
@@ -183,13 +214,17 @@
                     <div class="card shadow-sm border-0 bg-white h-100" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
-                                   <i class="fas fa-folder-open mr-2"></i> Pre-Programaciones Registradas
+                                   <i class="fas fa-folder-open mr-2"></i> {{ $modo === 'busqueda' ? 'Resultados de Búsqueda' : 'Pre-Programaciones Registradas' }}
                               </h5>
                          </div>
 
                          <div class="card-body p-0">
                               <div style="max-height: 700px; overflow-y: auto;">
-                                   @forelse($this->propuestas->whereNull('aprobado') as $p)
+                                   @php
+                                        $lista = ($modo === 'busqueda') ? collect($resultados_busqueda)->map(fn($item) => (object) $item) : $this->propuestas->whereNull('aprobado');
+                                   @endphp     
+                              
+                                   @forelse($lista as $p)
                                         <div class="p-3 border-bottom hover-gradient-soft">
                                              <div class="d-flex justify-content-between align-items-start">
                                                   <strong class="text-dark" style="font-size: 0.95rem;">#{{ $p->id }} - {{ $p->nombre }}</strong>
@@ -215,7 +250,9 @@
                                    @empty
                                         <div class="text-center py-5 text-muted">
                                              <i class="fas fa-inbox text-muted mb-2" style="font-size: 2.5rem;"></i>
-                                             <p class="mb-0 font-weight-bold">No hay propuestas pendientes de evaluación</p>
+                                             <p class="mb-0 font-weight-bold">
+                                                  {{ $modo === 'busqueda' ? 'No se encontraron resultados' : 'No hay propuestas pendientes de evaluación' }}
+                                             </p>
                                         </div>
                                    @endforelse
                               </div>

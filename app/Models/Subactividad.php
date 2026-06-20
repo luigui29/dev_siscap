@@ -11,4 +11,9 @@ class Subactividad extends Model
 
      protected $table = 'tbl_subactividades';
      protected $guarded = [];
+
+     public function actividad()
+     {
+          return $this->belongsTo(Actividad::class, 'actividad_id');
+     }
 }

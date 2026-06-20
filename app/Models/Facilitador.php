@@ -5,15 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Actividad extends Model
+class Facilitador extends Model
 {
      use HasFactory;
 
-     protected $table = 'tbl_actividades';
+     protected $table = 'tbl_facilitadores';
      protected $guarded = [];
-
-     public function area()
-     {
-          return $this->belongsTo(Area::class, 'area_id');
-     }
 }
