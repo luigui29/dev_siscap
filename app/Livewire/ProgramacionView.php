@@ -131,14 +131,25 @@ class ProgramacionView extends Component
                $query->where('texto_unidad', 'ilike', "%{$this->filtro_unidad}%");
           }
           // Assuming cedula is not in RrhhPersonal, but if it is, we could add it. For now we skip filtering by cedula if it doesn't exist, or search in a user relation if needed.
-          
-          return $query->orderBy('nombre_empleado', 'asc')->get();
+          // Limitar los resultados a los primeros 50 para evitar errores de memoria al escribir términos cortos
+          return $query->orderBy('nombre_empleado', 'asc')->take(50)->get();
+     }
+
+     // Hook para detectar cambios en las variables de filtro y ejecutar la búsqueda dinámicamente
+     public function updated($propertyName)
+     {
+          if (str_starts_with($propertyName, 'filtro_')) {
+               if (in_array($propertyName, ['filtro_area', 'filtro_actividad', 'filtro_subactividad', 'filtro_facilitador', 'filtro_institucion', 'filtro_lugar', 'filtro_fecha', 'filtro_desde', 'filtro_hasta'])) {
+                    $this->buscarPropuestas();
+               }
+          }
      }
 
      // Método para buscar programaciones según los filtros del formulario
      public function buscarPropuestas()
      {
-          $query = Programacion::query();
+          // Eager load relationships to prevent N+1 issues
+          $query = Programacion::with(['actividad', 'subactividad', 'facilitador']);
 
           // Filtro por área (unimos con actividades)
           if ($this->filtro_area) {
@@ -196,10 +207,18 @@ class ProgramacionView extends Component
           $this->resultados_busqueda = $query->orderBy('id', 'desc')->get();
           $this->busqueda_activa = true;
 
-          if ($this->resultados_busqueda->isEmpty()) {
-               $this->mostrarNotificacion('No se encontraron programaciones con esos filtros.', 'info');
-          } else {
-               $this->mostrarNotificacion('Se encontraron ' . $this->resultados_busqueda->count() . ' programaciones.', 'success');
+          // Si todos los filtros están vacíos, desactivar búsqueda activa
+          if (empty($this->filtro_area) && empty($this->filtro_actividad) && empty($this->filtro_subactividad) && empty($this->filtro_facilitador) && empty($this->filtro_institucion) && empty($this->filtro_lugar) && empty($this->filtro_fecha) && empty($this->filtro_desde) && empty($this->filtro_hasta)) {
+               $this->busqueda_activa = false;
+               $this->resultados_busqueda = [];
+          }
+
+          if ($this->busqueda_activa) {
+               if ($this->resultados_busqueda->isEmpty()) {
+                    $this->mostrarNotificacion('No se encontraron programaciones con esos filtros.', 'info');
+               } else {
+                    $this->mostrarNotificacion('Se encontraron ' . $this->resultados_busqueda->count() . ' programaciones.', 'success');
+               }
           }
      }
 

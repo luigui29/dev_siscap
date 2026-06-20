@@ -31,7 +31,7 @@
                     $actividadSeleccionadaBusqueda = collect($this->actividades)->where('nombre', $filtro_actividad)->first();
                     $idActividadSeleccionadaBusqueda = $actividadSeleccionadaBusqueda ? $actividadSeleccionadaBusqueda->id : null;
                 @endphp
-                <select class="form-control form-control-sm" wire:model.defer="filtro_subactividad" style="border-radius: 4px;" {{ !$filtro_actividad ? 'disabled' : '' }}>
+                <select class="form-control form-control-sm" wire:model.live="filtro_subactividad" style="border-radius: 4px;" {{ !$filtro_actividad ? 'disabled' : '' }}>
                         <option value="">Seleccione una subactividad</option>
                         @foreach($this->subactividades->where('actividad_id', $idActividadSeleccionadaBusqueda) as $sub)
                             <option value="{{ $sub->nombre }}">{{ $sub->nombre }}</option>
@@ -41,7 +41,7 @@
             </div>
             <div class="col-md-3 mb-2">
                 <label class="font-weight-bold small text-muted mb-1">Facilitador</label>
-                <select class="form-control form-control-sm" wire:model.defer="filtro_facilitador" style="border-radius: 4px;">
+                <select class="form-control form-control-sm" wire:model.live="filtro_facilitador" style="border-radius: 4px;">
                         <option value="">Seleccione un facilitador</option>
                         @foreach($this->facilitadores as $fac)
                             <option value="{{ $fac->nombre }}">{{ $fac->nombre }}</option>
@@ -51,20 +51,17 @@
             </div>
             <div class="col-md-3 mb-2">
                 <label class="font-weight-bold small text-muted mb-1">Institución</label>
-                <input type="text" class="form-control form-control-sm" wire:model.defer="filtro_institucion" placeholder="Ej. VENPRECAR, C.A." style="border-radius: 4px;">
+                <input type="text" class="form-control form-control-sm" wire:model.live.debounce.300ms="filtro_institucion" placeholder="Ej. VENPRECAR, C.A." style="border-radius: 4px;">
             </div>
             <div class="col-md-3 mb-2">
                 <label class="font-weight-bold small text-muted mb-1">Fecha</label>
-                <input type="date" class="form-control form-control-sm" wire:model.defer="filtro_fecha" style="border-radius: 4px;">
+                <input type="date" class="form-control form-control-sm" wire:model.live="filtro_fecha" style="border-radius: 4px;">
             </div>
             <div class="col-md-3 mb-2">
                 <label class="font-weight-bold small text-muted mb-1">Lugar</label>
-                <input type="text" class="form-control form-control-sm" wire:model.defer="filtro_lugar" placeholder="Ej. Sala de Eventos" style="border-radius: 4px;">
+                <input type="text" class="form-control form-control-sm" wire:model.live.debounce.300ms="filtro_lugar" placeholder="Ej. Sala de Eventos" style="border-radius: 4px;">
             </div>
             <div class="col-12 mt-2 d-flex justify-content-end">
-                <button type="button" class="btn btn-sm btn-primary mr-2" wire:click="buscarPropuestas">
-                    <i class="fas fa-search mr-1"></i> Buscar
-                </button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" wire:click="limpiarFiltrosBusqueda">
                     <i class="fas fa-eraser mr-1"></i> Limpiar
                 </button>

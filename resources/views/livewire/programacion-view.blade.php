@@ -171,7 +171,12 @@
                               
                               @include('partials.filtro-empleados')
 
-                              <div class="table-responsive border rounded" style="max-height: 250px; overflow-y: auto;">
+                              <div wire:loading wire:target="filtro_ficha, filtro_cedula, filtro_nombre, filtro_cargo, filtro_gerencia, filtro_unidad, limpiarFiltrosEmpleados" class="w-100 text-center py-4">
+                                   <i class="fas fa-spinner fa-spin text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                   <h6 class="text-muted font-weight-bold">Buscando empleados...</h6>
+                              </div>
+
+                              <div class="table-responsive border rounded" style="max-height: 250px; overflow-y: auto;" wire:loading.class="d-none" wire:target="filtro_ficha, filtro_cedula, filtro_nombre, filtro_cargo, filtro_gerencia, filtro_unidad, limpiarFiltrosEmpleados">
                                    <table class="table table-sm mb-0 table-hover">
                                         <thead class="bg-light">
                                              <tr>
@@ -243,7 +248,11 @@
                          </div>
 
                          <div class="card-body p-0">
-                              <div style="max-height: 700px; overflow-y: auto;">
+                              <div wire:loading wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda" class="w-100 text-center py-5">
+                                   <i class="fas fa-spinner fa-spin text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                   <h6 class="text-muted font-weight-bold">Buscando pre-programaciones...</h6>
+                              </div>
+                              <div style="max-height: 700px; overflow-y: auto;" wire:loading.class="d-none" wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda">
                                    @php
                                         $lista = ($modo === 'busqueda') ? collect($resultados_busqueda)->map(fn($item) => (object) $item) : $this->propuestas->whereNull('aprobado');
                                    @endphp     
@@ -341,12 +350,12 @@
                               </h5>
                          </div>
 
-                         <div wire:loading wire:target="buscarPropuestas, limpiarFiltrosBusqueda" class="w-100 text-center py-5">
+                         <div wire:loading wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda" class="w-100 text-center py-5">
                               <i class="fas fa-spinner fa-spin text-primary mb-2" style="font-size: 2rem;"></i>
                               <h6 class="text-muted font-weight-bold">Cargando resultados...</h6>
                          </div>
 
-                         <div class="table-responsive" wire:loading.class="d-none" wire:target="buscarPropuestas, limpiarFiltrosBusqueda">
+                         <div class="table-responsive" wire:loading.class="d-none" wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda">
                               <table class="table mb-0 align-middle">
                                    <thead class="bg-light">
                                         <tr>

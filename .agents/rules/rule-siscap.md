@@ -10,7 +10,7 @@ trigger: always_on
 - The App is meant to be used only by authorized end users. whose roles are, from lowest to highest: Analista, Coordinador, Gerente.
 
 ## Stack
-- Frontend: Blade + Livewire + Bootstrap (4.6.1).
+- Frontend: Blade + Livewire + Alpine.JS + Bootstrap (4.6.1).
 - Backend: PHP (version 8.3.30).
 - Database: PostgresSQL (version 18) with Eloquent ORM.
 - Packages: "dompdf" for exporting pdf files.
