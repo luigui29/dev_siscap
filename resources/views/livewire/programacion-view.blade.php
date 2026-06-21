@@ -357,14 +357,14 @@
                                    <tbody>
                                         @forelse($this->listaFinal as $p)
                                              <tr>
-                                                  <td class="p-3">
+                                                  <td class="p-2">
                                                        <strong class="text-dark d-block" style="font-size: 0.9rem;">{{ $p->nombre }}</strong>
                                                        <span class="small d-block text-dark"><strong>Institución:</strong> {{ $p->institucion }}</span>
                                                   </td>
-                                                  <td class="p-3">
+                                                  <td class="p-2">
                                                        <span class="small">{{ $p->lugar }} | {{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}</span>
                                                   </td>
-                                                  <td class="p-3 text-center align-middle">
+                                                  <td class="p-2 text-center align-middle">
                                                        <button wire:click="modalProgramacionEmpleados({{ $p->id }})" wire:loading.attr="disabled" wire:target="modalProgramacionEmpleados({{ $p->id }})" class="btn btn-sm btn-primary font-weight-bold" style="font-size: 0.8rem;">
                                                             <span wire:loading.remove wire:target="modalProgramacionEmpleados({{ $p->id }})">
                                                                  <i class="fas fa-solid fa-eye text-white mr-1"></i> {{ $p->participantes_count }} Trabajadores
@@ -374,7 +374,7 @@
                                                             </span>
                                                        </button>
                                                   </td>
-                                                  <td class="p-3 text-center align-middle">
+                                                  <td class="p-2 text-center align-middle">
                                                        @if($p->aprobado === true)
                                                             <span class="badge badge-success text-uppercase font-weight-bold p-2" style="font-size: 0.72rem; border-radius: 50px;">Aprobado</span>
                                                        @elseif($p->aprobado === false)
@@ -383,7 +383,7 @@
                                                             <span class="badge badge-warning text-uppercase font-weight-bold p-2 animate-pulse" style="font-size: 0.72rem; border-radius: 50px;">Pendiente</span>
                                                        @endif
                                                   </td>
-                                                  <td class="p-3 text-right align-middle">
+                                                  <td class="p-2 text-right align-middle">
                                                        <div class="d-flex justify-content-end" style="gap: 6px;">
                                                             @if($p->aprobado === null)
                                                                  <button wire:click="aprobarPropuesta({{ $p->id }})" class="btn btn-sm btn-outline-success border font-weight-bold">

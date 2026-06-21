@@ -92,36 +92,35 @@
                     <table class="table table-hover mb-0" style="min-width: 850px;">
                          <thead>
                               <tr>
-                                   <th>ACTIVIDAD</th>
-                                   <th>SUBACTIVIDAD</th>
-                                   <th>FACILITADOR</th>
-                                   <th>FECHA</th>
-                                   <th>LUGAR</th>
-                                   <th>APROBADO</th>
-                                   <th>EJECUTADO</th>
+                                   <th class="px-3 py-2">ACTIVIDAD</th>
+                                   <th class="p-2">SUBACTIVIDAD</th>
+                                   <th class="p-2">FACILITADOR</th>
+                                   <th class="p-2">FECHA</th>
+                                   <th class="p-2">LUGAR</th>
+                                   <th class="p-2">APROBADO</th>
+                                   <th class="p-2">EJECUTADO</th>
                               </tr>
                          </thead>
                          <tbody>
                               @forelse($cursos as $curso)
                                    <tr>
-                                        <td class="align-middle">
-                                             <span class="status-badge-corp badge-corporate-blue">
-                                                  {{ $curso->actividad }}
-                                             </span>
+                                        <td class="px-3 py-2 align-middle">
+                                             <strong class="text-dark d-block" style="font-size: 0.9rem;">{{ $curso->actividad->nombre }}</strong>
+                                             <span class="small d-block text-secondary"><strong>Área:</strong> {{ $curso->actividad->area->nombre }}</span>                                             
                                         </td>
-                                        <td class="align-middle text-dark font-weight-bold" style="font-size: 0.9rem;">
-                                             {{ $curso->subactividad }}
+                                        <td class="p-2 align-middle">
+                                             <span class="text-dark" style="font-size: 0.9rem;">{{ $curso->subactividad->nombre }}</span>
                                         </td>
-                                        <td class="align-middle text-secondary" style="font-size: 0.9rem;">
-                                             {{ $curso->facilitador }}
+                                        <td class="p-2 align-middle">
+                                             <span class="text-secondary" style="font-size: 0.9rem;">{{ $curso->facilitador->nombre }}</span>
                                         </td>
-                                        <td class="align-middle text-secondary" style="font-size: 0.9rem;">
-                                             {{ $curso->fecha->format('d/m/Y') }}
+                                        <td class="p-2 align-middle">
+                                             <span class="text-secondary" style="font-size: 0.9rem;">{{ $curso->fecha->format('d/m/Y') }}</span>
                                         </td>
-                                        <td class="align-middle text-muted" style="font-size: 0.9rem;">
-                                             {{ $curso->lugar }}
+                                        <td class="p-2 align-middle">
+                                             <span class="text-muted" style="font-size: 0.9rem;">{{ $curso->lugar }}</span>
                                         </td>
-                                        <td class="align-middle">
+                                        <td class="p-2 align-middle">
                                              @if($curso->aprobado)
                                                   <span class="d-inline-flex align-items-center text-success font-weight-bold" style="font-size: 0.85rem; gap: 4px;">
                                                        <i class="fas fa-check-circle"></i> Aprobado
@@ -134,8 +133,8 @@
                                         </td>
                                         <td class="align-middle">
                                              @if($curso->ejecutado)
-                                                  <span class="d-inline-flex align-items-center text-info font-weight-bold" style="font-size: 0.85rem; gap: 4px;">
-                                                       <i class="fas fa-play-circle"></i> Ejecutado
+                                                  <span class="d-inline-flex align-items-center text-success font-weight-bold" style="font-size: 0.85rem; gap: 4px;">
+                                                       <i class="fas fa-check-circle"></i> Ejecutado
                                                   </span>
                                              @else
                                                   <span class="d-inline-flex align-items-center text-warning font-weight-bold" style="font-size: 0.85rem; gap: 4px;">

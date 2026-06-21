@@ -32,12 +32,20 @@
     
     <div class="card-body p-4 bg-light">
         <div class="row text-dark">
+            <!-- Barra Lateral (Info del Día) -->
+            <div class="col-12 col-lg-4 ">
+                <div class="card shadow-sm border-0 bg-white p-4 h-100 d-flex flex-column justify-content-between" style="border-radius: 8px;">
+                    <div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Calendario -->
-            <div class="col-12 col-lg-8 order-2 order-lg-2">
-                <div class="card shadow-sm border-0 bg-white">
+            <div class="col-12 col-lg-8">
+                <div class="card shadow-sm border-0 bg-white h-100">
                     <div class="p-3">
                         <div class="table-responsive">
-                            <table class="table table-bordered text-center mb-0" style="table-layout: fixed;">
+                            <table class="table table-bordered text-center" style="table-layout: fixed;">
                                 <thead>
                                     <tr style="background-color: #F8FAFC;">
                                         <th class="p-1 text-muted font-weight-bold text-uppercase" style="width: 14%; font-size: 0.78rem;">Lun</th>
@@ -121,14 +129,6 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Barra Lateral (Info del Día) -->
-            <div class="col-12 col-lg-4 mb-4 mt-4 mt-lg-0 order-1 order-lg-1">
-                <div class="card shadow-sm border-0 bg-white p-4 h-100 d-flex flex-column justify-content-between" style="border-radius: 8px;">
-                    <div>
                     </div>
                 </div>
             </div>

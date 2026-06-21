@@ -4,13 +4,15 @@ namespace App\Livewire;
 
 use App\Models\Programacion;
 use Livewire\Component;
+use Livewire\Attributes\Url;
+use Livewire\Attributes\On;
 
 class DashboardView extends Component
 {
-     #[\Livewire\Attributes\Url]
+     #[Url]
      public $year;
      
-     #[\Livewire\Attributes\Url]
+     #[Url]
      public $month;
 
      public $cursos;
@@ -27,7 +29,7 @@ class DashboardView extends Component
           }
      }
 
-     #[\Livewire\Attributes\On('fecha_cambiada')]
+     #[On('fecha_cambiada')]
      public function actualizarFecha($year, $month)
      {
           $this->year = $year;
