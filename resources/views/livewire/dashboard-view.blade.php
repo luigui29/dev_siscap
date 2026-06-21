@@ -5,37 +5,20 @@
                <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155; margin: 0;">
                     Dashboard
                </h3>
-               <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                    Resumen general del estado de capacitación de colaboradores y cursos registrados.
-               </p>
           </div>
      </div>
 
-     <!-- Fila de Tarjetas Estadísticas -->
+     <!-- Tarjetas de Estadísticas -->
      <div class="row mx-5 mb-4">
           
-          <!-- Cursos Impartidos este Mes -->
-          <div class="col-12 col-md-6 col-lg-3 mb-3 mb-lg-0">
-               <div class="card stat-card total-1 p-3 shadow-sm h-100">
-                    <div class="d-flex justify-content-between align-items-center">
-                         <div>
-                              <div class="text-muted font-weight-bold text-uppercase mb-1" style="font-size: 0.75rem;">Cursos Impartidos este Mes</div>
-                              <h3 class="mb-0 font-weight-bold text-dark">42</h3>
-                         </div>
-                         <div class="stat-icon total-1">
-                              <i class="fas fa-tachometer-alt"></i>
-                         </div>
-                    </div>
-               </div>
-          </div>
-
-          <!-- Cursos Impartidos este Año -->
+          
+          <!-- Cursos Totales en este Año -->
           <div class="col-12 col-md-6 col-lg-3 mb-3 mb-lg-0">
                <div class="card stat-card total-2 p-3 shadow-sm h-100">
                     <div class="d-flex justify-content-between align-items-center">
                          <div>
                               <div class="text-muted font-weight-bold text-uppercase mb-1" style="font-size: 0.75rem;">Cursos Impartidos este Año</div>
-                              <h3 class="mb-0 font-weight-bold text-dark">356</h3>
+                              <h3 class="mb-0 font-weight-bold text-dark">{{ $totales_anio }}</h3>
                          </div>
                          <div class="stat-icon total-2">
                               <i class="fas fa-users"></i>
@@ -44,13 +27,28 @@
                </div>
           </div>
 
-          <!-- Cursos por Ejecutar -->
+          <!-- Ejecutados este Mes -->
+          <div class="col-12 col-md-6 col-lg-3 mb-3 mb-lg-0">
+               <div class="card stat-card total-1 p-3 shadow-sm h-100">
+                    <div class="d-flex justify-content-between align-items-center">
+                         <div>
+                              <div class="text-muted font-weight-bold text-uppercase mb-1" style="font-size: 0.75rem;">Cursos Impartidos este Mes</div>
+                              <h3 class="mb-0 font-weight-bold text-dark">{{ $ejecutados_mes }}</h3>
+                         </div>
+                         <div class="stat-icon total-1">
+                              <i class="fas fa-tachometer-alt"></i>
+                         </div>
+                    </div>
+               </div>
+          </div>
+
+          <!-- Programaciones Finales este Mes -->
           <div class="col-12 col-md-6 col-lg-3 mb-3 mb-lg-0">
                <div class="card stat-card total-3 p-3 shadow-sm h-100">
                     <div class="d-flex justify-content-between align-items-center">
                          <div>
                               <div class="text-muted font-weight-bold text-uppercase mb-1" style="font-size: 0.75rem;">Cursos por Ejecutar</div>
-                              <h3 class="mb-0 font-weight-bold text-dark">18</h3>
+                              <h3 class="mb-0 font-weight-bold text-dark">{{ $finales_mes }}</h3>
                          </div>
                          <div class="stat-icon total-3">
                               <i class="fas fa-hourglass-start"></i>
@@ -59,13 +57,13 @@
                </div>
           </div>
 
-          <!-- Cursos por Aprobar -->
+          <!-- Pre-Programaciones este Mes -->
           <div class="col-12 col-md-6 col-lg-3 mb-3 mb-lg-0">
                <div class="card stat-card total-4 p-3 shadow-sm h-100">
                     <div class="d-flex justify-content-between align-items-center">
                          <div>
                               <div class="text-muted font-weight-bold text-uppercase mb-1" style="font-size: 0.75rem;">Cursos por Aprobar</div>
-                              <h3 class="mb-0 font-weight-bold text-dark">7</h3>
+                              <h3 class="mb-0 font-weight-bold text-dark">{{ $pre_mes }}</h3>
                          </div>
                          <div class="stat-icon total-4">
                               <i class="fas fa-check-double"></i>
@@ -73,7 +71,6 @@
                     </div>
                </div>
           </div>
-
      </div>
 
      <!-- Calendario Anual de Programaciones -->

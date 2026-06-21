@@ -3,7 +3,7 @@
         <div class="d-flex align-items-center">
             <i class="fas fa-calendar-alt mr-2" style="font-size: 1.25rem; color: #FFFFFF;"></i>
             <h5 class="mb-0 font-weight-bold text-white">
-                Cronograma de Adiestramiento
+                Cronograma
             </h5>
         </div>
         
@@ -32,7 +32,7 @@
     
     <div class="card-body p-4 bg-light">
         <div class="row text-dark">
-            {{-- Calendario principal --}}
+            <!-- Calendario -->
             <div class="col-12 col-lg-8 order-2 order-lg-2">
                 <div class="card shadow-sm border-0 bg-white">
                     <div class="p-3">
@@ -125,53 +125,10 @@
                 </div>
             </div>
 
-            {{-- Sidebar: Leyenda y Estados --}}
+            <!-- Barra Lateral (Info del Día) -->
             <div class="col-12 col-lg-4 mb-4 mt-4 mt-lg-0 order-1 order-lg-1">
                 <div class="card shadow-sm border-0 bg-white p-4 h-100 d-flex flex-column justify-content-between" style="border-radius: 8px;">
                     <div>
-                        <h5 class="font-weight-bold text-dark border-bottom pb-2">
-                            <i class="fas fa-calendar-alt text-secondary mr-2"></i> Leyenda y Estados
-                        </h5>
-                        <div class="d-flex flex-column mt-3" style="gap: 12px;">
-                            <div class="p-3 rounded border bg-light d-flex align-items-center" style="gap: 12px;">
-                                <div style="width: 16px; height: 16px; border-radius: 4px; background-color: #58D68D; flex-shrink: 0;"></div>
-                                <div>
-                                    <small class="text-secondary font-weight-bold d-block" style="font-size: 0.72rem;">EJECUTADO / CONCLUIDO</small>
-                                    <span class="badge badge-success" style="font-size: 0.65rem;">Cursos del mes completados</span>
-                                </div>
-                            </div>
-                            
-                            <div class="p-3 rounded border bg-light d-flex align-items-center" style="gap: 12px;">
-                                <div style="width: 16px; height: 16px; border-radius: 4px; background-color: #5DADE2; flex-shrink: 0;"></div>
-                                <div>
-                                    <small class="text-secondary font-weight-bold d-block" style="font-size: 0.72rem;">APROBADO / PENDIENTE</small>
-                                    <span class="badge badge-info text-dark" style="font-size: 0.65rem; background-color: #E0F2FE;">Programados</span>
-                                </div>
-                            </div>
-
-                            <div class="p-3 rounded border bg-light d-flex align-items-center" style="gap: 12px;">
-                                <div style="width: 16px; height: 16px; border-radius: 4px; background-color: #F8C471; flex-shrink: 0;"></div>
-                                <div>
-                                    <small class="text-secondary font-weight-bold d-block" style="font-size: 0.72rem;">PRE-PROGRAMADO / EVALUACIÓN</small>
-                                    <span class="badge badge-warning text-dark" style="font-size: 0.65rem; background-color: #FEF3C7;">En Propuesta</span>
-                                </div>
-                            </div>
-
-                            <div class="p-3 rounded border bg-light d-flex align-items-center" style="gap: 12px;">
-                                <div style="width: 16px; height: 16px; border-radius: 4px; background-color: rgba(231, 76, 60, 0.15); border: 1px solid rgba(231, 76, 60, 0.3); flex-shrink: 0;"></div>
-                                <div>
-                                    <small class="text-secondary font-weight-bold d-block" style="font-size: 0.72rem;">FERIADO NACIONAL</small>
-                                    <span class="badge badge-danger" style="font-size: 0.65rem; background-color: #FEE2E2; color: #C0392B;">Día no laborable</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 pt-3 border-top">
-                        <span class="text-secondary font-weight-bold uppercase d-block mb-1" style="font-size: 0.75rem;">Resumen Mensual</span>
-                        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.4;">
-                            El cronograma está sincronizado en tiempo real con las propuestas enviadas por los coordinadores y las ejecuciones de los cursos de SISCAP.
-                        </p>
                     </div>
                 </div>
             </div>

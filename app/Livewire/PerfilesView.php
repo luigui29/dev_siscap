@@ -46,15 +46,6 @@ class PerfilesView extends Component
      public $filtro_gerencia = '';
      public $filtro_unidad = '';
 
-     public $busqueda_gerencia = '';
-     public $busqueda_unidad = '';
-
-     public function buscarResultados()
-     {
-          $this->busqueda_gerencia = $this->filtro_gerencia;
-          $this->busqueda_unidad = $this->filtro_unidad;
-     }
-
      public function updatedFiltroGerencia()
      {
           $this->filtro_unidad = '';
@@ -62,7 +53,7 @@ class PerfilesView extends Component
 
      public function limpiarFiltros()
      {
-          $this->reset(['filtro_gerencia', 'filtro_unidad', 'busqueda_gerencia', 'busqueda_unidad']);
+          $this->reset(['filtro_gerencia', 'filtro_unidad']);
      }
 
      public function mount($pestania = null)
@@ -288,7 +279,7 @@ class PerfilesView extends Component
           $cursosPorArea = [];
 
           if ($this->pestania_activa === 'individual') {
-              $empleados = $this->aplicarFiltrosEmpleados(\App\Models\RrhhPersonal::query())
+              $empleados = $this->aplicarFiltrosEmpleados(RrhhPersonal::query())
                   ->orderBy('nombre_empleado', 'asc')
                   ->limit(50)
                   ->get();
@@ -364,33 +355,31 @@ class PerfilesView extends Component
                     ->pluck('texto_unidad');
 
                // Calcular estadísticas reales
-               $participaciones = \Illuminate\Support\Facades\DB::table('pl_programaciones')
+               $participaciones_query = \Illuminate\Support\Facades\DB::table('pl_programaciones')
                     ->join('tbl_programaciones', 'pl_programaciones.programacion_id', '=', 'tbl_programaciones.id')
-                    ->select('pl_programaciones.ficha_empleado', 'tbl_programaciones.duracion', 'tbl_programaciones.aprobado', 'tbl_programaciones.ejecutado')
-                    ->get();
+                    ->join('rrhh_personal', 'pl_programaciones.ficha_empleado', '=', 'rrhh_personal.ficha')
+                    ->select('pl_programaciones.ficha_empleado', 'rrhh_personal.texto_gerencia', 'rrhh_personal.texto_unidad', 'tbl_programaciones.duracion', 'tbl_programaciones.aprobado', 'tbl_programaciones.ejecutado');
 
-               $agregados = [];
-               foreach ($participaciones as $p) {
-                    $ficha = $p->ficha_empleado;
-                    if (!isset($agregados[$ficha])) {
-                         $agregados[$ficha] = ['horas' => 0, 'aprobados' => 0, 'ejecutados' => 0];
-                    }
-                    $agregados[$ficha]['horas'] += (float) $p->duracion;
-                    if ($p->aprobado) $agregados[$ficha]['aprobados']++;
-                    if ($p->ejecutado) $agregados[$ficha]['ejecutados']++;
+               if (!empty($this->filtro_gerencia)) {
+                    $participaciones_query->where('rrhh_personal.texto_gerencia', $this->filtro_gerencia);
+               }
+               if (!empty($this->filtro_unidad)) {
+                    $participaciones_query->where('rrhh_personal.texto_unidad', $this->filtro_unidad);
                }
 
-               $empleados_query = \App\Models\RrhhPersonal::select('ficha', 'texto_gerencia', 'texto_unidad');
-               if (!empty($this->busqueda_gerencia)) {
-                    $empleados_query->where('texto_gerencia', $this->busqueda_gerencia);
+               $participaciones = $participaciones_query->get();
+
+               $empleados_query = RrhhPersonal::select('ficha', 'texto_gerencia', 'texto_unidad');
+               if (!empty($this->filtro_gerencia)) {
+                    $empleados_query->where('texto_gerencia', $this->filtro_gerencia);
                }
-               if (!empty($this->busqueda_unidad)) {
-                    $empleados_query->where('texto_unidad', $this->busqueda_unidad);
+               if (!empty($this->filtro_unidad)) {
+                    $empleados_query->where('texto_unidad', $this->filtro_unidad);
                }
                $empleados_gerencia = $empleados_query->get();
 
                $estadisticas = [];
-               $nivel_agrupacion = (!empty($this->busqueda_gerencia)) ? 'unidad' : 'gerencia';
+               $nivel_agrupacion = (!empty($this->filtro_gerencia)) ? 'unidad' : 'gerencia';
 
                foreach ($empleados_gerencia as $emp) {
                     $key = $nivel_agrupacion === 'unidad' ? $emp->texto_unidad : $emp->texto_gerencia;
@@ -407,11 +396,16 @@ class PerfilesView extends Component
                     }
 
                     $estadisticas[$key]['trabajadores']++;
+               }
 
-                    if (isset($agregados[$emp->ficha])) {
-                         $estadisticas[$key]['horas'] += $agregados[$emp->ficha]['horas'];
-                         $estadisticas[$key]['aprobados'] += $agregados[$emp->ficha]['aprobados'];
-                         $estadisticas[$key]['ejecutados'] += $agregados[$emp->ficha]['ejecutados'];
+               foreach ($participaciones as $p) {
+                    $key = $nivel_agrupacion === 'unidad' ? $p->texto_unidad : $p->texto_gerencia;
+                    if (empty($key)) $key = 'NO DEFINIDO';
+
+                    if (isset($estadisticas[$key])) {
+                         $estadisticas[$key]['horas'] += (float) $p->duracion;
+                         if ($p->aprobado) $estadisticas[$key]['aprobados']++;
+                         if ($p->ejecutado) $estadisticas[$key]['ejecutados']++;
                     }
                }
 

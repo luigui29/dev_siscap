@@ -38,12 +38,14 @@ class DashboardCalendario extends Component
         }
         
         $this->validarLimites();
+        $this->dispatch('fecha_cambiada', year: $this->year, month: $this->month);
     }
 
     public function cambiarAnio($delta)
     {
         $this->year += $delta;
         $this->validarLimites();
+        $this->dispatch('fecha_cambiada', year: $this->year, month: $this->month);
     }
 
     protected function validarLimites()
