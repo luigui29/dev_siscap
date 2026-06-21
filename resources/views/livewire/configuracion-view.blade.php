@@ -14,7 +14,15 @@
      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 mx-5 text-dark">
           <div>
                <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155; margin: 0;">
-                    Configuración del Sistema
+               @if($pestania_activa === 'roles')
+                    Roles de Usuarios
+               @elseif($pestania_activa === 'areas')
+                    Áreas de Capacitación
+               @elseif($pestania_activa === 'actividades')
+                    Actividades y Subactividades
+               @elseif($pestania_activa === 'facilitadores')
+                    Facilitadores 
+               @endif
                </h3>
           </div>
      </div>
@@ -23,6 +31,9 @@
      @if($pestania_activa === 'roles')
           <div class="row text-dark mx-5">
                <div class="col-12 col-lg-5 mb-4">
+
+                    @include('partials.filtro-empleados')
+                         
                     <div class="card shadow-sm border-0 bg-white mb-0" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
@@ -32,24 +43,11 @@
 
                          <form wire:submit.prevent="asignarRol" class="card-body">
                               <div class="form-group mb-3">
-                                   <label class="font-weight-bold small">BUSCAR EMPLEADO</label>
-                                   <div class="search-box position-relative">
-                                        <input 
-                                             type="text" 
-                                             class="form-control pl-4 text-sm" 
-                                             placeholder="Filtrar por ficha o nombre..." 
-                                             wire:model.live="termino_busqueda"
-                                             style="border-radius: 6px; font-size: 0.88rem; height: 40px;"
-                                        />
-                                   </div>
-                              </div>
-
-                              <div class="form-group mb-3">
                                    <label class="font-weight-bold small text-dark">SELECCIONAR EMPLEADO</label>
                                    <select class="form-control" wire:model="ficha_usuario_seleccionado" style="height: 44px; font-weight: 600;">
-                                        <option value="">Seleccione un colaborador...</option>
-                                        @foreach($usuarios as $usr)
-                                             <option value="{{ $usr->ficha }}">[{{ $usr->ficha }}] - {{ $usr->name }}</option>
+                                        <option value="">Seleccione un empleado...</option>
+                                        @foreach($this->empleadosFiltrados as $usr)
+                                             <option value="{{ $usr->ficha }}">[{{ $usr->ficha }}] - {{ $usr->nombre_empleado }}</option>
                                         @endforeach
                                    </select>
                               </div>
@@ -67,14 +65,14 @@
                               </div>
 
                               <div class="mt-4 pt-3 border-top text-right">
-                                   <button type="submit" class="btn btn-primary px-4 py-2 font-weight-bold" style="border-radius: 6px;">
-                                        <i class="fas fa-save mr-1"></i> Guardar Niveles de Rol
+                                   <button type="button" wire:click="asignarRol" class="btn btn-primary px-4 py-2 font-weight-bold" style="border-radius: 6px;">
+                                        <i class="fas fa-save mr-1"></i> Guardar Rol
                                    </button>
                               </div>
-                         </form>
                     </div>
                </div>
 
+               <!--Tabla de Empleados con Roles registrados-->
                <div class="col-12 col-lg-7 mb-4">
                     <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
@@ -83,51 +81,52 @@
                               </h5>
                          </div>
 
-                         <div class="table-responsive">
+                         <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
                               <table class="table table-hover mb-0">
                                    <thead class="bg-light">
                                         <tr>
                                              <th class="p-3">TRABAJADOR</th>
-                                             <th class="p-3 text-center">NIVEL ROL</th>
-                                             <th class="p-3 text-right">PRIVILEGIOS</th>
+                                             <th class="p-3 text-center">ROL</th>
+                                             <th class="p-3 text-right">ACCIONES</th>
                                         </tr>
                                    </thead>
                                    <tbody>
-                                        @foreach($usuarios as $usr)
+                                        @forelse($this->empleadosConRoles as $usr)
                                              @php
-                                                  $roles_list = $usr->roles ?? [];
-                                                  $is_gerente = in_array('ADMIN_ROLE', $roles_list);
-                                                  $is_coordinador = in_array('COORDINADOR_ROLE', $roles_list) && !$is_gerente;
-                                                  $is_analista = !$is_gerente && !$is_coordinador;
+                                                  $is_gerente = $usr->rol_nombre === 'Gerente';
+                                                  $is_coordinador = $usr->rol_nombre === 'Coordinador';
+                                                  $is_analista = $usr->rol_nombre === 'Analista';
                                              @endphp
-                                             <tr>
+                                             <tr wire:key="rol-{{ $usr->ficha }}">
                                                   <td class="p-3">
-                                                       <strong class="text-dark d-block" style="font-size: 0.9rem;">{{ $usr->name }}</strong>
-                                                       <small class="text-muted">Ficha: {{ $usr->ficha }} | {{ $usr->email }}</small>
+                                                       <strong class="text-dark d-block" style="font-size: 0.9rem;">{{ $usr->nombre_empleado }}</strong>
+                                                       <small class="text-muted">Ficha: {{ $usr->ficha }} | {{ $usr->texto_cargo }}</small>
                                                   </td>
-                                                  <td class="p-3 text-center">
+                                                  <td class="p-3 text-center align-middle">
                                                        @if($is_gerente)
                                                             <span class="badge badge-info text-uppercase font-weight-bold py-1 px-2" style="font-size: 0.7rem;">Gerente</span>
                                                        @elseif($is_coordinador)
                                                             <span class="badge badge-success text-uppercase font-weight-bold py-1 px-2" style="font-size: 0.7rem;">Coordinador</span>
                                                        @else
-                                                            <span class="badge badge-light border text-uppercase font-weight-bold py-1 px-2" style="font-size: 0.7rem; color: #475569;">Analista</span>
+                                                            <span class="badge badge-light border text-uppercase font-weight-bold py-1 px-2" style="font-size: 0.7rem;">Analista</span>
                                                        @endif
                                                   </td>
                                                   <td class="p-3 text-right">
-                                                       <div class="d-flex justify-content-end flex-wrap" style="gap: 3px;">
-                                                            <span class="badge bg-light text-secondary border px-2 py-1" style="font-size: 0.65rem;">CONSULTAR</span>
-                                                            @if($is_coordinador || $is_gerente)
-                                                                 <span class="badge bg-light text-secondary border px-2 py-1" style="font-size: 0.65rem;">PROPUESTAS</span>
-                                                            @endif
-                                                            @if($is_gerente)
-                                                                 <span class="badge bg-light text-secondary border px-2 py-1" style="font-size: 0.65rem;">CONFIGURACIÓN</span>
-                                                                 <span class="badge bg-light text-secondary border px-2 py-1" style="font-size: 0.65rem;">APROBACIÓN</span>
-                                                            @endif
+                                                       <div class="d-flex justify-content-end flex-wrap align-items-center" style="gap: 6px;">
+                                                            <button type="button" wire:confirm="¿Seguro que desea revocar este rol?" wire:click="revocarRol('{{ $usr->ficha }}')" class="btn btn-sm btn-light border text-danger ml-2" title="Revocar Rol">
+                                                                 <i class="fas fa-trash-alt"></i>
+                                                            </button>
                                                        </div>
                                                   </td>
                                              </tr>
-                                        @endforeach
+                                        @empty
+                                             <tr>
+                                                  <td colspan="3" class="text-center py-5">
+                                                       <i class="fas fa-user-shield text-muted mb-2" style="font-size: 2rem;"></i>
+                                                       <p class="mb-0 text-secondary">No hay empleados con roles registrados.</p>
+                                                  </td>
+                                             </tr>
+                                        @endforelse
                                    </tbody>
                               </table>
                          </div>
@@ -136,7 +135,7 @@
           </div>
      @endif
 
-     <!-- ÁREAS DE CAPACITACION -->
+     <!-- ÁREAS -->
      @if($pestania_activa === 'areas')
           <div class="row text-dark mx-5">
                <div class="col-12 col-lg-5 mb-4">
@@ -144,18 +143,18 @@
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
                                    <i class="fas fa-cubes mr-2 text-white"></i> 
-                                   {{ $id_area_editando ? 'Editar Área Existente' : 'Ingresar Nueva Área Temática' }}
+                                   {{ $id_area_editando ? 'Editar Área' : 'Ingresar Nueva Área' }}
                               </h5>
                          </div>
 
                          <form wire:submit.prevent="agregarOEditarArea" class="card-body">
                               <div class="form-group mb-3">
-                                   <label class="font-weight-bold small">NOMBRE DE ÁREA</label>
+                                   <label class="font-weight-bold small">NOMBRE</label>
                                    <input type="text" class="form-control" wire:model="area_nombre" placeholder="Ej: Electromecánica Industrial" style="height: 40px;">
                               </div>
 
                               <div class="form-group mb-3">
-                                   <label class="font-weight-bold small">DESCRIPCIÓN DEL ÁREA</label>
+                                   <label class="font-weight-bold small">DESCRIPCIÓN</label>
                                    <textarea class="form-control" wire:model="area_descripcion" rows="3" placeholder="Defectografía, alineación de ejes..."></textarea>
                               </div>
 
@@ -184,11 +183,11 @@
                     <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
-                                   <i class="fas fa-building mr-2 text-white"></i> Áreas de Capacitaciones Activas / Pasivas
+                                   <i class="fas fa-building mr-2 text-white"></i> Áreas de Capacitación
                               </h5>
                          </div>
 
-                         <div class="card-body p-0">
+                         <div class="card-body p-0" style="max-height: 400px; overflow-y: auto;">
                               <div class="list-group list-group-flush">
                                    @foreach($areas as $area)
                                         <div class="list-group-item p-3">
@@ -204,7 +203,7 @@
                                                        <button class="btn btn-sm btn-light border" wire:click="iniciarEdicionArea({{ $area['id'] }})">
                                                             <i class="fas fa-edit text-primary"></i>
                                                        </button>
-                                                       <button class="btn btn-sm btn-light border" wire:click="alternarEstatusArea({{ $area['id'] }})">
+                                                       <button class="btn btn-sm btn-light border" wire:confirm="¿Está seguro de cambiar el estado de ésta área?" wire:click="alternarEstatusArea({{ $area['id'] }})">
                                                             <i class="fas fa-power-off text-warning"></i>
                                                        </button>
                                                        <button class="btn btn-sm btn-light border" wire:confirm="¿Está seguro de eliminar esta área? Se eliminarán también las actividades asociadas." wire:click="eliminarArea({{ $area['id'] }})">
@@ -267,13 +266,13 @@
                     <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
                          <div class="border-bottom p-3 d-flex justify-content-between align-items-center" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;"><i class="fas fa-list mr-2 text-white"></i> Actividades Registradas</h5>
-                              <input type="text" wire:model="filtro_actividad" wire:keydown.enter="buscar" class="form-control form-control-sm" placeholder="Buscar (Enter)..." style="width: 150px;">
+                              <input type="text" wire:model.live="filtro_actividad" class="form-control form-control-sm" placeholder="Buscar..." style="width: 150px;">
                          </div>
                          <div class="card-body p-0" style="max-height: 400px; overflow-y: auto;">
-                              <div wire:loading wire:target="buscar" class="p-4 text-center text-primary w-100">
+                              <div wire:loading wire:target="filtro_actividad" class="p-4 text-center text-primary w-100">
                                    <i class="fas fa-spinner fa-spin mr-2"></i> Buscando...
                               </div>
-                              <div class="list-group list-group-flush" wire:loading.remove wire:target="buscar">
+                              <div class="list-group list-group-flush" wire:loading.remove wire:target="filtro_actividad">
                                    @foreach(collect($actividades)->filter(fn($a) => empty($filtro_actividad) || str_contains(strtolower($a['nombre']), strtolower($filtro_actividad))) as $act)
                                         <div class="list-group-item p-3">
                                              <div class="d-flex justify-content-between align-items-start">
@@ -343,13 +342,13 @@
                     <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
                          <div class="border-bottom p-3 d-flex justify-content-between align-items-center" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;"><i class="fas fa-stream mr-2 text-white"></i> Subactividades Registradas</h5>
-                              <input type="text" wire:model="filtro_subactividad" wire:keydown.enter="buscar" class="form-control form-control-sm" placeholder="Buscar (Enter)..." style="width: 150px;">
+                              <input type="text" wire:model.live="filtro_subactividad" class="form-control form-control-sm" placeholder="Buscar..." style="width: 150px;">
                          </div>
                          <div class="card-body p-0" style="max-height: 400px; overflow-y: auto;">
-                              <div wire:loading wire:target="buscar" class="p-4 text-center text-primary w-100">
+                              <div wire:loading wire:target="filtro_subactividad" class="p-4 text-center text-primary w-100">
                                    <i class="fas fa-spinner fa-spin mr-2"></i> Buscando...
                               </div>
-                              <div class="list-group list-group-flush" wire:loading.remove wire:target="buscar">
+                              <div class="list-group list-group-flush" wire:loading.remove wire:target="filtro_subactividad">
                                    @foreach(collect($subactividades)->filter(fn($s) => empty($filtro_subactividad) || str_contains(strtolower($s['nombre']), strtolower($filtro_subactividad))) as $sub)
                                         <div class="list-group-item p-3">
                                              <div class="d-flex justify-content-between align-items-start">
@@ -402,9 +401,6 @@
                               <div class="form-group mb-3">
                                    <label class="font-weight-bold small">FICHA DE EMPLEADO (Dejar en blanco si es externo)</label>
                                    <input type="number" class="form-control" wire:model="facilitador_ficha_empleado" placeholder="Ej. 12345" style="height: 40px;" {{ $facilitador_ficha_empleado ? 'readonly' : '' }}>
-                                   @if($facilitador_ficha_empleado)
-                                        <button type="button" class="btn btn-link btn-sm p-0 mt-1" wire:click="$set('facilitador_ficha_empleado', '')">Limpiar Ficha</button>
-                                   @endif
                                    @error('facilitador_ficha_empleado') <span class="text-danger small d-block mt-1">{{ $message }}</span> @enderror
                               </div>
 
@@ -422,13 +418,13 @@
                     <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
                          <div class="border-bottom p-3 d-flex justify-content-between align-items-center" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;"><i class="fas fa-users mr-2 text-white"></i> Facilitadores Registrados</h5>
-                              <input type="text" wire:model="filtro_facilitador" wire:keydown.enter="buscar" class="form-control form-control-sm" placeholder="Buscar (Enter)..." style="width: 150px;">
+                              <input type="text" wire:model.live="filtro_facilitador" class="form-control form-control-sm" placeholder="Buscar..." style="width: 150px;">
                          </div>
-                         <div class="table-responsive" style="max-height: 400px;">
-                              <div wire:loading wire:target="buscar" class="p-4 text-center text-primary w-100">
+                         <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                              <div wire:loading wire:target="filtro_facilitador" class="p-4 text-center text-primary w-100">
                                    <i class="fas fa-spinner fa-spin mr-2"></i> Buscando...
                               </div>
-                              <table class="table table-hover mb-0" wire:loading.remove wire:target="buscar">
+                              <table class="table table-hover mb-0" wire:loading.remove wire:target="filtro_facilitador">
                                    <thead class="bg-light">
                                         <tr>
                                              <th class="p-3">NOMBRE</th>

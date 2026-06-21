@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use App\Models\Role;
 use App\Models\Area;
 use App\Models\Actividad;
 use App\Models\Subactividad;
@@ -108,7 +109,33 @@ class ConfiguracionView extends Component
           if ($this->filtro_unidad) {
                $query->where('texto_unidad', 'ilike', "%{$this->filtro_unidad}%");
           }
-          return $query->orderBy('nombre_empleado', 'asc')->get();
+          return $query->orderBy('nombre_empleado', 'asc')->take(50)->get();
+     }
+
+     public function getEmpleadosConRolesProperty()
+     {
+          $plRoles = \Illuminate\Support\Facades\DB::table('pl_roles')
+               ->join('roles', 'pl_roles.rol_id', '=', 'roles.id')
+               ->select('pl_roles.ficha_empleado', 'roles.nombre as rol_nombre', 'pl_roles.fecha_asignado')
+               ->get();
+
+          $fichas = $plRoles->pluck('ficha_empleado');
+          $empleados = RrhhPersonal::whereIn('ficha', $fichas)->get()->keyBy('ficha');
+
+          $resultado = [];
+          foreach ($plRoles as $pr) {
+               if ($empleados->has($pr->ficha_empleado)) {
+                    $emp = $empleados->get($pr->ficha_empleado);
+                    $resultado[] = (object) [
+                         'ficha' => $emp->ficha,
+                         'nombre_empleado' => $emp->nombre_empleado,
+                         'texto_cargo' => $emp->texto_cargo,
+                         'rol_nombre' => $pr->rol_nombre,
+                         'fecha_asignado' => $pr->fecha_asignado
+                    ];
+               }
+          }
+          return collect($resultado)->sortByDesc('fecha_asignado');
      }
 
      public function limpiarFiltrosEmpleados()
@@ -135,7 +162,33 @@ class ConfiguracionView extends Component
 
      public function asignarRol()
      {
-          $this->mostrarNotificacion('Nivel de rol actualizado.');
+          $this->validate([
+               'ficha_usuario_seleccionado' => 'required',
+               'rol_objetivo' => 'required|string'
+          ]);
+
+          $rol = Role::where('nombre', $this->rol_objetivo)->first();
+          if (!$rol) {
+               $this->mostrarNotificacion('El rol seleccionado no existe.', 'danger');
+               return;
+          }
+
+          \Illuminate\Support\Facades\DB::table('pl_roles')->updateOrInsert(
+               ['ficha_empleado' => $this->ficha_usuario_seleccionado],
+               [
+                    'rol_id' => $rol->id,
+                    'fecha_asignado' => now()
+               ]
+          );
+
+          $this->mostrarNotificacion("Rol de {$this->rol_objetivo} asignado correctamente.");
+          $this->ficha_usuario_seleccionado = '';
+     }
+
+     public function revocarRol($ficha)
+     {
+          \Illuminate\Support\Facades\DB::table('pl_roles')->where('ficha_empleado', $ficha)->delete();
+          $this->mostrarNotificacion('Rol revocado exitosamente.');
      }
 
      // CRUD Áreas
@@ -323,6 +376,14 @@ class ConfiguracionView extends Component
           ];
 
           $this->validate($rules, $messages);
+
+          if ($this->facilitador_ficha_empleado) {
+               $empleado = RrhhPersonal::where('ficha', $this->facilitador_ficha_empleado)->first();
+               if ($empleado && strcasecmp(trim($empleado->nombre_empleado), trim($this->facilitador_nombre)) !== 0) {
+                    $this->addError('facilitador_nombre', "El nombre debe coincidir exactamente con el registrado en el sistema para esta ficha: {$empleado->nombre_empleado}.");
+                    return;
+               }
+          }
 
           if ($this->id_facilitador_editando) {
                $facilitador = Facilitador::find($this->id_facilitador_editando);
