@@ -45,7 +45,8 @@ class ProgramacionView extends Component
      public $filtro_subactividad = '';
      public $filtro_facilitador = '';
      public $filtro_institucion = '';
-     public $filtro_fecha = '';
+     public $filtro_fecha_desde = '';
+     public $filtro_fecha_hasta = '';
      public $filtro_lugar = '';
      public $filtro_desde = '';
      public $filtro_hasta = '';
@@ -63,6 +64,7 @@ class ProgramacionView extends Component
      
      public $id_ejecucion_seleccionada = null;
      public $asistentes_fichas = [];
+     public $causas_fichas = [];
 
      public function mount($pestania = null)
      {
@@ -125,7 +127,14 @@ class ProgramacionView extends Component
 
      public function getListaFinalProperty()
      {
-          return $this->busqueda_activa ? collect($this->resultados_busqueda)->map(fn($item) => (object) $item) : $this->propuestas;
+          $lista = $this->busqueda_activa ? collect($this->resultados_busqueda)->map(fn($item) => (object) $item) : $this->propuestas;
+          return collect($lista)->whereNull('ejecutado');
+     }
+
+     public function getListaEjecucionProperty()
+     {
+          $lista = $this->busqueda_activa ? collect($this->resultados_busqueda)->map(fn($item) => (object) $item) : $this->propuestas;
+          return collect($lista)->where('aprobado', true);
      }
 
      public function getParticipantesAsistenciaProperty()
@@ -162,7 +171,7 @@ class ProgramacionView extends Component
      public function updated($propertyName)
      {
           if (str_starts_with($propertyName, 'filtro_')) {
-               if (in_array($propertyName, ['filtro_area', 'filtro_actividad', 'filtro_subactividad', 'filtro_facilitador', 'filtro_institucion', 'filtro_lugar', 'filtro_fecha', 'filtro_desde', 'filtro_hasta'])) {
+               if (in_array($propertyName, ['filtro_area', 'filtro_actividad', 'filtro_subactividad', 'filtro_facilitador', 'filtro_institucion', 'filtro_lugar', 'filtro_fecha_desde', 'filtro_fecha_hasta', 'filtro_desde', 'filtro_hasta'])) {
                     $this->buscarPropuestas();
                }
           }
@@ -172,7 +181,7 @@ class ProgramacionView extends Component
      public function buscarPropuestas()
      {
           // Eager load para prevenir problemas N+1 
-          $query = Programacion::with(['actividad', 'subactividad', 'facilitador']);
+          $query = Programacion::with(['actividad', 'subactividad', 'facilitador'])->withCount('participantes');
 
           // Filtro por área (unimos con actividades)
           if ($this->filtro_area) {
@@ -202,9 +211,12 @@ class ProgramacionView extends Component
                });
           }
           
-          // Filtro por fecha exacta
-          if ($this->filtro_fecha) {
-               $query->whereDate('fecha', $this->filtro_fecha);
+          // Filtro por rango de fecha
+          if ($this->filtro_fecha_desde) {
+               $query->whereDate('fecha', '>=', $this->filtro_fecha_desde);
+          }
+          if ($this->filtro_fecha_hasta) {
+               $query->whereDate('fecha', '<=', $this->filtro_fecha_hasta);
           }
 
           // Filtro por lugar (texto parcial)
@@ -231,7 +243,7 @@ class ProgramacionView extends Component
           $this->busqueda_activa = true;
 
           // Si todos los filtros están vacíos, desactivar búsqueda activa
-          if (empty($this->filtro_area) && empty($this->filtro_actividad) && empty($this->filtro_subactividad) && empty($this->filtro_facilitador) && empty($this->filtro_institucion) && empty($this->filtro_lugar) && empty($this->filtro_fecha) && empty($this->filtro_desde) && empty($this->filtro_hasta)) {
+          if (empty($this->filtro_area) && empty($this->filtro_actividad) && empty($this->filtro_subactividad) && empty($this->filtro_facilitador) && empty($this->filtro_institucion) && empty($this->filtro_lugar) && empty($this->filtro_fecha_desde) && empty($this->filtro_fecha_hasta) && empty($this->filtro_desde) && empty($this->filtro_hasta)) {
                $this->busqueda_activa = false;
                $this->resultados_busqueda = [];
           }
@@ -253,7 +265,8 @@ class ProgramacionView extends Component
           $this->filtro_subactividad = '';
           $this->filtro_facilitador = '';
           $this->filtro_institucion = '';
-          $this->filtro_fecha = '';
+          $this->filtro_fecha_desde = '';
+          $this->filtro_fecha_hasta = '';
           $this->filtro_lugar = '';
           $this->filtro_desde = '';
           $this->filtro_hasta = '';
@@ -502,15 +515,34 @@ class ProgramacionView extends Component
      public function iniciarEjecucion($id)
      {
           $this->id_ejecucion_seleccionada = $id;
-          $this->asistentes_fichas = [];
+          $this->asistentes_fichas = DB::table('pl_programaciones')
+               ->where('programacion_id', $id)
+               ->where('estatus', true)
+               ->pluck('ficha_empleado')
+               ->toArray();
+               
+          $this->causas_fichas = DB::table('pl_programaciones')
+               ->where('programacion_id', $id)
+               ->whereNotNull('causa')
+               ->pluck('causa', 'ficha_empleado')
+               ->toArray();
      }
 
-     public function alternarAsistencia($ficha)
+     public function deshacerEjecucion($id)
      {
-          if (in_array($ficha, $this->asistentes_fichas)) {
-               $this->asistentes_fichas = array_diff($this->asistentes_fichas, [$ficha]);
-          } else {
-               $this->asistentes_fichas[] = $ficha;
+          $ejecucion = Programacion::find($id);
+          if ($ejecucion) {
+               DB::table('pl_programaciones')
+                    ->where('programacion_id', $id)
+                    ->update(['estatus' => null, 'causa' => null, 'updated_at' => now()]);
+
+               $ejecucion->update(['ejecutado' => null]);
+               $this->mostrarNotificacion("Estatus de curso #$id cambiado", 'danger');
+               
+               if ($this->id_ejecucion_seleccionada == $id) {
+                    $this->asistentes_fichas = [];
+                    $this->causas_fichas = [];
+               }
           }
      }
 
@@ -518,18 +550,34 @@ class ProgramacionView extends Component
      {
           $propuesta = Programacion::find($this->id_ejecucion_seleccionada);
           if ($propuesta) {
-               foreach ($this->asistentes_fichas as $ficha) {
+               $fichas_totales = DB::table('pl_programaciones')->where('programacion_id', $this->id_ejecucion_seleccionada)->pluck('ficha_empleado');
+
+               foreach ($fichas_totales as $ficha) {
+                    $estatus = in_array($ficha, $this->asistentes_fichas) ? true : false;
+                    $causa = $this->causas_fichas[$ficha] ?? null;
+
                     DB::table('pl_programaciones')
                          ->where('programacion_id', $this->id_ejecucion_seleccionada)
                          ->where('ficha_empleado', $ficha)
-                         ->update(['estatus' => true, 'updated_at' => now()]);
+                         ->update([
+                              'estatus' => $estatus,
+                              'causa' => $causa ?: null,
+                              'updated_at' => now()
+                         ]);
                }
+
                $propuesta->update(['ejecutado' => true]);
-               $this->mostrarNotificacion('Asistencia y horas hombre registradas exitosamente.');
+               $this->mostrarNotificacion('Asistencias registradas exitosamente.');
           }
           
+          $this->cancelarEjecucion();
+     }
+
+     public function cancelarEjecucion()
+     {
           $this->id_ejecucion_seleccionada = null;
           $this->asistentes_fichas = [];
+          $this->causas_fichas = [];
      }
 
      public function render()

@@ -34,7 +34,7 @@
           <div class="row mx-5 text-dark">
                
                <!-- Formulario Form Panel Left -->
-               <div class="col-12 col-lg-8 mb-4">
+               <div class="col-12 col-lg-9 mb-4">
 
                     <!-- Toggle Registro / Búsqueda -->
                     <div class="d-flex justify-content-end align-items-center py-2">
@@ -68,7 +68,7 @@
                     @if($modo === 'busqueda')
                          @include('partials.filtro-programaciones')
                     @elseif($modo === 'registro')
-                    <div class="card shadow-sm border-0 bg-white mb-2" style="border-radius: 8px;">
+                    <div class="card shadow-sm border-0 bg-white mb-0" style="border-radius: 8px;">
                          
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
@@ -235,7 +235,7 @@
                </div>
 
                <!-- Pre-Programaciones Registradas -->
-               <div class="col-12 col-lg-4 mb-4">
+               <div class="col-12 col-lg-3 mb-4 min-vh-100">
                     <div class="card shadow-sm border-0 bg-white h-100" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
@@ -244,11 +244,11 @@
                          </div>
 
                          <div class="card-body p-0">
-                              <div wire:loading wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda" class="w-100 text-center py-5">
+                              <div wire:loading wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha_desde, filtro_fecha_hasta, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda" class="w-100 text-center py-5">
                                    <i class="fas fa-spinner fa-spin text-primary mb-2" style="font-size: 1.5rem;"></i>
                                    <h6 class="text-muted font-weight-bold">Buscando pre-programaciones...</h6>
                               </div>
-                              <div style="max-height: 700px; overflow-y: auto;" wire:loading.class="d-none" wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda">
+                              <div style="max-height: 700px; overflow-y: auto;" wire:loading.class="d-none" wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha_desde, filtro_fecha_hasta, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda">
                                    @forelse($this->listaPre as $p)
                                         <div class="p-3 border-bottom hover-gradient-soft">
                                              <div class="d-flex justify-content-between align-items-start">
@@ -338,12 +338,12 @@
                               </h5>
                          </div>
 
-                         <div wire:loading wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda" class="w-100 text-center py-5">
+                         <div wire:loading wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha_desde, filtro_fecha_hasta, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda" class="w-100 text-center py-5">
                               <i class="fas fa-spinner fa-spin text-primary mb-2" style="font-size: 2rem;"></i>
                               <h6 class="text-muted font-weight-bold">Cargando resultados...</h6>
                          </div>
 
-                         <div class="table-responsive" wire:loading.class="d-none" wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda">
+                         <div class="table-responsive" wire:loading.class="d-none" wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha_desde, filtro_fecha_hasta, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda">
                               <table class="table mb-0 align-middle">
                                    <thead class="bg-light">
                                         <tr>
@@ -430,46 +430,110 @@
 
      <!-- EJECUCIÓN -->
      @if($pestania_activa === 'ejecucion')
-          <div class="row text-dark">
-               
-               <div class="col-12 mb-4">
+          <div class="row text-dark mx-5">
+               <div class="col-12 col-lg-9">
+                    @include('partials.filtro-programaciones')
+
+                    <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
+                         <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+                              <div class="d-flex justify-content-between align-items-center">
+                                   <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
+                                        <i class="fas fa-users-cog mr-2"></i> Asistencias 
+                                   </h5>
+                              </div>
+                         </div>
+                         <div wire:loading wire:target="iniciarEjecucion, filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha_desde, filtro_fecha_hasta, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda" class="w-100 text-center py-5">
+                              <i class="fas fa-spinner fa-spin text-primary mb-2" style="font-size: 2rem;"></i>
+                              <h6 class="text-muted font-weight-bold">Cargando datos...</h6>
+                         </div>
+                         
+                         <div class="table-responsive border rounded" wire:loading.class="d-none" wire:target="iniciarEjecucion, filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha_desde, filtro_fecha_hasta, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda">
+                              <table class="table table-hover mb-0">
+                                   <thead class="bg-light">
+                                        <tr>
+                                             <th class="p-3 text-center" style="width: 120px;">¿ASISTIÓ?</th>
+                                             <th class="p-3">TRABAJADOR</th>
+                                             <th class="p-3 text-center">FICHA</th>
+                                             <th class="p-3 text-center" style="width: 250px;">CAUSA DE INASISTENCIA</th>
+                                        </tr>
+                                   </thead>
+                                   <tbody>
+                                        @forelse($this->participantesAsistencia as $participante)
+                                             <tr class="cursor-pointer">
+                                                  <td class="text-center p-2">
+                                                       <input type="checkbox" value="{{ $participante->ficha }}" wire:model.live="asistentes_fichas" wire:key="chk-{{ $id_ejecucion_seleccionada }}-{{ $participante->ficha }}" style="transform: scale(1.35);">
+                                                  </td>
+                                                  <td class="p-2">
+                                                       <strong class="text-dark">{{ $participante->nombre_empleado ?? 'Trabajador no especificado' }}</strong>
+                                                  </td>
+                                                  <td class="p-2 text-center align-middle"><span class="badge badge-light border">{{ $participante->ficha }}</span></td>
+                                                  <td class="p-2" wire:click.stop>
+                                                       <input type="text" class="form-control form-control-sm text-center" wire:model.defer="causas_fichas.{{ $participante->ficha }}" style="border-radius: 4px;" {{ in_array($participante->ficha, $asistentes_fichas) ? 'disabled' : '' }}>
+                                                  </td>
+                                             </tr>
+                                        @empty
+                                             <tr>
+                                                  <td colspan="4" class="text-center py-4 text-muted">Seleccione un curso de la columna derecha para mostrar los empleados matriculados.</td>
+                                             </tr>
+                                        @endforelse
+                                   </tbody>
+                              </table>
+                                 @if($id_ejecucion_seleccionada)
+                          <div class="d-flex justify-content-end my-3">
+                               <button class="btn btn-sm btn-secondary px-3 py-2 mr-2 font-weight-bold" wire:click="cancelarEjecucion" wire:loading.attr="disabled" wire:target="cancelarEjecucion">
+                                    <span wire:loading.remove wire:target="cancelarEjecucion">Cancelar</span>
+                                    <span wire:loading wire:target="cancelarEjecucion"><i class="fas fa-spinner fa-spin"></i> Cancelando...</span>
+                               </button>
+                               @if ($this->propuestas->firstWhere('id', $id_ejecucion_seleccionada)?->ejecutado)
+                               <button class="btn btn-sm btn-danger px-3 py-2 mr-2 font-weight-bold" wire:confirm="¿Está seguro de que desea cambiar el estatus de este curso?" wire:click="deshacerEjecucion({{$id_ejecucion_seleccionada}})" wire:loading.attr="disabled" wire:target="deshacerEjecucion">
+                                    <span wire:loading.remove wire:target="deshacerEjecucion"><i class="fas fa-redo mr-1"></i> Deshacer Ejecución</span>
+                                    <span wire:loading wire:target="deshacerEjecucion"><i class="fas fa-spinner fa-spin"></i> Deshaciendo...</span>
+                               </button>
+                               @endif
+                               <button class="btn btn-sm btn-success px-3 py-2 mr-2 font-weight-bold" wire:click="guardarEjecucion" wire:loading.attr="disabled" wire:target="guardarEjecucion">
+                                    <span wire:loading.remove wire:target="guardarEjecucion"><i class="fas fa-check-circle mr-1"></i> Registrar Asistencias</span>
+                                    <span wire:loading wire:target="guardarEjecucion"><i class="fas fa-spinner fa-spin mr-1"></i> Guardando...</span>
+                               </button>
+                          </div>
+                          @endif
+                         </div>
+                    </div>
+               </div>
+
+               <div class="col-12 col-lg-3 mb-4">
                     <div class="card shadow-sm border-0 bg-white mb-0" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
-                                   <i class="fas fa-tasks text-white mr-2"></i> Control de Ejecución (Seleccionar Capacitación Activa)
+                                   <i class="fas fa-tasks text-white mr-2"></i> Cursos Aprobados
                               </h5>
                          </div>
 
-                         <div class="card-body p-3">
-                              <div class="p-3 bg-light text-muted small border rounded mb-3">
-                                   <i class="fas fa-info-circle text-primary mr-1"></i> Seleccione un curso aprobado del panel a continuación para registrar qué trabajadores asistieron al curso y registrar de manera formal sus Horas/Hombre en el historial de capacitación de SISCAP.
+                         <div class="card-body px-3 py-0">
+                              <div wire:loading wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha_desde, filtro_fecha_hasta, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda" class="w-100 text-center py-4">
+                                   <i class="fas fa-spinner fa-spin text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                   <h6 class="text-muted font-weight-bold">Buscando cursos...</h6>
                               </div>
-
-                              <div class="row" style="max-height: 420px; overflow-y: auto;">
-                                   @forelse($this->propuestas->where('aprobado', true) as $p)
-                                        <div class="col-12 col-md-6 col-lg-4 mb-3">
-                                             <div 
-                                                  wire:click="iniciarEjecucion({{ $p->id }})"
-                                                  class="p-3 border rounded shadow-sm h-100 cursor-pointer d-flex flex-column justify-content-between position-relative {{ $id_ejecucion_seleccionada === $p->id ? 'border-primary' : 'border-light' }} {{ $p->ejecutado ? 'bg-disabled opacity-60' : 'hover-gradient-soft bg-white' }}"
-                                                  style="min-height: 130px; transition: all 0.2s; border-width: {{ $id_ejecucion_seleccionada === $p->id ? '2px' : '1px' }};"
-                                             >
-                                                  <div>
-                                                       <div class="d-flex justify-content-between align-items-start">
-                                                            <strong class="text-dark d-block text-truncate" style="max-width: 85%; font-size: 0.92rem;">#{{ $p->id }} - {{ $p->nombre }}</strong>
-                                                            @if(!$p->ejecutado && $id_ejecucion_seleccionada === $p->id)
-                                                                 <span class="text-primary font-weight-bold" style="font-size: 0.75rem;"><i class="fas fa-chevron-circle-down"></i> Activo</span>
-                                                            @endif
-                                                       </div>
-                                                       <span class="text-secondary small d-block mb-1">Facilitador: {{ $fac_name }} <br> Fecha: {{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }}</span>
+                              <div class="row" style="max-height: 420px; overflow-y: auto;" wire:loading.class="d-none" wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha_desde, filtro_fecha_hasta, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda">
+                                   @forelse($this->listaEjecucion as $p)
+                                        <div class="col-12 py-2 border-bottom hover-gradient-soft">
+                                             <div class="d-flex justify-content-between align-items-start">
+                                                  <strong class="text-dark" style="font-size: 0.95rem;">{{ $p->nombre }}</strong>
+                                                  <div class="d-flex align-items-center" style="gap: 12px;">
+                                                       <button type="button" wire:click="iniciarEjecucion({{ $p->id }})" class="btn btn-sm btn-link text-primary p-0 m-0"><i class="fas fa-edit" style="font-size: 1.1rem;"></i></button>
                                                   </div>
-                                                  <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
-                                                       <span class="badge badge-info text-dark font-weight-bold" style="font-size: 0.72rem; background-color: #E0F2FE;">{{ $p->duracion }} Horas</span>
-                                                       @if($p->ejecutado)
-                                                            <span class="badge badge-success text-uppercase" style="font-size: 0.7rem;">Ejecutado <i class="fas fa-check-circle"></i></span>
-                                                       @else
-                                                            <span class="badge badge-warning text-uppercase" style="font-size: 0.7rem;">Pendiente <i class="far fa-clock"></i></span>
-                                                       @endif
-                                                  </div>
+                                             </div>
+                                             <span class="text-secondary small d-block my-1">
+                                                  <i class="far fa-user mr-1"></i> Facilitador: {{ $p->facilitador->nombre ?? 'N/A' }} <br>
+                                                  <i class="far fa-calendar mr-1"></i> Fecha: {{ \Carbon\Carbon::parse($p->fecha)->format('d/m/Y') }} <br>
+                                                  <i class="fas fa-regular fa-clock mr-1"></i>{{ $p->duracion }} Horas <br>
+                                                  @if($p->ejecutado)
+                                                       <span style="color: #27ae60ff"><i class="fas fa-check-circle mr-1"></i>Ejecutado</span>
+                                                  @else
+                                                       <span style="color: #e67e22ff"><i class="far fa-clock mr-1"></i>Pendiente</span>
+                                                  @endif
+                                             </span>
+                                             <div class="d-flex justify-content-end align-items-center mt-2">
+                                                  <span class="text-muted small"><i class="fas fa-users mr-1"></i> {{ $p->participantes_count }} Empleado(s)</span>
                                              </div>
                                         </div>
                                    @empty
@@ -479,67 +543,6 @@
                          </div>
                     </div>
                </div>
-
-               @if($id_ejecucion_seleccionada)
-                    <div class="col-12 mb-4">
-                         <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
-                              <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-                                   <div class="d-flex justify-content-between align-items-center">
-                                        <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
-                                             <i class="fas fa-users-cog mr-2"></i> Pasar Lista de Firmas Físicas (Asistencia Real del Curso #{{ $id_ejecucion_seleccionada }})
-                                        </h5>
-                                        <button class="btn btn-sm btn-light font-weight-bold" wire:click="$set('id_ejecucion_seleccionada', null)">
-                                             Cancelar
-                                        </button>
-                                   </div>
-                              </div>
-
-                              <div class="card-body">
-                                   <p class="text-muted small">
-                                        Marque las casillas únicamente para aquellos trabajadores que consignaron su firma física en la planilla física de firmas. Las Horas/Hombre equivalentes de adiestramiento se registrarán exclusivamente para los preseleccionados asistentes marcados con <strong>Asistió</strong>.
-                                   </p>
-
-                                   <div class="table-responsive border rounded my-3">
-                                        <table class="table table-hover mb-0">
-                                             <thead class="bg-light">
-                                                  <tr>
-                                                       <th class="p-3 text-center" style="width: 120px;">¿ASISTIÓ?</th>
-                                                       <th class="p-3">TRABAJADOR CONVOCADO</th>
-                                                       <th class="p-3">FICHA</th>
-                                                       <th class="p-3">GERENCIA DE ADSCRIPCIÓN</th>
-                                                  </tr>
-                                             </thead>
-                                             <tbody>
-                                                  @forelse($this->participantesAsistencia as $colab)
-                                                       <tr class="cursor-pointer" wire:click="alternarAsistencia('{{ $colab->ficha }}')">
-                                                            <td class="text-center p-3">
-                                                                 <input type="checkbox" checked="{{ in_array($colab->ficha, $asistentes_fichas) ? 'checked' : '' }}" style="transform: scale(1.35);">
-                                                            </td>
-                                                            <td class="p-3">
-                                                                 <strong class="text-dark">{{ $colab->nombre_empleado ?? 'Trabajador no especificado' }}</strong>
-                                                            </td>
-                                                            <td class="p-3"><span class="badge badge-light border">{{ $colab->ficha }}</span></td>
-                                                            <td class="p-3 text-secondary">{{ $colab->texto_gerencia ?? 'SOPORTE MECÁNICO' }}</td>
-                                                       </tr>
-                                                  @empty
-                                                       <tr>
-                                                            <td colspan="4" class="text-center py-4 text-muted">Ningún convocado registrado para este curso.</td>
-                                                       </tr>
-                                                  @endforelse
-                                             </tbody>
-                                        </table>
-                                   </div>
-
-                                   <div class="mt-4 pt-3 border-top text-right">
-                                        <button wire:click="guardarEjecucion" class="btn btn-success px-5 py-2 font-weight-bold">
-                                             <i class="fas fa-check-circle"></i> Confirmar y Registrar Asistencia Real
-                                        </button>
-                                   </div>
-                              </div>
-                         </div>
-                    </div>
-               @endif
-
           </div>
      @endif
 

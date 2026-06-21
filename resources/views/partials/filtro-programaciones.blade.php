@@ -49,13 +49,17 @@
                 </select>
                 @error('filtro_facilitador') <span class="text-danger small">{{ $message }}</span> @enderror
             </div>
-            <div class="col-md-3 mb-2">
+            <div class="col-md-2 mb-2">
                 <label class="font-weight-bold small text-muted mb-1">Institución</label>
                 <input type="text" class="form-control form-control-sm" wire:model.live.debounce.300ms="filtro_institucion" placeholder="Ej. VENPRECAR, C.A." style="border-radius: 4px;">
             </div>
-            <div class="col-md-3 mb-2">
-                <label class="font-weight-bold small text-muted mb-1">Fecha</label>
-                <input type="date" class="form-control form-control-sm" wire:model.live="filtro_fecha" style="border-radius: 4px;">
+            <div class="col-md-2 mb-2">
+                <label class="font-weight-bold small text-muted mb-1">Fecha (Desde)</label>
+                <input type="date" class="form-control form-control-sm" wire:model.live="filtro_fecha_desde" style="border-radius: 4px;">
+            </div>
+            <div class="col-md-2 mb-2">
+                <label class="font-weight-bold small text-muted mb-1">Fecha (Hasta)</label>
+                <input type="date" class="form-control form-control-sm" wire:model.live="filtro_fecha_hasta" style="border-radius: 4px;">
             </div>
             <div class="col-md-3 mb-2">
                 <label class="font-weight-bold small text-muted mb-1">Lugar</label>
