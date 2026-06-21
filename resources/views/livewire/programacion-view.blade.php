@@ -253,9 +253,9 @@
                                         <div class="p-3 border-bottom hover-gradient-soft">
                                              <div class="d-flex justify-content-between align-items-start">
                                                   <strong class="text-dark" style="font-size: 0.95rem;">{{ $p->nombre }}</strong>
-                                                  <div class="d-flex align-items-center" style="gap: 12px;">
-                                                       <button type="button" wire:click="cargarPropuestaParaEdicion({{ $p->id }})" class="btn btn-sm btn-link text-primary p-0 m-0"><i class="fas fa-edit" style="font-size: 1.1rem;"></i></button>
-                                                       <button type="button" wire:confirm="¿Está seguro de que desea eliminar esta pre-programación?" wire:click="eliminarPropuesta({{ $p->id }})" class="btn btn-sm btn-link text-danger p-0 m-0"><i class="fas fa-trash" style="font-size: 1.1rem;"></i></button>
+                                                  <div class="d-flex align-items-center" style="gap: 6px;">
+                                                       <button type="button" class="btn btn-sm btn-light border" wire:click="cargarPropuestaParaEdicion({{ $p->id }})"><i class="fas fa-edit text-primary"></i></button>
+                                                       <button type="button" class="btn btn-sm btn-light border" wire:confirm="¿Está seguro de que desea eliminar esta pre-programación?" wire:click="eliminarPropuesta({{ $p->id }})"><i class="fas fa-trash-alt text-danger"></i></button>
                                                   </div>
                                              </div>
                                              <span class="text-secondary small d-block my-1">
@@ -519,7 +519,7 @@
                                              <div class="d-flex justify-content-between align-items-start">
                                                   <strong class="text-dark" style="font-size: 0.95rem;">{{ $p->nombre }}</strong>
                                                   <div class="d-flex align-items-center" style="gap: 12px;">
-                                                       <button type="button" wire:click="iniciarEjecucion({{ $p->id }})" class="btn btn-sm btn-link text-primary p-0 m-0"><i class="fas fa-edit" style="font-size: 1.1rem;"></i></button>
+                                                       <button type="button" class="btn btn-sm btn-light border" wire:click="iniciarEjecucion({{ $p->id }})"><i class="fas fa-edit text-primary"></i></button>
                                                   </div>
                                              </div>
                                              <span class="text-secondary small d-block my-1">

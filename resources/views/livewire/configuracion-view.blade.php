@@ -26,17 +26,13 @@
                     <div class="card shadow-sm border-0 bg-white mb-0" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
-                                   <i class="fas fa-key mr-2 text-white"></i> Otorgar Nivel de Autorización
+                                   <i class="fas fa-key mr-2 text-white"></i> Otorgar Rol a Empleado
                               </h5>
                          </div>
 
                          <form wire:submit.prevent="asignarRol" class="card-body">
-                              <p class="text-secondary small mb-4">
-                                   Asigne o cambie los roles de usuario autorizados. Las jerarquías van en escala ascendente: <strong>Analista &lt; Coordinador &lt; Gerente</strong>.
-                              </p>
-
                               <div class="form-group mb-3">
-                                   <label class="font-weight-bold small">BUSCAR COLABORADOR</label>
+                                   <label class="font-weight-bold small">BUSCAR EMPLEADO</label>
                                    <div class="search-box position-relative">
                                         <input 
                                              type="text" 
@@ -49,7 +45,7 @@
                               </div>
 
                               <div class="form-group mb-3">
-                                   <label class="font-weight-bold small text-dark">1. SELECCIONAR PARTICIPANTE</label>
+                                   <label class="font-weight-bold small text-dark">SELECCIONAR EMPLEADO</label>
                                    <select class="form-control" wire:model="ficha_usuario_seleccionado" style="height: 44px; font-weight: 600;">
                                         <option value="">Seleccione un colaborador...</option>
                                         @foreach($usuarios as $usr)
@@ -59,7 +55,7 @@
                               </div>
 
                               <div class="form-group mb-4">
-                                   <label class="font-weight-bold small text-muted">2. ASIGNAR ROL DE OPERACIÓN</label>
+                                   <label class="font-weight-bold small text-muted">SELECCIONAR ROL</label>
                                    <select class="form-control" wire:model="rol_objetivo" style="height: 44px; font-weight: 600;">
                                         <option value="Analista">Analista</option>
                                         <option value="Coordinador">Coordinador</option>

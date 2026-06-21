@@ -10,5 +10,16 @@ class Role extends Model
      use HasFactory;
 
      protected $table = 'roles';
-     protected $guarded = [];
+     protected $fillable = [
+          'nombre',
+          'descripcion',
+          'estatus'
+     ];
+
+     protected function casts(): array
+    {
+        return [
+            'estatus' => 'boolean',
+        ];
+    }
 }
