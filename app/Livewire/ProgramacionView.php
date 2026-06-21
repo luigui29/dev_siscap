@@ -10,12 +10,15 @@ use App\Models\RrhhPersonal;
 use App\Models\PersonalProgramacion;
 use App\Models\User;
 use App\Models\Facilitador;
+use App\Traits\GestionaFeriados;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Carbon\Carbon;
 
 class ProgramacionView extends Component
 {
+     use GestionaFeriados;
+
      public $pestania_activa = 'pre';
      public $notificacion = null;
      
@@ -342,10 +345,29 @@ class ProgramacionView extends Component
           }
      }
 
+     public function updatedFechaInput()
+     {
+          if ($this->fecha_input) {
+               $fecha = Carbon::parse($this->fecha_input);
+               if ($fecha->isWeekend() || $this->esFeriado($fecha)) {
+                    $this->fecha_input = '';
+                    $this->mostrarNotificacion('La fecha seleccionada corresponde a un fin de semana o día feriado. Por favor, seleccione un día hábil.', 'danger');
+               }
+          }
+     }
+
      public function guardarPropuesta()
      {
           if ($this->modo === 'busqueda') {
                return; 
+          }
+
+          if ($this->fecha_input) {
+               $fecha = Carbon::parse($this->fecha_input);
+               if ($fecha->isWeekend() || $this->esFeriado($fecha)) {
+                    $this->mostrarNotificacion('La fecha seleccionada es inválida (fin de semana o feriado).', 'danger');
+                    return;
+               }
           }
 
           $this->validate([

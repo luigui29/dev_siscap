@@ -21,7 +21,7 @@
 
      <!-- ROLES -->
      @if($pestania_activa === 'roles')
-          <div class="row text-dark">
+          <div class="row text-dark mx-5">
                <div class="col-12 col-lg-5 mb-4">
                     <div class="card shadow-sm border-0 bg-white mb-0" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
@@ -140,9 +140,9 @@
           </div>
      @endif
 
-     <!-- SUBVIEW 2: AREAS DE CAPACITACION -->
+     <!-- ÁREAS DE CAPACITACION -->
      @if($pestania_activa === 'areas')
-          <div class="row text-dark">
+          <div class="row text-dark mx-5">
                <div class="col-12 col-lg-5 mb-4">
                     <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
@@ -225,65 +225,9 @@
           </div>
      @endif
 
-     <!-- SUBVIEW 3: GLOBAL PARAMETERS -->
-     @if($pestania_activa === 'ajustes')
-          <div class="row text-dark">
-               <div class="col-12 col-md-8 mx-auto mb-4">
-                    <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
-                         <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-                              <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
-                                   <i class="fas fa-cog mr-2 text-white"></i> Variables Globales de SISCAP
-                              </h5>
-                         </div>
-
-                         <form wire:submit.prevent="guardarAjustesGlobales" class="card-body">
-                              <p class="text-secondary small mb-4">
-                                   * Administre y altere el comportamiento paramétrico del sistema de planificación industrial.
-                              </p>
-
-                              <div class="row">
-                                   <div class="col-md-6 form-group">
-                                        <label class="font-weight-bold small">MIN_DURACIÓN_CURSO (HORAS ACADÉMICAS)</label>
-                                        <input type="number" class="form-control" value="8" style="height: 40px;">
-                                   </div>
-
-                                   <div class="col-md-6 form-group">
-                                        <label class="font-weight-bold small">RERERENCIA_GERENCIA (VENTAS/OPERACIONES)</label>
-                                        <input type="text" class="form-control" value="GERENCIA TÉCNICA DE PROCESOS" style="height: 40px;">
-                                   </div>
-                              </div>
-
-                              <div class="row">
-                                   <div class="col-md-6 form-group">
-                                        <label class="font-weight-bold small">VALIDEZ CERTIFICADOS DIGITALES (AÑOS)</label>
-                                        <select class="form-control" style="height: 40px;">
-                                             <option>1 Año</option>
-                                             <option selected>2 Años</option>
-                                             <option>3 Años</option>
-                                             <option>Validez Permanente</option>
-                                        </select>
-                                   </div>
-
-                                   <div class="col-md-6 form-group">
-                                        <label class="font-weight-bold small">CÓDIGO DE EMPRESA MATRIZ</label>
-                                        <input type="text" class="form-control" value="VENPRECAR-C.A.-12209" style="height: 40px;">
-                                   </div>
-                              </div>
-
-                              <div class="mt-4 pt-3 border-top text-right">
-                                   <button type="submit" class="btn btn-primary px-5 py-2 font-weight-bold">
-                                        <i class="fas fa-check-double mr-1"></i> Confirmar Parámetros de Sistema
-                                   </button>
-                              </div>
-                         </form>
-                    </div>
-               </div>
-          </div>
-     @endif
-
-     <!-- SUBVIEW 4: ACTIVIDADES Y SUBACTIVIDADES -->
+     <!-- ACTIVIDADES Y SUBACTIVIDADES -->
      @if($pestania_activa === 'actividades')
-          <div class="row text-dark">
+          <div class="row text-dark mx-5">
                <!-- ACTIVIDADES -->
                <div class="col-12 col-lg-6 mb-4">
                     <div class="card shadow-sm border-0 bg-white mb-4" style="border-radius: 8px;">
@@ -438,7 +382,7 @@
           </div>
      @endif
 
-     <!-- SUBVIEW 5: FACILITADORES -->
+     <!-- FACILITADORES -->
      @if($pestania_activa === 'facilitadores')
           <div class="row text-dark mx-5">
                <div class="col-12 col-lg-5 mb-4">

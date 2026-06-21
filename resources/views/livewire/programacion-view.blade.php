@@ -131,7 +131,7 @@
 
                                    <div class="col-md-4 form-group">
                                         <label class="font-weight-bold small">FECHA PROPUESTA</label>
-                                        <input type="date" class="form-control" wire:model="fecha_input" style="height: 40px;">
+                                        <input type="date" class="form-control" wire:model.live="fecha_input" style="height: 40px;">
                                    </div>
                               </div>
 
@@ -356,7 +356,7 @@
                                    </thead>
                                    <tbody>
                                         @forelse($this->listaFinal as $p)
-                                             <tr>
+                                             <tr wire:key="final-{{ $p->id }}">
                                                   <td class="p-2">
                                                        <strong class="text-dark d-block" style="font-size: 0.9rem;">{{ $p->nombre }}</strong>
                                                        <span class="small d-block text-dark"><strong>Institución:</strong> {{ $p->institucion }}</span>
@@ -459,7 +459,7 @@
                                    </thead>
                                    <tbody>
                                         @forelse($this->participantesAsistencia as $participante)
-                                             <tr class="cursor-pointer">
+                                             <tr class="cursor-pointer" wire:key="asistencia-{{ $participante->ficha }}">
                                                   <td class="text-center p-2">
                                                        <input type="checkbox" value="{{ $participante->ficha }}" wire:model.live="asistentes_fichas" wire:key="chk-{{ $id_ejecucion_seleccionada }}-{{ $participante->ficha }}" style="transform: scale(1.35);">
                                                   </td>
@@ -515,7 +515,7 @@
                               </div>
                               <div class="row" style="max-height: 420px; overflow-y: auto;" wire:loading.class="d-none" wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha_desde, filtro_fecha_hasta, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda">
                                    @forelse($this->listaEjecucion as $p)
-                                        <div class="col-12 py-2 border-bottom hover-gradient-soft">
+                                        <div class="col-12 py-2 border-bottom hover-gradient-soft" wire:key="ejec-{{ $p->id }}">
                                              <div class="d-flex justify-content-between align-items-start">
                                                   <strong class="text-dark" style="font-size: 0.95rem;">{{ $p->nombre }}</strong>
                                                   <div class="d-flex align-items-center" style="gap: 12px;">

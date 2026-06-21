@@ -17,16 +17,46 @@ class DashboardView extends Component
 
      public $cursos;
 
+     // Filtros
+     public $filtro_area = '';
+     public $filtro_actividad = '';
+     public $filtro_subactividad = '';
+     public $filtro_facilitador = '';
+     public $filtro_institucion = '';
+     public $filtro_fecha_desde = '';
+     public $filtro_fecha_hasta = '';
+     public $filtro_lugar = '';
+
      public function mount()
      {
           $this->year = request()->query('year', now()->year);
           $this->month = request()->query('month', now()->month);
           $this->cursos = collect();
-          try {
-               $this->cursos = Programacion::orderBy('fecha', 'desc')->take(5)->get();
-          } catch (\Exception $e) {
-               // Fallback si la tabla aún no existe o da error
-          }
+     }
+
+     public function getAreasProperty()
+     {
+          return \App\Models\Area::all();
+     }
+
+     public function getActividadesProperty()
+     {
+          return \App\Models\Actividad::all();
+     }
+
+     public function getSubactividadesProperty()
+     {
+          return \App\Models\Subactividad::all();
+     }
+
+     public function getFacilitadoresProperty()
+     {
+          return \App\Models\Facilitador::all();
+     }
+
+     public function limpiarFiltrosBusqueda()
+     {
+          $this->reset(['filtro_area', 'filtro_actividad', 'filtro_subactividad', 'filtro_facilitador', 'filtro_institucion', 'filtro_fecha_desde', 'filtro_fecha_hasta', 'filtro_lugar']);
      }
 
      #[On('fecha_cambiada')]
@@ -44,6 +74,44 @@ class DashboardView extends Component
           $pre_mes = 0;
 
           try {
+               $query = Programacion::with(['actividad.area', 'subactividad', 'facilitador']);
+
+               if ($this->filtro_area) {
+                    $query->whereHas('actividad', function ($q) {
+                         $q->where('area_id', $this->filtro_area);
+                    });
+               }
+               if ($this->filtro_actividad) {
+                    $query->whereHas('actividad', function ($q) {
+                         $q->where('nombre', 'ilike', '%' . $this->filtro_actividad . '%');
+                    });
+               }
+               if ($this->filtro_subactividad) {
+                    $query->whereHas('subactividad', function ($q) {
+                         $q->where('nombre', 'ilike', '%' . $this->filtro_subactividad . '%');
+                    });
+               }
+               if ($this->filtro_facilitador) {
+                    $query->whereHas('facilitador', function ($q) {
+                         $q->where('nombre', 'ilike', '%' . $this->filtro_facilitador . '%');
+                    });
+               }
+               if ($this->filtro_institucion) {
+                    $query->where('institucion', 'ilike', '%' . $this->filtro_institucion . '%');
+               }
+               if ($this->filtro_fecha_desde) {
+                    $query->whereDate('fecha', '>=', $this->filtro_fecha_desde);
+               }
+               if ($this->filtro_fecha_hasta) {
+                    $query->whereDate('fecha', '<=', $this->filtro_fecha_hasta);
+               }
+               if ($this->filtro_lugar) {
+                    $query->where('lugar', 'ilike', '%' . $this->filtro_lugar . '%');
+               }
+
+               // Tomar 50 resultados filtrados en vez de 10 si hay filtros, o mantener 10 si no
+               $this->cursos = $query->orderBy('fecha', 'desc')->take(50)->get();
+
                // Cursos Totales en este Año (Año actual)
                $totales_anio = Programacion::whereRaw("EXTRACT(YEAR FROM fecha) = ?", [now()->year])->count();
                

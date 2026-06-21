@@ -19,6 +19,13 @@ class DashboardCalendario extends Component
     #[Url]
     public $month;
 
+    public $fechaSeleccionada = null;
+
+    public function seleccionarFecha($fecha)
+    {
+        $this->fechaSeleccionada = $fecha;
+    }
+
     public function mount($year = null, $month = null)
     {
         $this->year = $year ?? now()->year;
@@ -69,17 +76,19 @@ class DashboardCalendario extends Component
         $days = [];
         
         foreach ($period as $day) {
-            $days[] = [
-                'date' => $day->copy(),
-                'is_current_month' => $day->month == $this->month,
-                'is_weekend' => $day->isWeekend(),
-                'is_feriado' => $this->esFeriado($day),
-            ];
+            if (!$day->isWeekend()) {
+                $days[] = [
+                    'date' => $day->copy(),
+                    'is_current_month' => $day->month == $this->month,
+                    'is_weekend' => false,
+                    'is_feriado' => $this->esFeriado($day),
+                ];
+            }
         }
         
         return [
             'nombre_mes' => ucfirst($date->locale(config('app.locale', 'es'))->translatedFormat('F')),
-            'semanas' => array_chunk($days, 7)
+            'semanas' => array_chunk($days, 5)
         ];
     }
 
@@ -88,7 +97,8 @@ class DashboardCalendario extends Component
         $startOfYear = Carbon::create($this->year, 1, 1)->startOfDay();
         $endOfYear = Carbon::create($this->year, 12, 31)->endOfDay();
         
-        $cursos = Programacion::whereBetween('fecha', [$startOfYear, $endOfYear])->get();
+        $cursos = Programacion::with(['actividad', 'subactividad', 'facilitador'])
+            ->whereBetween('fecha', [$startOfYear, $endOfYear])->get();
         
         $eventos_por_fecha = [];
         

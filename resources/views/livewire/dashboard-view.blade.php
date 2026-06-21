@@ -73,11 +73,25 @@
           </div>
      </div>
 
-     <!-- Calendario Anual de Programaciones -->
+     <!-- Calendario de Programaciones -->
      <livewire:dashboard-calendario />
 
      <!-- Tabla de Cursos Recientes -->
-     <div class="card-corporate shadow-sm border-0 mx-5">
+     <div class="col-12 py-2 px-5">
+          @include('partials.filtro-programaciones')
+     </div>
+     
+     <div class="card-corporate shadow-sm border-0 mx-5 position-relative">
+          <!-- Indicador de Carga para Tabla de Cursos Recientes -->
+          <div wire:loading class="position-absolute w-100 h-100" style="background-color: rgba(255, 255, 255, 0.7); z-index: 10; top: 0; left: 0; border-radius: 8px;">
+               <div class="d-flex flex-column justify-content-center align-items-center h-100">
+                    <div class="spinner-border text-primary mb-2" role="status">
+                         <span class="sr-only">Cargando...</span>
+                    </div>
+                    <span class="text-primary font-weight-bold">Actualizando resultados...</span>
+               </div>
+          </div>
+
           <div class="card-header d-flex justify-content-between align-items-center py-3" style="background-color: #64748B; border-bottom: none;">
                <div class="d-flex align-items-center">
                     <i class="fas fa-chart-line mr-2" style="font-size: 1.25rem; color: #FFFFFF;"></i>
