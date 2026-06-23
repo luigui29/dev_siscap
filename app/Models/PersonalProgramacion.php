@@ -13,8 +13,11 @@ class PersonalProgramacion extends Model
         'causa'
     ];
 
-    protected $casts = [
-        'estatus' => 'boolean'
-    ];
+     protected function casts(): array
+    {
+        return [
+            'estatus' => 'boolean',
+        ];
+    }
     
 }

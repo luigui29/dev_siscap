@@ -235,8 +235,8 @@
                </div>
 
                <!-- Pre-Programaciones Registradas -->
-               <div class="col-12 col-lg-3 mb-4 min-vh-100">
-                    <div class="card shadow-sm border-0 bg-white h-100" style="border-radius: 8px;">
+               <div class="col-12 col-lg-3 mb-4">
+                    <div class="card shadow-sm border-0 bg-white" style="border-radius: 8px;">
                          <div class="border-bottom p-3" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
                               <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
                                    <i class="fas fa-folder-open mr-2"></i> {{ $modo === 'busqueda' ? 'Resultados de Búsqueda' : 'Pre-Programaciones Registradas' }}
@@ -248,7 +248,7 @@
                                    <i class="fas fa-spinner fa-spin text-primary mb-2" style="font-size: 1.5rem;"></i>
                                    <h6 class="text-muted font-weight-bold">Buscando pre-programaciones...</h6>
                               </div>
-                              <div style="max-height: 700px; overflow-y: auto;" wire:loading.class="d-none" wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha_desde, filtro_fecha_hasta, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda">
+                              <div style="max-height: 600px; overflow-y: auto;" wire:loading.class="d-none" wire:target="filtro_area, filtro_actividad, filtro_subactividad, filtro_facilitador, filtro_institucion, filtro_lugar, filtro_fecha_desde, filtro_fecha_hasta, filtro_desde, filtro_hasta, limpiarFiltrosBusqueda">
                                    @forelse($this->listaPre as $p)
                                         <div class="p-3 border-bottom hover-gradient-soft">
                                              <div class="d-flex justify-content-between align-items-start">
@@ -300,8 +300,8 @@
                                    <i class="fas fa-folder" style="font-size: 0.9rem; color: #0369A1;"></i>
                               </div>
                               <div>
-                                   <span class="text-secondary small d-block uppercase font-weight-bold" style="font-size: 0.65rem;">PRE-PROGRAMACIONES TOTALES</span>
-                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $this->propuestas->count() }} Curso(s) Planificado(s)</span>
+                                   <span class="text-secondary small d-block uppercase font-weight-bold" style="font-size: 0.65rem;">PROGRAMACIONES TOTALES</span>
+                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $this->propuestas->count() }} Curso(s)</span>
                               </div>
                          </div>
 
@@ -312,7 +312,7 @@
                               </div>
                               <div>
                                    <span class="text-secondary small d-block uppercase font-weight-bold" style="font-size: 0.65rem;">PROGRAMACIONES APROBADAS</span>
-                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $this->propuestas->where('aprobado', true)->count() }} Curso(s) Listo(s)</span>
+                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $this->propuestas->where('aprobado', true)->count() }} Curso(s)</span>
                               </div>
                          </div>
 
@@ -323,7 +323,7 @@
                               </div>
                               <div>
                                    <span class="text-secondary small d-block uppercase font-weight-bold" style="font-size: 0.65rem;">PROGRAMACIONES PENDIENTES</span>
-                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $this->propuestas->whereNull('aprobado')->count() }} Curso(s) Pendiente(s)</span>
+                                   <span class="font-weight-bold text-dark mb-0 d-block" style="font-size: 0.95rem;">{{ $this->propuestas->whereNull('aprobado')->count() }} Curso(s)</span>
                               </div>
                          </div>
 
@@ -354,7 +354,7 @@
                                              <th class="p-3 text-right">ACCIONES</th>
                                         </tr>
                                    </thead>
-                                   <tbody>
+                                   <tbody style="max-height: 600px; overflow-y: auto;">
                                         @forelse($this->listaFinal as $p)
                                              <tr wire:key="final-{{ $p->id }}">
                                                   <td class="p-2">

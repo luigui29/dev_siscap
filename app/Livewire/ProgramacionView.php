@@ -74,6 +74,35 @@ class ProgramacionView extends Component
           if ($pestania) {
                $this->pestania_activa = $pestania;
           }
+
+          if (request()->has('edit_id')) {
+               $this->cargarPropuestaParaEdicion(request()->query('edit_id'));
+          }
+
+          if (request()->has('exec_id')) {
+               $this->iniciarEjecucion(request()->query('exec_id'));
+          }
+
+          if (request()->has('filter_id')) {
+               $this->cargarPropuestaParaFiltro(request()->query('filter_id'));
+          }
+     }
+
+     public function cargarPropuestaParaFiltro($id)
+     {
+          $propuesta = Programacion::with(['actividad', 'subactividad', 'facilitador'])->find($id);
+          if ($propuesta) {
+               $this->filtro_area = $propuesta->actividad->area_id ?? '';
+               $this->filtro_actividad = $propuesta->actividad->nombre ?? '';
+               $this->filtro_subactividad = $propuesta->subactividad->nombre ?? '';
+               $this->filtro_facilitador = $propuesta->facilitador->nombre ?? '';
+               $this->filtro_institucion = $propuesta->institucion ?? '';
+               $this->filtro_fecha_desde = $propuesta->fecha ? Carbon::parse($propuesta->fecha)->format('Y-m-d') : '';
+               $this->filtro_fecha_hasta = $propuesta->fecha ? Carbon::parse($propuesta->fecha)->format('Y-m-d') : '';
+               $this->filtro_lugar = $propuesta->lugar ?? '';
+               
+               $this->buscarPropuestas();
+          }
      }
 
      // Método para cambiar de modo (registro o búsqueda)

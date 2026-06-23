@@ -1,6 +1,6 @@
 <div class="card-corporate shadow-sm border-0 mb-4 mx-5" wire:loading.class="opacity-50">
-    <div class="card-header d-flex justify-content-between align-items-center py-3" style="background-color: #5DADE2; border-bottom: none;">
-        <div class="d-flex align-items-center">
+    <div class="card-header d-flex justify-content-end py-3" style="background-color: #5DADE2; border-bottom: none;">
+        <div class="d-flex align-items-center mr-auto">
             <i class="fas fa-calendar-alt mr-2" style="font-size: 1.25rem; color: #FFFFFF;"></i>
             <h5 class="mb-0 font-weight-bold text-white">
                 Cronograma
@@ -12,7 +12,7 @@
                 <button wire:click="cambiarMes(-1)" class="btn btn-sm btn-light font-weight-bold" style="border-radius: 5px;" title="Mes anterior">
                     <i class="fas fa-chevron-left"></i>
                 </button>
-                <h5 class="mb-0 mx-3 text-white font-weight-bold text-capitalize" style="min-width: 120px; text-align: center;">{{ $calendario['nombre_mes'] }}</h5>
+                <h5 class="mb-0 mx-3 text-white font-weight-bold text-capitalize" style="min-width: 120px; text-align: center;">{{ \Carbon\Carbon::create($year, $month, 1)->locale('es')->isoFormat('MMMM') }}</h5>
                 <button wire:click="cambiarMes(1)" class="btn btn-sm btn-light font-weight-bold" style="border-radius: 5px;" title="Mes siguiente">
                     <i class="fas fa-chevron-right"></i>
                 </button>
@@ -68,16 +68,19 @@
                                             <div class="d-flex justify-content-between align-items-center mt-2">
                                                 <div>
                                                     @if($curso->ejecutado)
-                                                        <span class="badge badge-success px-2 py-1">Ejecutado</span>
+                                                        <span class="text-success"><i class="fas fa-check-circle "></i> Ejecutado</span>
+                                                        <a href="{{ route('programacion', ['pestania' => 'ejecucion', 'exec_id' => $curso->id]) }}" class="btn btn-sm btn-primary ml-2"><i class="fas fa-solid fa-eye text-white mr-2"></i>REVISAR</a>
                                                     @elseif($curso->aprobado)
-                                                        <span class="badge badge-info px-2 py-1">Aprobado</span>
+                                                        <span class="text-success"><i class="fas fa-check-circle text-success"></i> Aprobado</span>
+                                                        <a href="{{ route('programacion', ['pestania' => 'final', 'filter_id' => $curso->id]) }}" class="btn btn-sm btn-primary ml-2"><i class="fas fa-solid fa-eye text-white mr-2"></i>REVISAR</a>
                                                     @else
-                                                        <span class="badge badge-warning text-dark px-2 py-1">Propuesta</span>
+                                                        <span class="text-warning"><i class="fas fa-clock text-warning"></i> Pendiente</span>
+                                                        <a href="{{ route('programacion', ['pestania' => 'final', 'filter_id' => $curso->id]) }}" class="btn btn-sm btn-primary ml-2"><i class="fas fa-solid fa-eye text-white mr-2"></i>REVISAR</a>
                                                     @endif
                                                 </div>
                                                 @if($curso->facilitador)
                                                     <small class="text-muted" title="Facilitador">
-                                                        <i class="fas fa-chalkboard-teacher mr-1"></i> {{ $curso->facilitador->nombre_apellido }}
+                                                        <i class="fas fa-chalkboard-teacher mr-1"></i> {{ $curso->facilitador->nombre }}
                                                     </small>
                                                 @endif
                                             </div>
@@ -180,7 +183,7 @@
                                                                 </div>
                                                             @endif
                                                             @if($programados > 0)
-                                                                <div class="evento p-1 text-white border-0" style="background-color: #5DADE2; border-radius: 4px; font-size: 0.65rem; line-height: 1.3;">
+                                                                <div class="evento p-1 text-white border-0" style="background-color: #58D68D; border-radius: 4px; font-size: 0.65rem; line-height: 1.3;">
                                                                     <strong>{{ $programados >= 10 ? '9+' : $programados }}</strong> aprobado(s)
                                                                 </div>
                                                             @endif

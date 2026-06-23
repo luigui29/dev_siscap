@@ -16,6 +16,8 @@ return new class extends Migration
             $table->bigInteger('ficha_empleado');
             $table->bigInteger('rol_id');
             $table->timestamp('fecha_asignado');
+            $table->boolean('estatus')->default('true');
+            $table->timestamps();
 
             $table->foreign('rol_id')->references('id')->on('roles')->onDelete('cascade');
 
