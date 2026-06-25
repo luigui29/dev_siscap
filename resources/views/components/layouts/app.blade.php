@@ -54,6 +54,23 @@
                     </div>
                 </li>
             </ul>
+            <ul class="navbar-nav ml-auto">
+                @auth
+                    <li class="nav-item dropdown" x-data="{ open: false }" @click.away="open = false">
+                        <a class="nav-link dropdown-toggle font-weight-bold text-white" href="javascript:void(0)" @click.prevent="open = !open" :class="{ 'show': open }" aria-expanded="false">
+                            <i class="fas fa-user-circle mr-1"></i> {{ Auth::user()->name }}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" :class="{ 'show': open }" style="margin-top: 0; position: absolute; right: 0; left: auto;">
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item text-danger font-weight-bold">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                @endauth
+            </ul>
         </div>
     </nav>
 
