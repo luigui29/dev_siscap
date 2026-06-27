@@ -357,14 +357,14 @@ class PerfilesView extends Component
                // Calcular estadísticas reales
                $participaciones_query = \Illuminate\Support\Facades\DB::table('pl_programaciones')
                     ->join('tbl_programaciones', 'pl_programaciones.programacion_id', '=', 'tbl_programaciones.id')
-                    ->join('rrhh_personal', 'pl_programaciones.ficha_empleado', '=', 'rrhh_personal.ficha')
-                    ->select('pl_programaciones.ficha_empleado', 'rrhh_personal.texto_gerencia', 'rrhh_personal.texto_unidad', 'tbl_programaciones.duracion', 'tbl_programaciones.aprobado', 'tbl_programaciones.ejecutado');
+                    ->join('db_sap.tbl_rrhh_personal', 'pl_programaciones.ficha_empleado', '=', 'db_sap.tbl_rrhh_personal.ficha')
+                    ->select('pl_programaciones.ficha_empleado', 'db_sap.tbl_rrhh_personal.texto_gerencia', 'db_sap.tbl_rrhh_personal.texto_unidad', 'tbl_programaciones.duracion', 'tbl_programaciones.aprobado', 'tbl_programaciones.ejecutado');
 
                if (!empty($this->filtro_gerencia)) {
-                    $participaciones_query->where('rrhh_personal.texto_gerencia', $this->filtro_gerencia);
+                    $participaciones_query->where('db_sap.tbl_rrhh_personal.texto_gerencia', $this->filtro_gerencia);
                }
                if (!empty($this->filtro_unidad)) {
-                    $participaciones_query->where('rrhh_personal.texto_unidad', $this->filtro_unidad);
+                    $participaciones_query->where('db_sap.tbl_rrhh_personal.texto_unidad', $this->filtro_unidad);
                }
 
                $participaciones = $participaciones_query->get();

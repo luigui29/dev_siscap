@@ -12,7 +12,7 @@
 
      <!-- Cabecera -->
      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 mx-5 text-dark">
-          <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: #334155; margin: 0;">
+          <h3 class="font-weight-bold">
                Gestión de Perfiles
           </h3>
      </div>

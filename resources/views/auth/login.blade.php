@@ -11,11 +11,9 @@
         <div class="col-md-5 col-lg-4">
             
             <div class="text-center mb-4">
-                <a href="{{ url('/') }}" class="text-decoration-none text-dark">
-                    <h4 class="mb-0" style="font-family: 'Outfit', sans-serif; font-weight: 700;">
+                    <h4 class="mb-0" class="text-decoration-none text-dark style=" font-family: 'Outfit', sans-serif; font-weight: 700;">
                          SISCAP
                     </h4>
-                </a>
             </div>
 
             <div class="card card-corporate">
@@ -32,7 +30,7 @@
                         <!-- Campo de ficha -->
                         <div class="input-group mb-3">
                             <input type="text" id="ficha" name="ficha" class="form-control @error('ficha') is-invalid @enderror"
-                                value="{{ old('ficha') }}" placeholder="Ficha de trabajador" autofocus style="height: 45px;">
+                                value="{{ old('ficha') }}" placeholder="Ficha" autofocus style="height: 45px;">
                             <div class="input-group-append">
                                 <div class="input-group-text bg-white">
                                     <span class="fas fa-id-badge text-muted"></span>
@@ -54,6 +52,11 @@
                                     <span class="fas fa-lock text-muted"></span>
                                 </div>
                             </div>
+                            @error('password')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>        
 
                         <div class="row mt-4">
