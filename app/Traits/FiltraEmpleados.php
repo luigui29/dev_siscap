@@ -17,14 +17,13 @@ trait FiltraEmpleados
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function aplicarFiltrosEmpleados($query)
+    public function filtrarEmpleados($query)
     {
         if (!empty($this->filtro_ficha)) {
             $query->where('ficha', 'like', '%' . $this->filtro_ficha . '%');
         }
 
         if (!empty($this->filtro_cedula)) {
-            // Asumiendo que la columna se llama cedula en tbl_rrhh_personal
             $query->where('cedula', 'like', '%' . $this->filtro_cedula . '%');
         }
 

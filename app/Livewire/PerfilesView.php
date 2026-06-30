@@ -65,7 +65,7 @@ class PerfilesView extends Component
                $this->usuarios = User::all();
                
                // Cargar empleados iniciales con filtros (vacíos por defecto)
-               $empleados_iniciales = $this->aplicarFiltrosEmpleados(RrhhPersonal::query())
+               $empleados_iniciales = $this->FiltrarEmpleados(RrhhPersonal::query())
                    ->orderBy('nombre_empleado', 'asc')
                    ->limit(50)
                    ->get();
@@ -279,7 +279,7 @@ class PerfilesView extends Component
           $cursosPorArea = [];
 
           if ($this->pestania_activa === 'individual') {
-              $empleados = $this->aplicarFiltrosEmpleados(RrhhPersonal::query())
+              $empleados = $this->filtrarEmpleados(RrhhPersonal::query())
                   ->orderBy('nombre_empleado', 'asc')
                   ->limit(50)
                   ->get();

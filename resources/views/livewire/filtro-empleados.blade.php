@@ -8,30 +8,36 @@
         <div class="row">
             <div class="col-md-2 mb-2">
                 <label for="ficha_filtro" class="font-weight-bold small text-muted mb-1">Ficha</label>
-                <input id="ficha_filtro" type="text" class="form-control form-control-sm" wire:model.live.debounce.500ms="filtro_ficha" placeholder="Ej. 12345" style="border-radius: 4px;">
+                @error('filtro_ficha') <span class="text-danger font-weight-bold small"><i class="fas fa-info-circle ml-1 mr-2"></i>{{ $message }}</span> @enderror
+                <input id="ficha_filtro" type="number" step="1" min="0" class="form-control form-control-sm" wire:model.live.debounce.500ms="filtro_ficha" placeholder="Ingrese sólo números" style="border-radius: 4px;">
             </div>
             <div class="col-md-2 mb-2">
                 <label for="cedula_filtro" class="font-weight-bold small text-muted mb-1">Cédula</label>
-                <input id="cedula_filtro" type="text" class="form-control form-control-sm" wire:model.live.debounce.500ms="filtro_cedula" placeholder="Ej. 15392091" style="border-radius: 4px;">
+                @error('filtro_cedula') <span class="text-danger font-weight-bold small"><i class="fas fa-info-circle ml-1 mr-2"></i>{{ $message }}</span> @enderror
+                <input id="cedula_filtro" type="number" step="1" min="0" class="form-control form-control-sm" wire:model.live.debounce.500ms="filtro_cedula" placeholder="Ingrese sólo números" style="border-radius: 4px;">
             </div>
             <div class="col-md-4 mb-2">
                 <label for="nombre_filtro" class="font-weight-bold small text-muted mb-1">Nombre</label>
-                <input id="nombre_filtro" type="text" class="form-control form-control-sm" wire:model.live.debounce.500ms="filtro_nombre" placeholder="Nombre del empleado" style="border-radius: 4px;">
+                @error('filtro_nombre') <span class="text-danger font-weight-bold small"><i class="fas fa-info-circle ml-1 mr-2"></i>{{ $message }}</span> @enderror
+                <input id="nombre_filtro" type="text" class="form-control form-control-sm" wire:model.live.debounce.500ms="filtro_nombre" placeholder="Apellido y Nombre del empleado" style="border-radius: 4px;">
             </div>
             <div class="col-md-4 mb-2">
                 <label for="cargo_filtro" class="font-weight-bold small text-muted mb-1">Cargo</label>
-                <input id="cargo_filtro" type="text" class="form-control form-control-sm" wire:model.live.debounce.500ms="filtro_cargo" placeholder="Ej. Analista" style="border-radius: 4px;">
+                @error('filtro_cargo') <span class="text-danger font-weight-bold small"><i class="fas fa-info-circle ml-1 mr-2"></i>{{ $message }}</span> @enderror
+                <input id="cargo_filtro" type="text" class="form-control form-control-sm" wire:model.live.debounce.500ms="filtro_cargo" placeholder="Ej: Analista" style="border-radius: 4px;">
             </div>
             <div class="col-md-6 mb-2">
                 <label for="gerencia_filtro" class="font-weight-bold small text-muted mb-1">Gerencia</label>
-                <input id="gerencia_filtro" type="text" class="form-control form-control-sm" wire:model.live.debounce.500ms="filtro_gerencia" placeholder="Ej. Gerencia de Adiestramiento" style="border-radius: 4px;">
+                @error('filtro_gerencia') <span class="text-danger font-weight-bold small"><i class="fas fa-info-circle ml-1 mr-2"></i>{{ $message }}</span> @enderror
+                <input id="gerencia_filtro" type="text" class="form-control form-control-sm" wire:model.live.debounce.500ms="filtro_gerencia" placeholder="GCIA. o Gerencia..." style="border-radius: 4px;">
             </div>
             <div class="col-md-6 mb-2">
                 <label for="unidad_filtro" class="font-weight-bold small text-muted mb-1">Unidad</label>
-                <input id="unidad_filtro" type="text" class="form-control form-control-sm" wire:model.live.debounce.500ms="filtro_unidad" placeholder="Ej. Departamento TI" style="border-radius: 4px;">
+                @error('filtro_unidad') <span class="text-danger font-weight-bold small"><i class="fas fa-info-circle ml-1 mr-2"></i>{{ $message }}</span> @enderror
+                <input id="unidad_filtro" type="text" class="form-control form-control-sm" wire:model.live.debounce.500ms="filtro_unidad" placeholder="Departamento..." style="border-radius: 4px;">
             </div>
             <div class="col-12 mt-2 d-flex justify-content-end">
-                <button class="btn btn-sm btn-outline-secondary" wire:click="limpiarFiltrosEmpleados">
+                <button class="btn btn-sm btn-outline-secondary" wire:click="limpiar">
                     <i class="fas fa-eraser mr-1"></i> Limpiar
                 </button>
             </div>

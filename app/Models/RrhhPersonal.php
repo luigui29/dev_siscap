@@ -13,7 +13,6 @@ class RrhhPersonal extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'ficha',
         'nombre_empleado',
         'texto_cargo',
         'texto_unidad',

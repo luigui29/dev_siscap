@@ -18,7 +18,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Rutas protegidas por autenticación
 Route::middleware(['auth'])->group(function () {
-     Route::get('/dashboard', DashboardView::class)->name('dashboard');
+     /*Route::get('/dashboard', DashboardView::class)->name('dashboard');*/
+     Route::get('/dashboard', function() {
+          return view('perfiles');
+     });
      Route::get('/perfiles/{pestania?}', PerfilesView::class)->name('perfiles');
      Route::get('/programacion/{pestania?}', ProgramacionView::class)->name('programacion');
      Route::get('/configuracion/{pestania?}', ConfiguracionView::class)->name('configuracion');
