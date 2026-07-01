@@ -14,6 +14,11 @@
           Alpine.store('empleados', {
                cargando: false
           });
+
+          // Estado de carga tras abrir modal de educacion
+          Alpine.store('educaciones', {
+               cargando: false
+          });
      });
 
      // SCRIPTS A EJECUTAR TRAS CARGAR LIVEWIRE (ANTES DE SER INICIALIZADO EN LA PÁGINA)
@@ -40,10 +45,36 @@
                          Alpine.store('empleados').cargando = false;
                     });
                }
+
+               /* Activar estado de carga para el modal de educación */
+               if (component.name === 'educacion-empleados') {
+                    
+                    Alpine.store('educaciones').cargando = true;
+
+                    succeed(() => {
+                         setTimeout(() => {
+                              Alpine.store('educaciones').cargando = false;
+                         }, 50);
+                    });
+
+                    fail(() => {
+                         Alpine.store('educaciones').cargando = false;
+                    });
+               }
           });
      });
 
-     // MODAL: TRABAJADORES MATRICULADOS EN UN CURSO --- VISTA: PROGRAMACIÓN
+     // SCRIPTS Y EVENTOS PARA MODALES BOOTSTRAP
+     /* [VISTA: PERFIL INDIVIDUAL] NIVEL EDUCATIVO DEL EMPLEADO*/
+     window.addEventListener('listo-modal-educacion', event => {
+          $('#modal_educacion').modal('show');
+     });
+
+     window.addEventListener('cerrar-modal-educacion', event => {
+          $('#modal_educacion').modal('hide');
+     });
+
+     /* [VISTA: PROGRAMACIÓN FINAL] TRABAJADORES MATRICULADOS EN UN CURSO */
      window.addEventListener('abrir-modal-programacion-trabajadores', event => {
           $('#modalProgramacionTrabajadores').modal('show');
      });

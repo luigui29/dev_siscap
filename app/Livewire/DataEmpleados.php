@@ -7,9 +7,11 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 
 use App\Models\RrhhPersonal;
+use App\Models\NivelEducativo;
 
 class DataEmpleados extends Component
 {
+    /* PROPIEDADES */
     public $data_filtrada = [
         'ficha' => null,
         'cedula' => null,
@@ -21,6 +23,11 @@ class DataEmpleados extends Component
 
     public $ficha_seleccionada = null;
 
+    /* EVENTOS */
+    /*
+    * Al recibir la busqueda del filtro, se guarda en la propiedad
+    * y se reinicia la ficha del empleado seleccionado (si se había seleccionado uno previamente)  
+    */ 
     #[On('busqueda-filtrada')]
     public function obtenerDataFiltrada($filtros)
     {
@@ -28,6 +35,18 @@ class DataEmpleados extends Component
         $this->reset('ficha_seleccionada');
     }
 
+    /*
+    * Tras actualizar los registros se re-renderiza el componente
+    * para mostrarlos en la página sin recargar
+    */ 
+    #[On('educacion-actualizada')]
+    public function actualizar()
+    {
+        
+    }
+
+    /* PROPIEDADES COMPUTADAS */
+    // Todos los empleados según filtros (limitado a 50 resultados)
     #[Computed]
     public function empleados()
     {
@@ -37,6 +56,7 @@ class DataEmpleados extends Component
                     ->get();
     }
 
+    // Retornar el empleado seleccionado si el usuario selecciona de la lista
     #[Computed]
     public function empleado_seleccionado()
     {
@@ -46,6 +66,17 @@ class DataEmpleados extends Component
 
         return RrhhPersonal::find($this->ficha_seleccionada);
     } 
+
+    // Retornar las educaciones del empleado si el usuario selecciona de la lista
+    #[Computed]
+    public function educaciones()
+    {
+        if (!$this->ficha_seleccionada) {
+            return null;
+        }
+
+        return NivelEducativo::where('ficha_empleado', $this->ficha_seleccionada)->get();
+    }
 
     public function filtrar($query)
     {
