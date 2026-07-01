@@ -7,28 +7,11 @@
                 </h5>
             </div>
 
-            <div class="card-body" x-data="{ isFiltroLoading: false }"
-                 x-init="
-                    if (!window.hasRegisteredFiltroHook) {
-                        Livewire.hook('commit', ({ component, commit, respond, succeed, fail }) => {
-                            if (component.name === 'filtro-empleados' || component.name === 'data-empleados') {
-                                window.dispatchEvent(new CustomEvent('toggle-filtro-loader', { detail: true }));
-                                succeed(() => {
-                                    setTimeout(() => { window.dispatchEvent(new CustomEvent('toggle-filtro-loader', { detail: false })); }, 50);
-                                });
-                                fail(() => {
-                                    window.dispatchEvent(new CustomEvent('toggle-filtro-loader', { detail: false }));
-                                });
-                            }
-                        });
-                        window.hasRegisteredFiltroHook = true;
-                    }
-                 "
-                 @toggle-filtro-loader.window="isFiltroLoading = $event.detail">
-                <!-- Indicador de carga unificado -->
-                <div x-show="isFiltroLoading" 
+            <div class="card-body">
+                <!-- Indicador de carga -->
+                <div x-show="$store.empleados.cargando" 
                      style="display: none; position: absolute; inset: 0; background: rgba(255,255,255,0.8); z-index: 10; justify-content: center; align-items: center; border-radius: 0 0 8px 8px;"
-                     :class="isFiltroLoading ? 'd-flex' : 'd-none'">
+                     :class="$store.empleados.cargando ? 'd-flex' : 'd-none'">
                     <div class="text-center">
                         <div class="spinner-border text-primary mb-2" role="status"></div>
                         <div class="text-primary small">Cargando empleados...</div>
@@ -37,7 +20,7 @@
 
                 <div class="form-group mb-3">
                     <label for="ficha_seleccionada" class="font-weight-bold small text-muted">Selección de empleado:</label>
-                    <select id="ficha_seleccionada" class="form-control" wire:model.live="ficha_seleccionada" :disabled="isFiltroLoading" style="border-radius: 4px;">
+                    <select id="ficha_seleccionada" class="form-control" wire:model.live="ficha_seleccionada" :disabled="$store.empleados.cargando" style="border-radius: 4px;">
                         <option value="">Haga clic aquí para ver un listado de empleados según los filtros usados</option>
                         @foreach($this->empleados as $e)
                             <option value="{{ $e->ficha }}">[{{ $e->ficha }}] - {{ $e->nombre_empleado }}</option>
