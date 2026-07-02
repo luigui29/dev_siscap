@@ -16,7 +16,7 @@ return new class extends Migration
             $table->bigInteger('actividad_id');
             $table->bigInteger('subactividad_id')->nullable();
             $table->bigInteger('facilitador_id');
-            $table->char('institucion', length: 255)->default("VENPRECAR, C.A.");
+            $table->char('institucion', length: 255)->default('VENPRECAR, C.A.');
             $table->timestamp('fecha');
             $table->char('lugar', length: 255);
             $table->time('desde');
@@ -25,8 +25,6 @@ return new class extends Migration
             $table->boolean('extra')->default('false');
             $table->boolean('aprobado')->nullable();
             $table->boolean('ejecutado')->nullable();
-            $table->char('nombre', length: 255);
-            $table->char('objetivo', length: 255)->nullable();
             $table->timestamps();
 
             $table->foreign('actividad_id')->references('id')->on('tbl_actividades')->onDelete('cascade');

@@ -11,6 +11,11 @@ use App\Models\NivelEducativo;
 use App\Models\ExperienciaLaboral;
 use App\Models\NivelIngles;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+
+use Carbon\Carbon;
+
 class DataEmpleados extends Component
 {
     /* PROPIEDADES */
@@ -28,8 +33,8 @@ class DataEmpleados extends Component
     /* EVENTOS */
     /*
     * Al recibir la busqueda del filtro, se guarda en la propiedad
-    * y se reinicia la ficha del empleado seleccionado (si se había seleccionado uno previamente)  
-    */ 
+    * y se reinicia la ficha del empleado seleccionado (si se había seleccionado uno previamente)
+    */
     #[On('busqueda-filtrada')]
     public function obtenerDataFiltrada($filtros)
     {
@@ -40,7 +45,7 @@ class DataEmpleados extends Component
     /*
     * Tras actualizar los registros se re-renderiza el componente
     * para mostrarlos en la página sin recargar
-    */ 
+    */
     #[On('educacion-actualizada')]
     #[On('experiencia-actualizada')]
     #[On('ingles-actualizado')]
@@ -52,9 +57,9 @@ class DataEmpleados extends Component
     public function empleados()
     {
         return $this->filtrar(RrhhPersonal::query())
-                    ->orderBy('nombre_empleado', 'asc')
-                    ->limit(50)
-                    ->get();
+            ->orderBy('nombre_empleado', 'asc')
+            ->limit(50)
+            ->get();
     }
 
     // Retornar el empleado seleccionado si el usuario selecciona de la lista
@@ -66,7 +71,7 @@ class DataEmpleados extends Component
         }
 
         return RrhhPersonal::find($this->ficha_seleccionada);
-    } 
+    }
 
     // Retornar las educaciones del empleado si el usuario selecciona de la lista
     #[Computed]
@@ -110,6 +115,37 @@ class DataEmpleados extends Component
         }
 
         return NivelIngles::where('ficha_empleado', $this->ficha_seleccionada)->first();
+    }
+
+    /* Retorna los cursos del empleado seleccionado desde la vista materializada en PostgreSQL (mvw_programaciones_empleados)
+    *  Arma un hash-map usando como llave las áreas de capacitación y guarda en ellas cada uno
+    *  de los cursos del empleado.
+    */
+    #[Computed]
+    public function cursos()
+    {
+        if (!$this->ficha_seleccionada) {
+            return collect();
+        }
+
+        $cacheKey = 'programaciones_empleado_' . $this->ficha_seleccionada;
+
+        return Cache::remember($cacheKey, now()->addHours(24), function() {
+            $registros = DB::table('mvw_programaciones_empleados')
+                ->where('ficha_empleado', $this->ficha_seleccionada)
+                ->orderBy('fecha', 'desc')
+                ->get();
+
+            $grouped = $registros->groupBy('nombre_area')->map(function ($group) {
+                return $group->map(function ($item) {
+                    $registro = collect((array) $item)->except('nombre_area');
+                    $registro['fecha'] = Carbon::parse($registro['fecha'])->format('d-m-Y');
+                    return (object) $registro->toArray();
+                })->values();
+            });
+
+            return $grouped;
+        });
     }
 
     public function filtrar($query)

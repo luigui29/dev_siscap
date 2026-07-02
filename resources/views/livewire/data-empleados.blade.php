@@ -1,7 +1,7 @@
 <div class="row text-dark">
     <!-- Tarjeta con selección de empleado -->
     <div class="col-4">
-        <div class="card shadow-sm border-0 bg-white">
+        <div class="card shadow-sm border-0 bg-white" style="position: sticky; top: 20px;">
             <div class="card-header border-bottom p-3">
                 <h5 class="font-weight-bold mb-0 text-white">
                     <i class="fas fa-search mr-2"></i> Consultar Empleado
@@ -48,7 +48,7 @@
                     </div>
                 @else
                     <div class="p-3 bg-light rounded text-center border mt-4">
-                        <p class="mb-0 small">Sin empleado seleccionado.</p>
+                        <p class="mb-0">Sin empleado seleccionado.</p>
                     </div>
                 @endif
             </div>
@@ -76,7 +76,7 @@
                 </div>
             @if($this->empleado_seleccionado)
                 <!-- Sección 1/4: Nivel Educativo  -->
-                <div class="d-flex flex-column justify-content-start mb-3">
+                <div class="d-flex flex-column justify-content-start mb-3 border-bottom">
                     <h5 class="font-weight-bold text-dark mb-2">
                         <i class="fas fa-graduation-cap text-primary mr-2"></i> Educación
                     </h5>
@@ -140,7 +140,7 @@
                 </div>
 
                 <!-- Sección 2/4: Experiencia Laboral  -->
-                <div class="d-flex flex-column justify-content-start mb-3">
+                <div class="d-flex flex-column justify-content-start mb-3 border-bottom">
                     <h5 class="font-weight-bold text-dark mb-2">
                         <i class="fas fa-briefcase text-primary mr-2"></i> Experiencia Laboral
                     </h5>
@@ -232,7 +232,7 @@
                                     <tr>
                                         <td class="p-2 font-weight-bold"> {{ $e->cargo_desempeñado }} </td>
                                         <td class="p-2"> {{ $e->empresa }} </td>
-                                        <td class="p-2"> {{ $e->desde?->format('d-m-Y') }} </td>
+                                        <td class="p-2"> {{ $e->desde->format('d-m-Y') }} </td>
                                         <td class="p-2"> {{ $e->hasta?->format('d-m-Y') }} </td>
                                         <td class="p-2"> {{ $e->observacion }} </td>
                                         <td class="p-2 text-center">
@@ -252,7 +252,7 @@
                 </div>
 
                 <!-- Sección 3/4: Nivel de Inglés -->
-                <div class="d-flex flex-column justify-content-start mb-3">
+                <div class="d-flex flex-column justify-content-start mb-3 border-bottom">
                     <h5 class="font-weight-bold text-dark mb-2">
                         <i class="fas fa-language text-primary mr-2"></i> Nivel de Inglés
                     </h5>
@@ -301,9 +301,27 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- Sección 4/4: Cursos -->
+                <div class="d-flex flex-column justify-content-start mb-3">
+                    <h5 class="font-weight-bold text-dark mb-2">
+                        <i class="fas fa-tasks text-primary mr-2"></i>Capacitación y Desarrollo
+                    </h5>
+
+                    @forelse($this->cursos as $nombre_area => $cursos_area)
+                        @include('partials.tabla-perfil-individual-cursos-por-area', [
+                            'nombre_area' => $nombre_area,
+                            'cursos_area' => $cursos_area
+                        ])
+                    @empty
+                        <div class="p-3 bg-light rounded text-center border mt-4">
+                            <p class="mb-0">No se encuentra participación registrada para el empleado seleccionado.</p>
+                        </div>
+                    @endforelse
+                </div>
             @else
                 <div class="p-3 bg-light rounded text-center border mt-4">
-                    <p class="mb-0 small">La información del empleado seleccionado se mostrará aquí.</p>
+                    <p class="mb-0">La información del empleado seleccionado se mostrará aquí.</p>
                 </div>
             @endif
             </div>

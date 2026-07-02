@@ -1,22 +1,26 @@
 <?php
 
-use Livewire\Component;
-use Livewire\Attributes\On;
-
 use App\Models\ExperienciaLaboral;
 use App\Models\RrhhPersonal;
+use Livewire\Attributes\On;
+use Livewire\Component;
 
 class ExperienciaEmpleados extends Component
 {
     /* PROPIEDADES */
     public $experiencia_id = null;
-    public $ficha = null;    
+
+    public $ficha = null;
 
     // Formulario en modal
     public $cargo_desempenado;
+
     public $empresa;
+
     public $desde;
+
     public $hasta;
+
     public $observacion;
 
     /* EVENTOS */
@@ -26,7 +30,7 @@ class ExperienciaEmpleados extends Component
     {
         $this->limpiar();
 
-        if($id) {
+        if ($id) {
             $registro = ExperienciaLaboral::findOrFail($id);
             $this->ficha = $registro->ficha_empleado;
             $this->experiencia_id = $registro->id;
@@ -66,7 +70,7 @@ class ExperienciaEmpleados extends Component
         return [
             '*.required' => 'El campo es obligatorio.',
             '*.max' => 'El campo es demasiado largo.',
-            '*.regex'   => 'Solo se permiten letras y espacios.',
+            '*.regex' => 'Solo se permiten letras y espacios.',
             'hasta.after' => 'La fecha de finalización debe ser posterior a la fecha de inicio.',
         ];
     }
@@ -80,10 +84,10 @@ class ExperienciaEmpleados extends Component
             [
                 'ficha_empleado' => $this->ficha,
                 'cargo_desempeñado' => $this->cargo_desempenado,
-                'empresa' => $this->empresa,
+                'empresa' => $this->empresa ?? 'No especificada',
                 'desde' => $this->desde,
                 'hasta' => $this->hasta,
-                'observacion' => $this->observacion
+                'observacion' => $this->observacion,
             ]
         );
 
@@ -109,4 +113,4 @@ class ExperienciaEmpleados extends Component
     {
         return view('modals.modal-perfil-individual-experiencia');
     }
-};
+}
