@@ -218,15 +218,14 @@
                         </div>
                         <table class="table table-sm table-fixed-layout mb-0">
                             <thead class="bg-light">
-                                    <tr>
-                                        <th class="p-2" style="width: 20%;">CARGO </th>
-                                        <th class="p-2" style="width: 25%;">EMPRESA </th>
-                                        <th class="p-2" style="width: 15%;">DESDE </th>
-                                        <th class="p-2" style="width: 15%;">HASTA </th>
-                                        <th class="p-2" style="width: 25%;">OBSERVACIÓN
-                                        </th>
-                                        <th class="p-2 text-center">ACCIONES</th>
-                                    </tr>
+                                <tr>
+                                    <th class="p-2" style="width: 20%;">CARGO </th>
+                                    <th class="p-2" style="width: 25%;">EMPRESA </th>
+                                    <th class="p-2" style="width: 15%;">DESDE </th>
+                                    <th class="p-2" style="width: 15%;">HASTA </th>
+                                    <th class="p-2" style="width: 25%;">OBSERVACIÓN</th>
+                                    <th class="p-2 text-center">ACCIONES</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 @forelse($this->exp_externas as $e)
@@ -247,6 +246,57 @@
                                         <td colspan="6" class="text-center py-3 text-muted">No hay experiencia laboral registrada.</td>
                                     </tr>
                                 @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sección 3/4: Nivel de Inglés -->
+                <div class="d-flex flex-column justify-content-start mb-3">
+                    <h5 class="font-weight-bold text-dark mb-2">
+                        <i class="fas fa-language text-primary mr-2"></i> Nivel de Inglés
+                    </h5>
+
+                    <div class="col-auto p-0">
+                        <button class="btn btn-md btn-primary mb-2 p-2 flex-grow-0" wire:click="$dispatch('abrir-modal-ingles', { ficha: {{ $ficha_seleccionada }} })">
+                            <i class="fas fa-plus mr-1"></i> Gestionar
+                        </button>
+                    </div>
+
+                    <div class="table-responsive px-0 mb-4 border rounded" style="position: relative;">
+                        <!-- Indicador de carga -->    
+                        <div x-show="$store.ingles.cargando" 
+                             style="position: absolute; inset: 0; background: rgba(255,255,255,0.7); z-index: 10; justify-content: center; align-items: center; border-radius: 4px; display: none;" 
+                             :class="$store.ingles.cargando ? 'd-flex' : 'd-none'">
+                            <div class="text-center">
+                                <div class="spinner-border text-primary mb-2" role="status"></div>
+                                <div class="text-primary small font-weight-bold">Cargando...</div>
+                            </div>
+                        </div>
+                        <table class="table table-sm table-fixed-layout mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="p-2 text-center" style="width: 10%;">INTROD. 1 </th>
+                                    <th class="p-2 text-center" style="width: 10%;">INTROD. 2 </th>
+                                    <th class="p-2 text-center" style="width: 10%;">BASICO BAJO </th>
+                                    <th class="p-2 text-center" style="width: 10%;">BASICO ALTO </th>
+                                    <th class="p-2 text-center" style="width: 15%;">INTERM. BAJO </th>
+                                    <th class="p-2 text-center" style="width: 15%;">INTERM. ALTO </th>
+                                    <th class="p-2 text-center" style="width: 15%;">AVANZD. BAJO </th>
+                                    <th class="p-2 text-center" style="width: 15%;">AVANZD. ALTO </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-2 text-center">{{ $this->nivel_ingles?->i1 ? '✓' : '' }}</td>
+                                    <td class="p-2 text-center">{{ $this->nivel_ingles?->i2 ? '✓' : '' }}</td>
+                                    <td class="p-2 text-center">{{ $this->nivel_ingles?->bb ? '✓' : '' }}</td>
+                                    <td class="p-2 text-center">{{ $this->nivel_ingles?->ba ? '✓' : '' }}</td>
+                                    <td class="p-2 text-center">{{ $this->nivel_ingles?->ib ? '✓' : '' }}</td>
+                                    <td class="p-2 text-center">{{ $this->nivel_ingles?->ia ? '✓' : '' }}</td>
+                                    <td class="p-2 text-center">{{ $this->nivel_ingles?->ab ? '✓' : '' }}</td>
+                                    <td class="p-2 text-center">{{ $this->nivel_ingles?->aa ? '✓' : '' }}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

@@ -14,6 +14,7 @@
 
         <livewire:educacion-empleados />
         <livewire:experiencia-empleados />
+        <livewire:ingles-empleados />
     </div>
 
 </div>

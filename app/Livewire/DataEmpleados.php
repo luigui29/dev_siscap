@@ -9,6 +9,7 @@ use Livewire\Attributes\On;
 use App\Models\RrhhPersonal;
 use App\Models\NivelEducativo;
 use App\Models\ExperienciaLaboral;
+use App\Models\NivelIngles;
 
 class DataEmpleados extends Component
 {
@@ -42,6 +43,7 @@ class DataEmpleados extends Component
     */ 
     #[On('educacion-actualizada')]
     #[On('experiencia-actualizada')]
+    #[On('ingles-actualizado')]
     public function actualizar() {}
 
     /* PROPIEDADES COMPUTADAS */
@@ -97,6 +99,17 @@ class DataEmpleados extends Component
         }
 
         return ExperienciaLaboral::where('ficha_empleado', $this->ficha_seleccionada)->where('empresa', 'not like', "%VENPRECAR%")->get();
+    }
+
+    // Retornar el nivel de inglés del empleado si el usuario selecciona de la lista
+    #[Computed]
+    public function nivel_ingles()
+    {
+        if (!$this->ficha_seleccionada) {
+            return null;
+        }
+
+        return NivelIngles::where('ficha_empleado', $this->ficha_seleccionada)->first();
     }
 
     public function filtrar($query)

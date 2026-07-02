@@ -24,6 +24,11 @@
           Alpine.store('experiencias', {
                cargando: false
           });
+
+          // Estado de carga tras abrir modal de nivel de inglés
+          Alpine.store('ingles', {
+               cargando: false
+          });
      });
 
      // SCRIPTS A EJECUTAR TRAS CARGAR LIVEWIRE (ANTES DE SER INICIALIZADO EN LA PÁGINA)
@@ -82,6 +87,22 @@
                          Alpine.store('experiencias').cargando = false;
                     });
                }
+
+               /* Activar estado de carga para el modal de nivel de inglés */
+               if (component.name === 'ingles-empleados') {
+                    
+                    Alpine.store('ingles').cargando = true;
+
+                    succeed(() => {
+                         setTimeout(() => {
+                              Alpine.store('ingles').cargando = false;
+                         }, 50);
+                    });
+
+                    fail(() => {
+                         Alpine.store('ingles').cargando = false;
+                    });
+               }
           });
      });
 
@@ -101,6 +122,14 @@
 
      window.addEventListener('cerrar-modal-experiencia', event => {
           $('#modal_experiencia').modal('hide');
+     });
+     /* [VISTA: PERFIL INDIVIDUAL] NIVEL DE INGLÉS DEL EMPLEADO*/
+     window.addEventListener('listo-modal-ingles', event => {
+          $('#modal_ingles').modal('show');
+     });
+
+     window.addEventListener('cerrar-modal-ingles', event => {
+          $('#modal_ingles').modal('hide');
      });
      /* [VISTA: PROGRAMACIÓN FINAL] TRABAJADORES MATRICULADOS EN UN CURSO */
      window.addEventListener('abrir-modal-programacion-trabajadores', event => {
