@@ -13,6 +13,7 @@
         <livewire:data-empleados />
 
         <livewire:educacion-empleados />
+        <livewire:experiencia-empleados />
     </div>
 
 </div>

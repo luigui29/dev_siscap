@@ -8,6 +8,7 @@ use Livewire\Attributes\On;
 
 use App\Models\RrhhPersonal;
 use App\Models\NivelEducativo;
+use App\Models\ExperienciaLaboral;
 
 class DataEmpleados extends Component
 {
@@ -40,10 +41,8 @@ class DataEmpleados extends Component
     * para mostrarlos en la página sin recargar
     */ 
     #[On('educacion-actualizada')]
-    public function actualizar()
-    {
-        
-    }
+    #[On('experiencia-actualizada')]
+    public function actualizar() {}
 
     /* PROPIEDADES COMPUTADAS */
     // Todos los empleados según filtros (limitado a 50 resultados)
@@ -76,6 +75,28 @@ class DataEmpleados extends Component
         }
 
         return NivelEducativo::where('ficha_empleado', $this->ficha_seleccionada)->get();
+    }
+
+    // Retornar las experiencias internas del empleado si el usuario selecciona de la lista
+    #[Computed]
+    public function exp_internas()
+    {
+        if (!$this->ficha_seleccionada) {
+            return null;
+        }
+
+        return ExperienciaLaboral::where('ficha_empleado', $this->ficha_seleccionada)->where('empresa', 'like', "%VENPRECAR%")->get();
+    }
+
+    // Retornar las experiencias externas del empleado si el usuario selecciona de la lista
+    #[Computed]
+    public function exp_externas()
+    {
+        if (!$this->ficha_seleccionada) {
+            return null;
+        }
+
+        return ExperienciaLaboral::where('ficha_empleado', $this->ficha_seleccionada)->where('empresa', 'not like', "%VENPRECAR%")->get();
     }
 
     public function filtrar($query)

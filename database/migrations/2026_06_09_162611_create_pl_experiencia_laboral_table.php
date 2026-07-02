@@ -18,7 +18,7 @@ return new class extends Migration
             $table->char('empresa', length: 255)->nullable();
             $table->timestamp('desde');
             $table->timestamp('hasta')->nullable();
-            $table->char('observacion', length: 255);
+            $table->char('observacion', length: 255)->nullable();
             $table->timestamps();
         });
     }

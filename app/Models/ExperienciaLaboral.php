@@ -16,4 +16,12 @@ class ExperienciaLaboral extends Model
         'hasta',
         'observacion'
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'desde' => 'date:d-m-Y', 
+            'hasta' => 'date:d-m-Y' 
+        ];
+    }
 }

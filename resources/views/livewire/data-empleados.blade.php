@@ -81,12 +81,12 @@
                         <i class="fas fa-graduation-cap text-primary mr-2"></i> Educación
                     </h5>
                     
-                    <div class="row">
-                        <button class="btn btn-md btn-primary mb-2 p-2" wire:click="$dispatch('abrir-modal-educacion', { ficha: {{ $ficha_seleccionada }} })">
+                    <div class="col-auto p-0">
+                        <button class="btn btn-md btn-primary mb-2 p-2 flex-grow-0" wire:click="$dispatch('abrir-modal-educacion', { ficha: {{ $ficha_seleccionada }} })">
                             <i class="fas fa-plus mr-1"></i> Agregar
                         </button>
                     </div>
-                
+
                     <div class="table-responsive px-0 mb-4 border rounded" style="position: relative;">
                         <!-- Indicador de carga -->    
                         <div x-show="$store.educaciones.cargando" 
@@ -97,16 +97,16 @@
                                 <div class="text-primary small font-weight-bold">Cargando...</div>
                             </div>
                         </div>
-                        <table class="table table-sm mb-0">
+                        <table class="table table-sm table-fixed-layout mb-0">
                             <thead class="bg-light">
                                     <tr>
-                                        <th class="p-2">NIVEL </th>
-                                        <th class="p-2">TÍTULO </th>
-                                        <th class="p-2">INSTITUTO</th>
-                                        <th class="p-2 text-center">GRADUADO</th>
-                                        <th class="p-2 text-center">ULTIMO NIVEL</th>
-                                        <th class="p-2 text-center">AÑO</th>
-                                        <th class="p-2 text-center">ACCIONES</th>
+                                        <th class="p-2" style="width: 20%;">NIVEL </th>
+                                        <th class="p-2" style="width: 20%;">TÍTULO </th>
+                                        <th class="p-2" style="width: 20%;">INSTITUTO</th>
+                                        <th class="p-2 text-center" style="width: 10%;">GRADUADO</th>
+                                        <th class="py-2 text-center" style="width: 10%;">ULTIMO NIVEL</th>
+                                        <th class="p-2 text-center" style="width: 10%;">AÑO</th>
+                                        <th class="p-2 text-center" style="width: 10%;">ACCIONES</th>
                                     </tr>
                             </thead>
                             <tbody>
@@ -132,6 +132,119 @@
                                 @empty
                                     <tr>
                                         <td colspan="7" class="text-center py-3 text-muted">No hay educación registrada.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sección 2/4: Experiencia Laboral  -->
+                <div class="d-flex flex-column justify-content-start mb-3">
+                    <h5 class="font-weight-bold text-dark mb-2">
+                        <i class="fas fa-briefcase text-primary mr-2"></i> Experiencia Laboral
+                    </h5>
+                    
+                    <div class="col-auto p-0">
+                        <button class="btn btn-md btn-primary mb-2 p-2 flex-grow-0" wire:click="$dispatch('abrir-modal-experiencia', { ficha: {{ $ficha_seleccionada }} })">
+                            <i class="fas fa-plus mr-1"></i> Agregar
+                        </button>
+                    </div>
+
+                    <!-- Experiencia Laboral Interna (VENPRECAR)-->
+                    <h5 class="font-weight-bold text-dark mb-2">
+                        Interna
+                    </h5>
+
+                    <div class="table-responsive px-0 mb-4 border rounded" style="position: relative;">
+                        <!-- Indicador de carga -->    
+                        <div x-show="$store.experiencias.cargando" 
+                             style="position: absolute; inset: 0; background: rgba(255,255,255,0.7); z-index: 10; justify-content: center; align-items: center; border-radius: 4px; display: none;" 
+                             :class="$store.experiencias.cargando ? 'd-flex' : 'd-none'">
+                            <div class="text-center">
+                                <div class="spinner-border text-primary mb-2" role="status"></div>
+                                <div class="text-primary small font-weight-bold">Cargando...</div>
+                            </div>
+                        </div>
+                        <table class="table table-sm table-fixed-layout mb-0">
+                            <thead class="bg-light">
+                                    <tr>
+                                        <th class="p-2" style="width: 20%;">CARGO </th>
+                                        <th class="p-2" style="width: 25%;">EMPRESA </th>
+                                        <th class="p-2" style="width: 15%;">DESDE </th>
+                                        <th class="p-2" style="width: 15%;">HASTA </th>
+                                        <th class="p-2" style="width: 25%;">OBSERVACIÓN
+                                        </th>
+                                        <th class="p-2 text-center">ACCIONES</th>
+                                    </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($this->exp_internas as $e)
+                                    <tr>
+                                        <td class="p-2 font-weight-bold"> {{ $e->cargo_desempeñado }} </td>
+                                        <td class="p-2"> {{ $e->empresa }} </td>
+                                        <td class="p-2"> {{ $e->desde?->format('d-m-Y') }} </td>
+                                        <td class="p-2"> {{ $e->hasta?->format('d-m-Y') }} </td>
+                                        <td class="p-2"> {{ $e->observacion }} </td>
+                                        <td class="p-2 text-center">
+                                            <button class="btn btn-sm btn-outline-primary" wire:click="$dispatch('abrir-modal-experiencia', { id: {{ $e->id }} })">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center py-3 text-muted">No hay experiencia laboral registrada.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Experiencia Laboral Externa -->
+                    <h5 class="font-weight-bold text-dark mb-2">
+                        Externa
+                    </h5>
+
+                    <div class="table-responsive px-0 mb-4 border rounded" style="position: relative;">
+                        <!-- Indicador de carga -->    
+                        <div x-show="$store.experiencias.cargando" 
+                             style="position: absolute; inset: 0; background: rgba(255,255,255,0.7); z-index: 10; justify-content: center; align-items: center; border-radius: 4px; display: none;" 
+                             :class="$store.experiencias.cargando ? 'd-flex' : 'd-none'">
+                            <div class="text-center">
+                                <div class="spinner-border text-primary mb-2" role="status"></div>
+                                <div class="text-primary small font-weight-bold">Cargando...</div>
+                            </div>
+                        </div>
+                        <table class="table table-sm table-fixed-layout mb-0">
+                            <thead class="bg-light">
+                                    <tr>
+                                        <th class="p-2" style="width: 20%;">CARGO </th>
+                                        <th class="p-2" style="width: 25%;">EMPRESA </th>
+                                        <th class="p-2" style="width: 15%;">DESDE </th>
+                                        <th class="p-2" style="width: 15%;">HASTA </th>
+                                        <th class="p-2" style="width: 25%;">OBSERVACIÓN
+                                        </th>
+                                        <th class="p-2 text-center">ACCIONES</th>
+                                    </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($this->exp_externas as $e)
+                                    <tr>
+                                        <td class="p-2 font-weight-bold"> {{ $e->cargo_desempeñado }} </td>
+                                        <td class="p-2"> {{ $e->empresa }} </td>
+                                        <td class="p-2"> {{ $e->desde?->format('d-m-Y') }} </td>
+                                        <td class="p-2"> {{ $e->hasta?->format('d-m-Y') }} </td>
+                                        <td class="p-2"> {{ $e->observacion }} </td>
+                                        <td class="p-2 text-center">
+                                            <button class="btn btn-sm btn-outline-primary" wire:click="$dispatch('abrir-modal-experiencia', { id: {{ $e->id }} })">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center py-3 text-muted">No hay experiencia laboral registrada.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

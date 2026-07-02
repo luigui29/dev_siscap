@@ -19,6 +19,11 @@
           Alpine.store('educaciones', {
                cargando: false
           });
+
+          // Estado de carga tras abrir modal de experiencias laborales
+          Alpine.store('experiencias', {
+               cargando: false
+          });
      });
 
      // SCRIPTS A EJECUTAR TRAS CARGAR LIVEWIRE (ANTES DE SER INICIALIZADO EN LA PÁGINA)
@@ -61,6 +66,22 @@
                          Alpine.store('educaciones').cargando = false;
                     });
                }
+
+               /* Activar estado de carga para el modal de experiencias laborales */
+               if (component.name === 'experiencia-empleados') {
+                    
+                    Alpine.store('experiencias').cargando = true;
+
+                    succeed(() => {
+                         setTimeout(() => {
+                              Alpine.store('experiencias').cargando = false;
+                         }, 50);
+                    });
+
+                    fail(() => {
+                         Alpine.store('experiencias').cargando = false;
+                    });
+               }
           });
      });
 
@@ -73,7 +94,14 @@
      window.addEventListener('cerrar-modal-educacion', event => {
           $('#modal_educacion').modal('hide');
      });
+     /* [VISTA: PERFIL INDIVIDUAL] EXPERIENCIAS LABORALES DEL EMPLEADO*/
+     window.addEventListener('listo-modal-experiencia', event => {
+          $('#modal_experiencia').modal('show');
+     });
 
+     window.addEventListener('cerrar-modal-experiencia', event => {
+          $('#modal_experiencia').modal('hide');
+     });
      /* [VISTA: PROGRAMACIÓN FINAL] TRABAJADORES MATRICULADOS EN UN CURSO */
      window.addEventListener('abrir-modal-programacion-trabajadores', event => {
           $('#modalProgramacionTrabajadores').modal('show');
