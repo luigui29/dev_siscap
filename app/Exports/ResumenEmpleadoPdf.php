@@ -2,71 +2,68 @@
 
 namespace App\Exports;
 
+use App\Models\RrhhPersonal;
 use Dompdf\Dompdf;
 use Dompdf\Options;
-use App\Models\RrhhPersonal;
-use App\Models\NivelEducativo;
-use App\Models\ExperienciaLaboral;
-use App\Models\NivelIngles;
-use App\Models\Area;
-use Illuminate\Support\Facades\DB;
+
+use Illuminate\Support\Collection;
+
+use Carbon\Carbon;
 
 class ResumenEmpleadoPdf
 {
-    protected $ficha;
-
-    public function __construct($ficha)
-    {
-        $this->ficha = $ficha;
-    }
+    public function __construct(
+        protected RrhhPersonal $empleado,
+        protected ?Collection $educaciones,
+        protected ?Collection $experiencias_internas,
+        protected ?Collection $experiencias_externas,
+        protected mixed $nivel_ingles,
+        protected Collection $cursos,
+    ) {}
 
     public function download()
     {
-        $empleado = RrhhPersonal::where('ficha', $this->ficha)->first();
-        if (!$empleado) {
-            return null;
-        }
+        $empleado = $this->empleado;
+        $educaciones = $this->educaciones ?? collect();
+        $ingles = $this->nivel_ingles;
 
-        $educaciones = NivelEducativo::where('ficha_empleado', $this->ficha)->orderBy('created_at', 'desc')->get();
-        $experienciasDb = ExperienciaLaboral::where('ficha_empleado', $this->ficha)->orderBy('desde', 'desc')->get();
-        $ingles = NivelIngles::where('ficha_empleado', $this->ficha)->first();
+        /* Formatear fechas de experiencias */
+        $experiencias_internas = ($this->experiencias_internas ?? collect())->map(function ($exp) {
+            $exp->desde = $exp->desde ? Carbon::parse($exp->desde)->format('d-m-Y') : null;
+            $exp->hasta = $exp->hasta ? Carbon::parse($exp->hasta)->format('d-m-Y') : null;
 
-        $experienciasInternas = $experienciasDb->filter(function($exp) {
-            return trim(strtoupper($exp->empresa)) === 'VENPRECAR';
-        });
-        $experienciasExternas = $experienciasDb->filter(function($exp) {
-            return trim(strtoupper($exp->empresa)) !== 'VENPRECAR';
+            return $exp;
         });
 
-        $areas = Area::where('estatus', true)->orderBy('nombre')->get();
-        $cursosUsuario = DB::table('pl_programaciones')
-            ->join('tbl_programaciones', 'pl_programaciones.programacion_id', '=', 'tbl_programaciones.id')
-            ->join('tbl_actividades', 'tbl_programaciones.actividad_id', '=', 'tbl_actividades.id')
-            ->where('pl_programaciones.ficha_empleado', $this->ficha)
-            ->select(
-                'tbl_programaciones.nombre',
-                'tbl_programaciones.fecha',
-                'tbl_programaciones.duracion',
-                'pl_programaciones.estatus',
-                'pl_programaciones.causa',
-                'tbl_actividades.area_id'
-            )
-            ->orderBy('tbl_programaciones.fecha', 'desc')
-            ->get();
+        $experiencias_externas = ($this->experiencias_externas ?? collect())->map(function ($exp) {
+            $exp->desde = $exp->desde ? Carbon::parse($exp->desde)->format('d-m-Y') : null;
+            $exp->hasta = $exp->hasta ? Carbon::parse($exp->hasta)->format('d-m-Y') : null;
 
-        $cursosPorArea = [];
-        foreach ($areas as $area) {
-            $cursosPorArea[] = [
-                'area_nombre' => $area->nombre,
-                'cursos' => $cursosUsuario->where('area_id', $area->id)->values()
+            return $exp;
+        });
+
+        /* Transformar la colección agrupada por nombre de area a un arreglo
+         * con la estructura [['area_nombre' => ..., 'cursos' => ...], ...]
+         * que espera la vista Blade del PDF.
+         */
+        $cursos_en_area = $this->cursos->map(function ($cursos_area, $nombre_area) {
+            $cursos_formateados = $cursos_area->map(function ($curso) {
+                $curso->duracion = number_format($curso->duracion, 1);
+
+                return $curso;
+            });
+
+            return [
+                'area_nombre' => $nombre_area,
+                'cursos' => $cursos_formateados,
             ];
-        }
+        })->values()->toArray();
 
-        $html = view('pdfexports.resumen-empleado-pdf', compact(
-            'empleado', 'educaciones', 'experienciasInternas', 'experienciasExternas', 'ingles', 'cursosPorArea'
+        $html = view('pdf.resumen-empleado-pdf', compact(
+            'empleado', 'educaciones', 'experiencias_internas', 'experiencias_externas', 'ingles', 'cursos_en_area'
         ))->render();
 
-        $options = new Options();
+        $options = new Options;
         $options->set('isHtml5ParserEnabled', true);
         $options->set('isRemoteEnabled', true);
 
@@ -77,7 +74,7 @@ class ResumenEmpleadoPdf
 
         return response()->streamDownload(function () use ($dompdf) {
             echo $dompdf->output();
-        }, 'Resumen_Perfil_' . $empleado->ficha . '.pdf', [
+        }, 'Resumen_Perfil_'.$empleado->ficha.'.pdf', [
             'Content-Type' => 'application/pdf',
         ]);
     }

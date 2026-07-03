@@ -2,19 +2,16 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
+use App\Exports\ResumenEmpleadoPdf;
+use App\Models\ExperienciaLaboral;
+use App\Models\NivelEducativo;
+use App\Models\NivelIngles;
+use App\Models\RrhhPersonal;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
-
-use App\Models\RrhhPersonal;
-use App\Models\NivelEducativo;
-use App\Models\ExperienciaLaboral;
-use App\Models\NivelIngles;
-
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
-
-use Carbon\Carbon;
+use Livewire\Component;
 
 class DataEmpleados extends Component
 {
@@ -25,7 +22,7 @@ class DataEmpleados extends Component
         'nombre' => null,
         'gerencia' => null,
         'cargo' => null,
-        'unidad' => null
+        'unidad' => null,
     ];
 
     public $ficha_seleccionada = null;
@@ -66,7 +63,7 @@ class DataEmpleados extends Component
     #[Computed]
     public function empleado_seleccionado()
     {
-        if (!$this->ficha_seleccionada) {
+        if (! $this->ficha_seleccionada) {
             return null;
         }
 
@@ -77,7 +74,7 @@ class DataEmpleados extends Component
     #[Computed]
     public function educaciones()
     {
-        if (!$this->ficha_seleccionada) {
+        if (! $this->ficha_seleccionada) {
             return null;
         }
 
@@ -88,29 +85,29 @@ class DataEmpleados extends Component
     #[Computed]
     public function exp_internas()
     {
-        if (!$this->ficha_seleccionada) {
+        if (! $this->ficha_seleccionada) {
             return null;
         }
 
-        return ExperienciaLaboral::where('ficha_empleado', $this->ficha_seleccionada)->where('empresa', 'like', "%VENPRECAR%")->get();
+        return ExperienciaLaboral::where('ficha_empleado', $this->ficha_seleccionada)->where('empresa', 'like', '%VENPRECAR%')->get();
     }
 
     // Retornar las experiencias externas del empleado si el usuario selecciona de la lista
     #[Computed]
     public function exp_externas()
     {
-        if (!$this->ficha_seleccionada) {
+        if (! $this->ficha_seleccionada) {
             return null;
         }
 
-        return ExperienciaLaboral::where('ficha_empleado', $this->ficha_seleccionada)->where('empresa', 'not like', "%VENPRECAR%")->get();
+        return ExperienciaLaboral::where('ficha_empleado', $this->ficha_seleccionada)->where('empresa', 'not like', '%VENPRECAR%')->get();
     }
 
     // Retornar el nivel de inglés del empleado si el usuario selecciona de la lista
     #[Computed]
     public function nivel_ingles()
     {
-        if (!$this->ficha_seleccionada) {
+        if (! $this->ficha_seleccionada) {
             return null;
         }
 
@@ -124,28 +121,25 @@ class DataEmpleados extends Component
     #[Computed]
     public function cursos()
     {
-        if (!$this->ficha_seleccionada) {
+        if (! $this->ficha_seleccionada) {
             return collect();
         }
 
-        $cacheKey = 'programaciones_empleado_' . $this->ficha_seleccionada;
+        $registros = DB::table('mvw_programaciones_empleados')
+            ->where('ficha_empleado', $this->ficha_seleccionada)
+            ->orderBy('fecha', 'desc')
+            ->get();
 
-        return Cache::remember($cacheKey, now()->addHours(24), function() {
-            $registros = DB::table('mvw_programaciones_empleados')
-                ->where('ficha_empleado', $this->ficha_seleccionada)
-                ->orderBy('fecha', 'desc')
-                ->get();
-
-            $grouped = $registros->groupBy('nombre_area')->map(function ($group) {
+        return $registros
+            ->groupBy('nombre_area')
+            ->map(function ($group) {
                 return $group->map(function ($item) {
                     $registro = collect((array) $item)->except('nombre_area');
                     $registro['fecha'] = Carbon::parse($registro['fecha'])->format('d-m-Y');
+
                     return (object) $registro->toArray();
                 })->values();
             });
-
-            return $grouped;
-        });
     }
 
     public function filtrar($query)
@@ -156,20 +150,44 @@ class DataEmpleados extends Component
             'nombre_empleado' => $this->data_filtrada['nombre'],
             'texto_gerencia' => $this->data_filtrada['gerencia'],
             'texto_cargo' => $this->data_filtrada['cargo'],
-            'texto_unidad' => $this->data_filtrada['unidad']
+            'texto_unidad' => $this->data_filtrada['unidad'],
         ];
 
         foreach ($campos as $campo => $valor) {
-            if (!empty($valor)) {
-                $query->where($campo, 'ilike', '%' . $valor . '%');
+            if (! empty($valor)) {
+                $query->where($campo, 'ilike', '%'.$valor.'%');
             }
         }
 
         return $query;
     }
 
+    public function resumen_empleados($empleado_seleccionado)
+    {
+        $ficha = $empleado_seleccionado;
+
+        if (! $ficha) {
+            return;
+        }
+
+        $empleado = RrhhPersonal::find($ficha);
+
+        if (! $empleado) {
+            return;
+        }
+
+        return (new ResumenEmpleadoPdf(
+            empleado: $empleado,
+            educaciones: $this->educaciones,
+            experiencias_internas: $this->exp_internas,
+            experiencias_externas: $this->exp_externas,
+            nivel_ingles: $this->nivel_ingles,
+            cursos: $this->cursos,
+        ))->download();
+    }
+
     public function render()
     {
         return view('livewire.data-empleados');
     }
-};
+}

@@ -45,8 +45,16 @@
                             {{ $this->gerencia_seleccionada }}
                         </h5>
 
-                        <div class="text-left mt-2 pt-3 border-top">
-                            <p class="mb-2 text-dark"><strong>Exportar:</strong> </p>
+                        <div class="my-2 border-top">
+                            <h5 class="my-3 font-weight-bold text-left text-dark">
+                                Exportar Resumen de la Gerencia
+                            </h5>
+                        </div>
+
+                        <div class="text-left">
+                            <button class="btn btn-md btn-pdf p-2" wire:click="resumen_gerencias('{{ $this->gerencia_seleccionada }}')">
+                                <i class="fas fa-file-pdf mr-2"></i> PDF
+                            </button>
                         </div>
                     </div>
                 @else
@@ -60,11 +68,6 @@
                         <h5 class="font-weight-bold text-dark my-3">
                             {{ $this->unidad_seleccionada }}
                         </h5>
-
-                        <div class="text-left mt-2 pt-3 border-top">
-                            <p class="mb-2 text-dark"><strong>Exportar:</strong> </p>
-
-                        </div>
                     </div>
                 @else
                     <div class="p-3 bg-light rounded text-center border mt-4">

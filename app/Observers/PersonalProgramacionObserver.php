@@ -3,20 +3,16 @@
 namespace App\Observers;
 
 use App\Models\PersonalProgramacion;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class PersonalProgramacionObserver
 {
     /*
-    * Limpieza de caché y actualización de la base de datos
+    * Actualiza la vista materializada cuando cambia la programación del personal
     */
     public function refrescarCache(PersonalProgramacion $personalProgramacion): void
     {
         DB::unprepared('REFRESH MATERIALIZED VIEW CONCURRENTLY mvw_programaciones_empleados');
-
-        $cacheKey = 'programaciones_empleado_'.$personalProgramacion->ficha_empleado;
-        Cache::forget($cacheKey);
     }
 
     /**

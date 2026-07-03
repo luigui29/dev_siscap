@@ -2,25 +2,25 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use Livewire\Attributes\Computed;
-use Livewire\Attributes\On;
-
-use App\Models\RrhhPersonal;
+use App\Exports\ResumenGerenciaPdf;
 use App\Models\PersonalProgramacion;
 use App\Models\Programacion;
-
+use App\Models\RrhhPersonal;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
+use Livewire\Component;
 
 class DataGerencias extends Component
 {
     /* PROPIEDADES */
     public $data_filtrada = [
         'texto_gerencia' => null,
-        'texto_unidad' => null
+        'texto_unidad' => null,
     ];
 
     public $gerencia_seleccionada = null;
+
     public $unidad_seleccionada = null;
 
     /* EVENTOS */
@@ -31,7 +31,7 @@ class DataGerencias extends Component
     public function obtenerDataFiltrada($filtros)
     {
         $this->data_filtrada = $filtros;
-        $this->reset(['gerencia_seleccionada', 'unidad_seleccionada']); 
+        $this->reset(['gerencia_seleccionada', 'unidad_seleccionada']);
     }
 
     /* PROPIEDADES COMPUTADAS */
@@ -66,67 +66,75 @@ class DataGerencias extends Component
             ->get();
     }
 
-    // Retornar la gerencia seleccionada si el usuario selecciona de la lista
+    /* Retornar la gerencia seleccionada si el usuario selecciona de la lista
+    *  Además, calcular los atributos de horas de capacitación por unidad
+    */
     #[Computed]
     public function gerencia()
     {
         $vista = DB::connection('pgsql_sap')->table('vw_gerencias_unidades');
 
-        $query = $vista->when($this->gerencia_seleccionada, function($q) {
+        $query = $vista->when($this->gerencia_seleccionada, function ($q) {
             return $q->where('texto_gerencia', $this->gerencia_seleccionada);
         });
 
-        $rows = $query->get();
+        $registros = $query->get();
 
-        return $rows->map(function($row) {
-            $fichas = RrhhPersonal::where('texto_unidad', $row->texto_unidad)
+        return $registros->map(function ($registro) {
+            /* Número de empleados por unidad */
+            $fichas = RrhhPersonal::where('texto_unidad', $registro->texto_unidad)
                 ->pluck('ficha')
                 ->toArray();
-            $row->numero_empleados = count($fichas);
+
+            $registro->numero_empleados = count($fichas);
+
             if (empty($fichas)) {
-                $row->pre_program = 0;
-                $row->program_final = 0;
-                $row->ejecuciones = 0;
-                $row->horas = 0;
-                return $row;
+                $registro->pre_program = 0;
+                $registro->program_final = 0;
+                $registro->ejecuciones = 0;
+                $registro->horas = 0;
+
+                return $registro;
             }
 
-            $programacionIds = PersonalProgramacion::whereIn('ficha_empleado', $fichas)
+            /* Cursos en los que ha participado cualquier empleado de la unidad */
+            $programaciones = PersonalProgramacion::whereIn('ficha_empleado', $fichas)
                 ->distinct()
                 ->pluck('programacion_id')
                 ->toArray();
 
-            if (empty($programacionIds)) {
-                $row->pre_program = 0;
-                $row->program_final = 0;
-                $row->ejecuciones = 0;
-                $row->horas = 0;
-                return $row;
+            if (empty($programaciones)) {
+                $registro->pre_program = 0;
+                $registro->program_final = 0;
+                $registro->ejecuciones = 0;
+                $registro->horas = 0;
+
+                return $registro;
             }
 
-            $preProgram = Programacion::whereIn('id', $programacionIds)
+            $pre_programados = Programacion::whereIn('id', $programaciones)
                 ->whereNull('aprobado')
                 ->whereNull('ejecutado')
                 ->count();
 
-            $programFinal = Programacion::whereIn('id', $programacionIds)
+            $program_final = Programacion::whereIn('id', $programaciones)
                 ->where('aprobado', true)
                 ->whereNull('ejecutado')
                 ->count();
 
-            $ejecuciones = Programacion::whereIn('id', $programacionIds)
+            $ejecuciones = Programacion::whereIn('id', $programaciones)
                 ->where('ejecutado', true)
                 ->count();
 
-            $horas = Programacion::whereIn('id', $programacionIds)
+            $horas = Programacion::whereIn('id', $programaciones)
                 ->sum('duracion');
 
-            $row->pre_program = $preProgram;
-            $row->program_final = $programFinal;
-            $row->ejecuciones = $ejecuciones;
-            $row->horas = $horas ?? 0;
+            $registro->pre_program = $pre_programados;
+            $registro->program_final = $program_final;
+            $registro->ejecuciones = $ejecuciones;
+            $registro->horas = $horas ?? 0;
 
-            return $row;
+            return $registro;
         });
     }
 
@@ -136,9 +144,9 @@ class DataGerencias extends Component
     {
         $vista = DB::connection('pgsql_sap')->table('vw_gerencias_unidades');
 
-        if (!$this->unidad_seleccionada) {
+        if (! $this->unidad_seleccionada) {
             return $vista->get();
-        }    
+        }
 
         return $vista->where('texto_unidad', $this->unidad_seleccionada)->get();
     }
@@ -147,16 +155,38 @@ class DataGerencias extends Component
     {
         $campos = [
             'texto_gerencia' => $this->data_filtrada['texto_gerencia'],
-            'texto_unidad' => $this->data_filtrada['texto_unidad']
+            'texto_unidad' => $this->data_filtrada['texto_unidad'],
         ];
 
         foreach ($campos as $campo => $valor) {
-            if (!empty($valor)) {
-                $query->where($campo, 'ilike', '%' . $valor . '%');
+            if (! empty($valor)) {
+                $query->where($campo, 'ilike', '%'.$valor.'%');
             }
         }
 
         return $query;
+    }
+
+    public function resumen_gerencias($gerencia)
+    {
+        if (!$gerencia) {
+            return;
+        }
+
+        // Asegurar que la gerencia seleccionada sea la que se va a exportar
+        if ($this->gerencia_seleccionada !== $gerencia) {
+            $this->gerencia_seleccionada = $gerencia;
+            // Se debe volver a computar `$this->gerencia` internamente, pero
+            // al acceder a $this->gerencia, Livewire lo reevaluará si limpiamos la caché.
+            unset($this->gerencia);
+        }
+
+        $unidades = $this->gerencia;
+
+        return (new ResumenGerenciaPdf(
+            nombre_gerencia: $gerencia,
+            unidades: $unidades,
+        ))->download();
     }
 
     public function render()
