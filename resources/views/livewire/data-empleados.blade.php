@@ -40,7 +40,7 @@
                             FICHA: {{ $this->empleado_seleccionado->ficha }}
                         </span>
 
-                        <div class="text-left mt-2 pt-3 border-top" style="font-size: 0.85rem;">
+                        <div class="text-left mt-2 pt-3 border-top">
                             <p class="mb-2 text-dark"><strong>Cargo:</strong> {{ $this->empleado_seleccionado->texto_cargo ?? 'No definido' }}</p>
                             <p class="mb-2 text-dark"><strong>Gerencia:</strong> {{ $this->empleado_seleccionado->texto_gerencia ?? 'No definido' }}</p>
                             <p class="mb-0 text-dark"><strong>Unidad:</strong> {{ $this->empleado_seleccionado->texto_unidad ?? 'No definido' }}</p>

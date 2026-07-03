@@ -29,6 +29,10 @@
           Alpine.store('ingles', {
                cargando: false
           });
+
+          Alpine.store('gerencias', {
+               cargando: false
+          });
      });
 
      // SCRIPTS A EJECUTAR TRAS CARGAR LIVEWIRE (ANTES DE SER INICIALIZADO EN LA PÁGINA)
@@ -39,7 +43,7 @@
           */
           Livewire.hook('commit', ({ component, succeed, fail }) => {
 
-               /* Verificar el uso de un filtro de búsqueda y activar
+               /* Verificar el uso de un filtro de búsqueda de empleados y activar
                estado de carga de componentes correspondientes */
                if (component.name === 'filtro-empleados' || component.name === 'data-empleados') {
                     
@@ -101,6 +105,23 @@
 
                     fail(() => {
                          Alpine.store('ingles').cargando = false;
+                    });
+               }
+
+               /* Verificar el uso de un filtro de búsqueda de gerencias y activar
+               estado de carga de componentes correspondientes */
+               if (component.name === 'filtro-gerencias' || component.name === 'data-gerencias') {
+                    
+                    Alpine.store('gerencias').cargando = true;
+
+                    succeed(() => {
+                         setTimeout(() => {
+                              Alpine.store('gerencias').cargando = false;
+                         }, 50);
+                    });
+
+                    fail(() => {
+                         Alpine.store('gerencias').cargando = false;
                     });
                }
           });

@@ -1,6 +1,6 @@
 <div class="card shadow-sm border-0 mb-4 bg-white" style="border-radius: 8px;">
     <div class="border-bottom p-3 d-flex justify-content-between align-items-center" style="background-color: #64748B; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-        <h5 class="font-weight-bold mb-0 text-white" style="font-size: 1rem;">
+        <h5 class="font-weight-bold mb-0 text-white">
             <i class="fas fa-filter mr-2"></i> Filtro de Empleados
         </h5>
     </div>
