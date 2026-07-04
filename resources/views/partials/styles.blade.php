@@ -87,7 +87,7 @@
 
      .dropdown-header {
           font-weight: bold;
-          font-size: 0.8rem;
+          font-size: 1.2rem;
           color: #6c757d;
           text-transform: uppercase;
           letter-spacing: 0.05em;

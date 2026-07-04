@@ -2,35 +2,34 @@
 
 <div class="container-fluid py-4 mx-auto">
 
-<!-- PERFILES INDIVIDUALES-->
-@if ($pestania === 'individual')
+<!-- PRE-PROGRAMACIONES -->
+@if ($pestania === 'pre')
     <div class="d-flex flex-column justify-content-start mb-4 mx-5 text-dark">
         <h3 class="font-weight-bold my-3">
-            Gestión de Desarrollo Individual
+            Pre-Programación
         </h3>
 
         <div class="row">
-            <div class="col-4">
+            <div class="col-7">
                 <div class="sticky-top" style="top: 20px">
-                    <livewire:filtro-empleados />
+                    <livewire:filtro-programaciones />\
                 </div>
             </div>
-            <div class="col-8">
-                <livewire:data-empleados />
+            <div class="col-5">
+                <livewire:data-preprogram />
             </div>
         </div>
 
         <!-- MODALES -->
-        <livewire:modal-educacion-empleados />
-        <livewire:modal-experiencia-empleados />
-        <livewire:modal-ingles-empleados />
+        <livewire:modal-pre-program-curso />
+        
     </div>
 
 </div>
 @endif
 
-<!-- PERFILES GERENCIALES -->
-@if ($pestania === 'gerencia')
+<!-- PROGRAMACIONES FINALES -->
+@if ($pestania === 'final')
     <div class="d-flex flex-column justify-content-start mb-4 mx-5 text-dark">
         <h3 class="font-weight-bold my-3">
             Gestión de Desarrollo Gerencial
@@ -39,6 +38,12 @@
         <livewire:filtro-gerencias />
         <livewire:data-gerencias />
     </div>
+@endif
+
+<!-- EJECUCIONES -->
+
+@if($pestania === 'ejecucion')
+
 @endif
 
 </x-layouts.app>

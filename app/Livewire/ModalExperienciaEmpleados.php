@@ -5,7 +5,7 @@ use App\Models\RrhhPersonal;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class ExperienciaEmpleados extends Component
+class ModalExperienciaEmpleados extends Component
 {
     /* PROPIEDADES */
     public $experiencia_id = null;

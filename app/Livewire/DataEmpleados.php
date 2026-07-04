@@ -32,7 +32,7 @@ class DataEmpleados extends Component
     * Al recibir la busqueda del filtro, se guarda en la propiedad
     * y se reinicia la ficha del empleado seleccionado (si se había seleccionado uno previamente)
     */
-    #[On('busqueda-filtrada')]
+    #[On('busqueda-filtrada-empleados')]
     public function obtenerDataFiltrada($filtros)
     {
         $this->data_filtrada = $filtros;

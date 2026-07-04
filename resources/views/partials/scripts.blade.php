@@ -29,8 +29,14 @@
           Alpine.store('ingles', {
                cargando: false
           });
-
+          
+          // Estado de carga tras usar filtro de gerencias
           Alpine.store('gerencias', {
+               cargando: false
+          });
+
+          // Estado de carga tras usar filtro de programaciones
+          Alpine.store('programaciones', {
                cargando: false
           });
      });
@@ -124,6 +130,23 @@
                          Alpine.store('gerencias').cargando = false;
                     });
                }
+
+                /* Verificar el uso de un filtro de búsqueda de programaciones y activar
+               estado de carga de componentes correspondientes */
+               if (component.name === 'filtro-programaciones' || component.name === 'data-preprogram') {
+                    
+                    Alpine.store('programaciones').cargando = true;
+
+                    succeed(() => {
+                         setTimeout(() => {
+                              Alpine.store('programaciones').cargando = false;
+                         }, 50);
+                    });
+
+                    fail(() => {
+                         Alpine.store('programaciones').cargando = false;
+                    });
+               }
           });
      });
 
@@ -152,6 +175,15 @@
      window.addEventListener('cerrar-modal-ingles', event => {
           $('#modal_ingles').modal('hide');
      });
+     /* [VISTA: PRE-PROGRAMACIÓN] GESTIÓN DE CURSOS PRE-PROGRAMADOS */
+     window.addEventListener('listo-modal-pre-program-curso', event => {
+          $('#modal_pre_program_curso').modal('show');
+     });
+
+     window.addEventListener('cerrar-modal-pre-program-curso', event => {
+          $('#modal_pre_program_curso').modal('hide');
+     });
+
      /* [VISTA: PROGRAMACIÓN FINAL] TRABAJADORES MATRICULADOS EN UN CURSO */
      window.addEventListener('abrir-modal-programacion-trabajadores', event => {
           $('#modalProgramacionTrabajadores').modal('show');

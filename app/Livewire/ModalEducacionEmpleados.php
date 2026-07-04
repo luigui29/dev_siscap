@@ -1,24 +1,30 @@
 <?php
 
-use Livewire\Component;
-use Livewire\Attributes\On;
-
 use App\Models\NivelEducativo;
 use App\Models\RrhhPersonal;
+use Livewire\Attributes\On;
+use Livewire\Component;
 
-class EducacionEmpleados extends Component
+class ModalEducacionEmpleados extends Component
 {
     /* PROPIEDADES */
     public $educacion_id = null;
-    public $ficha = null;    
+
+    public $ficha = null;
 
     // Formulario en modal
     public $nivel_educativo;
+
     public $titulo;
+
     public $especialidad;
+
     public $instituto;
+
     public $graduado = false;
+
     public $fecha_culminado;
+
     public $ultimo_nivel = false;
 
     /* EVENTOS */
@@ -28,7 +34,7 @@ class EducacionEmpleados extends Component
     {
         $this->limpiar();
 
-        if($id) {
+        if ($id) {
             $registro = NivelEducativo::findOrFail($id);
             $this->ficha = $registro->ficha_empleado;
             $this->educacion_id = $registro->id;
@@ -70,8 +76,8 @@ class EducacionEmpleados extends Component
         return [
             '*.required' => 'El campo es obligatorio.',
             '*.integer' => 'El campo debe ser un número entero.',
-            '*.regex'   => 'Solo se permiten letras y espacios.',
-            '*.max'     => 'El campo es demasiado largo.',
+            '*.regex' => 'Solo se permiten letras y espacios.',
+            '*.max' => 'El campo es demasiado largo.',
             'fecha_culminado.digits' => 'El año debe ser de 4 dígitos.',
         ];
     }
@@ -90,7 +96,7 @@ class EducacionEmpleados extends Component
                 'instituto' => $this->instituto,
                 'graduado' => $this->graduado,
                 'fecha_culminado' => $this->fecha_culminado,
-                'ultimo_nivel' => $this->ultimo_nivel
+                'ultimo_nivel' => $this->ultimo_nivel,
             ]
         );
 
@@ -111,9 +117,9 @@ class EducacionEmpleados extends Component
         $this->reset(['educacion_id', 'ficha', 'nivel_educativo', 'titulo', 'especialidad', 'instituto', 'graduado', 'fecha_culminado', 'ultimo_nivel']);
         $this->resetValidation();
     }
-     
+
     public function render()
     {
         return view('modals.modal-perfil-individual-educacion');
     }
-};
+}

@@ -1,19 +1,34 @@
 <?php
 
-use Livewire\Component;
-use Livewire\Attributes\On;
-
 use App\Models\NivelIngles;
 use App\Models\RrhhPersonal;
+use Livewire\Attributes\On;
+use Livewire\Component;
 
-class InglesEmpleados extends Component
+class ModalInglesEmpleados extends Component
 {
     /* PROPIEDADES */
     public $ingles_id = null;
-    public $ficha = null;    
+
+    public $ficha = null;
 
     // Formulario en modal
-    public $i1, $i2, $bb, $ba, $ib, $ia, $ab, $aa;
+    public $i1;
+
+    public $i2;
+
+    public $bb;
+
+    public $ba;
+
+    public $ib;
+
+    public $ia;
+
+    public $ab;
+
+    public $aa;
+
     protected $niveles = ['i1', 'i2', 'bb', 'ba', 'ib', 'ia', 'ab', 'aa'];
 
     /* EVENTOS */
@@ -24,7 +39,7 @@ class InglesEmpleados extends Component
         $this->limpiar();
 
         $registro = NivelIngles::where('ficha_empleado', $ficha)->first();
-        
+
         $this->ficha = $ficha;
 
         if ($registro) {
@@ -53,7 +68,7 @@ class InglesEmpleados extends Component
     public function updated($propertyName)
     {
         if (in_array($propertyName, $this->niveles)) {
-            
+
             $valores = [];
             foreach ($this->niveles as $nivel) {
                 $valores[$nivel] = $this->$nivel;
@@ -61,9 +76,10 @@ class InglesEmpleados extends Component
 
             $activos = array_filter($valores); // Devuelve solo los niveles que están activos (true)
 
-            if(count($activos) > 1) {
+            if (count($activos) > 1) {
                 $this->$propertyName = false;
                 $this->addError('nivel_ingles_unico', 'Solo se puede seleccionar un nivel de inglés a la vez.');
+
                 return;
             }
 
@@ -85,7 +101,7 @@ class InglesEmpleados extends Component
                 'ib' => $this->ib ?? false,
                 'ia' => $this->ia ?? false,
                 'ab' => $this->ab ?? false,
-                'aa' => $this->aa ?? false
+                'aa' => $this->aa ?? false,
             ]
         );
 
@@ -96,9 +112,9 @@ class InglesEmpleados extends Component
     {
         $this->reset(['ingles_id', 'ficha', 'i1', 'i2', 'bb', 'ba', 'ib', 'ia', 'ab', 'aa']);
     }
-     
+
     public function render()
     {
         return view('modals.modal-perfil-individual-ingles');
     }
-};
+}

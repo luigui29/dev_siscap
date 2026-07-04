@@ -27,7 +27,7 @@ class DataGerencias extends Component
     /*
     * Al recibir la busqueda del filtro, se guarda en las propiedades
     */
-    #[On('busqueda-filtrada')]
+    #[On('busqueda-filtrada-gerencias')]
     public function obtenerDataFiltrada($filtros)
     {
         $this->data_filtrada = $filtros;
@@ -169,7 +169,7 @@ class DataGerencias extends Component
 
     public function resumen_gerencias($gerencia)
     {
-        if (!$gerencia) {
+        if (! $gerencia) {
             return;
         }
 

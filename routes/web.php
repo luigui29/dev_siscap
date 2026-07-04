@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProgramacionController;
 use App\Http\Controllers\RrhhPersonalController;
 use App\Livewire\ConfiguracionView;
 use App\Livewire\DashboardView;
-use App\Livewire\ProgramacionView;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -20,6 +20,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', DashboardView::class)->name('dashboard');
     Route::get('/perfiles/{pestania?}', [RrhhPersonalController::class, 'index'])->name('perfiles');
-    Route::get('/programacion/{pestania?}', ProgramacionView::class)->name('programacion');
+    Route::get('/programacion/{pestania?}', [ProgramacionController::class, 'index'])->name('programacion');
     Route::get('/configuracion/{pestania?}', ConfiguracionView::class)->name('configuracion');
 });

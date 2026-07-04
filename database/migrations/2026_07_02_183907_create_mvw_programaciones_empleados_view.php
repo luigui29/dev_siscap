@@ -43,7 +43,7 @@ return new class extends Migration
         /*
         * Este índice único se utiliza para ejecutar REFRESH CONCURRENTLY
         * en PostgreSQL, lo cual permite el acceso a la vista mientras es actualizada.
-        * Este índice se compone del índice compuesto ya existente en pl_programaciones.
+        * Se compone del índice compuesto ya existente en pl_programaciones.
         */
         DB::statement('
                 CREATE UNIQUE INDEX mvw_programaciones_unique_idx
