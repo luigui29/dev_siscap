@@ -41,7 +41,7 @@ class ModalPreProgramCurso extends Component
     public $extra = false;
 
     /* EVENTOS */
-    // Se abre el modal y se cargan los datos desde la vista materializada
+    // Se abre el modal y se cargan los datos desde la vista "mvw_pre_programaciones"
     #[On('abrir-modal-pre-program-curso')]
     public function abrir($id = null)
     {
@@ -185,13 +185,13 @@ class ModalPreProgramCurso extends Component
                 'actividad_id' => $this->actividad_seleccionada,
                 'subactividad_id' => $this->subactividad_seleccionada,
                 'facilitador_id' => $this->facilitador_seleccionado,
-            'institucion' => $this->institucion,
-            'fecha' => $this->fecha,
-            'lugar' => $this->lugar,
-            'desde' => $this->desde,
-            'hasta' => $this->hasta,
-            'duracion' => $this->duracion,
-            'extra' => $this->extra,
+                'institucion' => $this->institucion,
+                'fecha' => $this->fecha,
+                'lugar' => $this->lugar,
+                'desde' => $this->desde,
+                'hasta' => $this->hasta,
+                'duracion' => $this->duracion,
+                'extra' => $this->extra,
             ]
         );
 

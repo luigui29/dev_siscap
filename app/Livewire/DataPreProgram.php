@@ -47,6 +47,7 @@ class DataPreProgram extends Component
     {
         $this->data_filtrada_program = $filtros;
         $this->reset('program_seleccionada');
+        unset($this->pre_programaciones);
     }
 
     #[On('busqueda-filtrada-empleados')]
@@ -89,54 +90,59 @@ class DataPreProgram extends Component
     * Se revisa los valores rellenados de los campos del filtro de busqueda
     * Primero, se hace una consulta ilike si los primeros seis campos son ingresados
     * Luego se revisa las siguientes condiciones y se agrega una consulta específica
-    * 1) Si ambos campos de fecha son ingresados, hacer una consulta por rango de fechas
-    * 2) Si ambos campos de tiempo son ingresados, hacer una consulta por rango de horas
-    * 3) Si ambos campos de duracion son ingresados, hacer una consulta por rango de duracion
+    * 1) Si cualquier campo de fecha es ingresado, hacer una consulta por rango de fechas
+    * 2) Si cualquier campo de tiempo es ingresado, hacer una consulta por rango de horas
+    * 3) Si cualquier campo de duracion es ingresado, hacer una consulta por rango de duracion
     */
     public function filtrar_program($query)
     {
         $campos = [
-            'nombre_area' => $this->data_filtrada_program['area'],
-            'nombre_actividad' => $this->data_filtrada_program['actividad'],
-            'nombre_subactividad' => $this->data_filtrada_program['subactividad'],
-            'nombre_facilitador' => $this->data_filtrada_program['facilitador'],
-            'institucion' => $this->data_filtrada_program['institucion'],
-            'lugar' => $this->data_filtrada_program['lugar'],
-            'desde' => $this->data_filtrada_program['tiempo_desde'],
-            'hasta' => $this->data_filtrada_program['tiempo_hasta'],
-            'duracion_desde' => $this->data_filtrada_program['duracion_desde'],
-            'duracion_hasta' => $this->data_filtrada_program['duracion_hasta'],
+            'nombre_area' => $this->data_filtrada_program['area'] ?? null,
+            'nombre_actividad' => $this->data_filtrada_program['actividad'] ?? null,
+            'nombre_subactividad' => $this->data_filtrada_program['subactividad'] ?? null,
+            'nombre_facilitador' => $this->data_filtrada_program['facilitador'] ?? null,
+            'institucion' => $this->data_filtrada_program['institucion'] ?? null,
+            'lugar' => $this->data_filtrada_program['lugar'] ?? null,
         ];
 
         foreach ($campos as $campo => $valor) {
-            if (! empty($valor)) {
-                $query->where($campo, 'ilike', '%'.$valor.'%');
+            if (! empty(trim($valor ?? ''))) {
+                $query->where($campo, 'ilike', '%'.trim($valor).'%');
             }
         }
 
-        if (! empty($this->data_filtrada_program['fecha_desde']) && ! empty($this->data_filtrada_program['fecha_hasta'])) {
-            $query->whereBetween('fecha', [$this->data_filtrada_program['fecha_desde'], $this->data_filtrada_program['fecha_hasta']]);
-        } elseif (! empty($this->data_filtrada_program['fecha_desde'])) {
-            $query->where('fecha', '>=', $this->data_filtrada_program['fecha_desde']);
-        } elseif (! empty($this->data_filtrada_program['fecha_hasta'])) {
-            $query->where('fecha', '>=', $this->data_filtrada_program['fecha_hasta']);
+        $campos_rango = [
+            'f_desde' => $this->data_filtrada_program['fecha_desde'],
+            'f_hasta' => $this->data_filtrada_program['fecha_hasta'],
+            't_desde' => $this->data_filtrada_program['tiempo_desde'],
+            't_hasta' => $this->data_filtrada_program['tiempo_hasta'],
+            'd_desde' => $this->data_filtrada_program['duracion_desde'] ?? 0,
+            'd_hasta' => $this->data_filtrada_program['duracion_hasta'] ?? 0,
+        ];
+
+        if (! empty($campos_rango['f_desde']) && ! empty($campos_rango['f_hasta'])) {
+            $query->whereBetween('fecha', [$campos_rango['f_desde'], $campos_rango['f_hasta']]);
+        } elseif (! empty($campos_rango['f_desde'])) {
+            $query->where('fecha', '>=', $campos_rango['f_desde']);
+        } elseif (! empty($campos_rango['f_hasta'])) {
+            $query->where('fecha', '>=', $campos_rango['f_hasta']);
         }
 
-        if (! empty($this->data_filtrada_program['tiempo_desde']) && ! empty($this->data_filtrada_program['tiempo_hasta'])) {
-            $query->where('desde', '<=', $this->data_filtrada_program['tiempo_hasta'])
-                ->where('hasta', '>=', $this->data_filtrada_program['tiempo_desde']);
-        } elseif (! empty($this->data_filtrada_program['tiempo_desde'])) {
-            $query->where('desde', '>=', $this->data_filtrada_program['tiempo_desde']);
-        } elseif (! empty($this->data_filtrada_program['tiempo_hasta'])) {
-            $query->where('hasta', '<=', $this->data_filtrada_program['tiempo_hasta']);
+        if (! empty($campos_rango['t_desde']) && ! empty($campos_rango['t_hasta'])) {
+            $query->where('desde', '<=', $campos_rango['t_hasta'])
+                ->where('hasta', '>=', $campos_rango['t_desde']);
+        } elseif (! empty($campos_rango['t_desde'])) {
+            $query->where('desde', '>=', $campos_rango['t_desde']);
+        } elseif (! empty($campos_rango['t_hasta'])) {
+            $query->where('hasta', '<=', $campos_rango['t_hasta']);
         }
 
-        if (! empty($this->data_filtrada_program['duracion_desde']) && ! empty($this->data_filtrada_program['duracion_hasta'])) {
-            $query->whereBetween('duracion', [$this->data_filtrada_program['duracion_desde'], $this->data_filtrada_program['duracion_hasta']]);
-        } elseif (! empty($this->data_filtrada_program['duracion_desde'])) {
-            $query->where('duracion', '>=', $this->data_filtrada_program['duracion_desde']);
-        } elseif (! empty($this->data_filtrada_program['duracion_hasta'])) {
-            $query->where('duracion', '>=', $this->data_filtrada_program['duracion_hasta']);
+        if (! empty($campos_rango['d_desde']) && ! empty($campos_rango['d_hasta'])) {
+            $query->whereBetween('duracion', [$campos_rango['d_desde'], $campos_rango['d_hasta']]);
+        } elseif (! empty($campos_rango['d_desde'])) {
+            $query->where('duracion', '>=', $campos_rango['d_desde']);
+        } elseif (! empty($campos_rango['d_hasta'])) {
+            $query->where('duracion', '>=', $campos_rango['d_hasta']);
         }
 
         return $query;

@@ -133,8 +133,8 @@ class DataEmpleados extends Component
         return $registros
             ->groupBy('nombre_area')
             ->map(function ($group) {
-                return $group->map(function ($item) {
-                    $registro = collect((array) $item)->except('nombre_area');
+                return $group->map(function ($curso) {
+                    $registro = collect((array) $curso)->except('nombre_area');
                     $registro['fecha'] = Carbon::parse($registro['fecha'])->format('d-m-Y');
 
                     return (object) $registro->toArray();

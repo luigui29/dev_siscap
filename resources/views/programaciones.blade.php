@@ -10,12 +10,12 @@
         </h3>
 
         <div class="row">
-            <div class="col-7">
+            <div class="col-4">
                 <div class="sticky-top" style="top: 20px">
-                    <livewire:filtro-programaciones />\
+                    <livewire:filtro-programaciones />
                 </div>
             </div>
-            <div class="col-5">
+            <div class="col-8">
                 <livewire:data-preprogram />
             </div>
         </div>
