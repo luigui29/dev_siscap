@@ -6,7 +6,7 @@
         </h5>
     </div>
 
-    <div class="card-body">
+    <div class="card-body overflow-auto" style="max-height: 900px">
         <!-- Indicador de carga -->
         <div x-show="$store.programaciones.cargando" 
                 style="display: none; position: absolute; inset: 0; background: rgba(255,255,255,0.8); z-index: 10; justify-content: center; align-items: center; border-radius: 0 0 8px 8px;"
@@ -17,23 +17,30 @@
             </div>
         </div>
         @forelse($this->pre_programaciones as $preprogram)
-            <div class="p-3 bg-light rounded border my-2">
+            <div class="p-3 bg-light rounded border my-3">
                 <h5 class="font-weight=bold mb-2"> {{$preprogram->nombre_actividad}} </h5>
                 <p class="text-secondary mb-2"> {{$preprogram->nombre_subactividad }}</p>
                 <p class="text-secondary mb-2"><strong>Facilitador:</strong>{{$preprogram->nombre_facilitador}}</p>
                 <p class="text-secondary mb-2"><strong>Institución:</strong>{{$preprogram->institucion}}</p>
                 <p class="text-secondary mb-2"><strong>Lugar:</strong>{{$preprogram->lugar}}</p>
-                <p class="text-secondary mb-2"><i class="fa-regular fa-calendar"></i>{{$preprogram->fecha}}</p>
-                <p class="text-secondary mb-2"><i class="fa-regular fa-clock"></i>{{$preprogram->desde}} - {{$preprogram->hasta}} ({{$preprogram->duracion}}) Hora(s)</p>
-                <div class="mb-2 d-flex flex-row-reverse">
-                    <button class="ml-2 btn btn-sm btn-outline-primary" wire:click="$dispatch('abrir-modal-pre-program-curso', { id: {{ $preprogram->programacion_id }} })">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-sm btn-danger" 
-                            wire:confirm="¿Está seguro de que quiere eliminar este registro de pre-programación? Este cambio no se puede deshacer" 
-                            wire:click="eliminar({{ $preprogram->programacion_id }})">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
+                <p class="text-secondary mb-2"><i class="fas fa-calendar mr-2"></i>{{$preprogram->fecha}}</p>
+                <p class="text-secondary mb-2"><i class="fas fa-clock mr-2"></i>{{$preprogram->desde}} - {{$preprogram->hasta}}  <strong>({{$preprogram->duracion}}) Hora(s)</strong></p>
+                <div class="mb-2 row">
+                    <div class="col-6">
+                        <button class="btn btn-md btn-outline-primary" wire:click="$dispatch('abrir-modal-pre-program-curso', { id: {{ $preprogram->programacion_id }} })">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="ml-2 btn btn-md btn-outline-primary" wire:click="$dispatch('abrir-modal-pre-program-empleados', { id: {{ $preprogram->programacion_id }} })">
+                            <i class="fas fa-users"></i>
+                        </button>
+                    </div>
+                    <div class="col-2 ml-auto d-flex justify-content-end">
+                        <button class="btn btn-md btn-outline-danger"
+                                wire:confirm="¿Está seguro de que quiere eliminar este registro de pre-programación? Este cambio no se puede deshacer" 
+                                wire:click="eliminar({{ $preprogram->programacion_id }})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         @empty

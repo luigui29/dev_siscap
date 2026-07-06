@@ -65,7 +65,7 @@
                     <div class="col-6">
                         <label for="institucion_filtro" class="font-weight-bold text-muted mb-1">Institución</label>
                         @error('filtro_institucion') <span class="text-danger font-weight-bold"><i class="fas fa-info-circle ml-1 mr-2"></i>{{ $message }}</span> @enderror
-                        <input id="institucion_filtro" type="text" class="form-control form-control-md" wire:model.live.debounce.500ms="filtro_institucion" :disabled="$store.programaciones.cargando" placeholder="Ej: VENPRECAR..." style="border-radius: 4px;">
+                        <input id="institucion_filtro" type="text" class="form-control form-control-md" wire:model.live.debounce.500ms="filtro_institucion" :disabled="$store.programaciones.cargando" placeholder="VENPRECAR (por defecto)" style="border-radius: 4px;">
                     </div>
                     <div class="col-6">
                         <label for="lugar_filtro" class="font-weight-bold text-muted mb-1">Lugar</label>
@@ -91,12 +91,12 @@
                     <div class="col-6">
                         <label for="tiempo_desde_filtro" class="font-weight-bold text-muted mb-1">Desde</label>
                         @error('filtro_tiempo_desde') <span class="text-danger font-weight-bold"><i class="fas fa-info-circle ml-1 mr-2"></i>{{ $message }}</span> @enderror
-                        <input id="tiempo_desde_filtro" type="time" class="form-control form-control-md" wire:model.live.debounce.500ms="filtro_tiempo_desde" :disabled="$store.programaciones.cargando" style="border-radius: 4px;">
+                        <input id="tiempo_desde_filtro" type="number" min=0 max=24 class="form-control form-control-md" wire:model.live.debounce.500ms="filtro_tiempo_desde" :disabled="$store.programaciones.cargando" style="border-radius: 4px;">
                     </div>
                     <div class="col-6">
                         <label for="tiempo_hasta_filtro" class="font-weight-bold text-muted mb-1">Hasta</label>
                         @error('filtro_tiempo_hasta') <span class="text-danger font-weight-bold"><i class="fas fa-info-circle ml-1 mr-2"></i>{{ $message }}</span> @enderror
-                        <input id="tiempo_hasta_filtro" type="time" class="form-control form-control-md" wire:model.live.debounce.500ms="filtro_tiempo_hasta" :disabled="$store.programaciones.cargando" style="border-radius: 4px;">
+                        <input id="tiempo_hasta_filtro" type="number" min=0 max=24 class="form-control form-control-md" wire:model.live.debounce.500ms="filtro_tiempo_hasta" :disabled="$store.programaciones.cargando" style="border-radius: 4px;">
                     </div>
                 </div>
                 <div class="row border-top">
@@ -112,6 +112,11 @@
                         <input id="duracion_hasta_filtro" type="number" min="0" class="form-control form-control-md" wire:model.live.debounce.500ms="filtro_duracion_hasta" :disabled="$store.programaciones.cargando" style="border-radius: 4px;">
                     </div>
                 </div>
+            </div>
+            <div class="col-12 mt-2 d-flex justify-content-end">
+                <button class="btn btn-md btn-outline-secondary" wire:click="limpiar">
+                    <i class="fas fa-eraser mr-1"></i> Limpiar
+                </button>
             </div>
         </div>
     </div>

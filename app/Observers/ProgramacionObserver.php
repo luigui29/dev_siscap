@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\DB;
 class ProgramacionObserver
 {
     /**
-     * Handle the Programacion "created" event.
+     * Cada vez que la tabla 'tbl_programaciones' recibe una nueva programacion,
+     * se ejecuta este código.
      */
     public function created(Programacion $programacion): void
     {
-        //
+        DB::unprepared('REFRESH MATERIALIZED VIEW CONCURRENTLY mvw_pre_programaciones');
     }
 
     /**
@@ -23,6 +24,7 @@ class ProgramacionObserver
     {
         if ($programacion->wasChanged('aprobado')) {
             DB::unprepared('REFRESH MATERIALIZED VIEW CONCURRENTLY mvw_programaciones_empleados');
+            DB::unprepared('REFRESH MATERIALIZED VIEW CONCURRENTLY mvw_pre_programaciones');
         }
     }
 

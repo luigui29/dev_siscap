@@ -114,8 +114,8 @@ class DataPreProgram extends Component
         $campos_rango = [
             'f_desde' => $this->data_filtrada_program['fecha_desde'],
             'f_hasta' => $this->data_filtrada_program['fecha_hasta'],
-            't_desde' => $this->data_filtrada_program['tiempo_desde'],
-            't_hasta' => $this->data_filtrada_program['tiempo_hasta'],
+            't_desde' => (!is_null($this->data_filtrada_program['tiempo_desde']) && $this->data_filtrada_program['tiempo_desde'] !== '') ? sprintf('%02d:00', $this->data_filtrada_program['tiempo_desde']) : null,
+            't_hasta' => (!is_null($this->data_filtrada_program['tiempo_hasta']) && $this->data_filtrada_program['tiempo_hasta'] !== '') ? sprintf('%02d:00', $this->data_filtrada_program['tiempo_hasta']) : null,
             'd_desde' => $this->data_filtrada_program['duracion_desde'] ?? 0,
             'd_hasta' => $this->data_filtrada_program['duracion_hasta'] ?? 0,
         ];

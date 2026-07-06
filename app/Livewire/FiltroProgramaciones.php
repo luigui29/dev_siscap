@@ -2,11 +2,13 @@
 
 namespace App\Livewire;
 
+use App\Models\Programacion;
 use App\Models\Actividad;
 use App\Models\Area;
 use App\Models\Facilitador;
 use App\Models\Subactividad;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\Attributes\Validate;
 use Illuminate\Support\Facades\DB;
@@ -48,8 +50,8 @@ class FiltroProgramaciones extends Component
             'filtro_lugar' => ['nullable', 'regex:/^[\pL\s]+$/u', 'max:255'],
             'filtro_fecha_desde' => 'nullable|date',
             'filtro_fecha_hasta' => ['nullable', 'date', 'after_or_equal:filtro_fecha_desde'],
-            'filtro_tiempo_desde' => 'nullable|date_format:H:i',
-            'filtro_tiempo_hasta' => ['nullable', 'date_format:H:i', 'after:filtro_tiempo_desde'],
+            'filtro_tiempo_desde' => ['nullable', 'integer', 'lte:24'],
+            'filtro_tiempo_hasta' => ['nullable', 'integer', 'lte:24', 'gte:filtro_tiempo_desde'],
             'filtro_duracion_desde' => ['nullable', 'integer', 'min:0'],
             'filtro_duracion_hasta' => ['nullable', 'integer', 'gte:filtro_duracion_desde'],
         ];
@@ -60,11 +62,102 @@ class FiltroProgramaciones extends Component
         return [
             '*.regex' => 'Solo se permiten letras y espacios.',
             '*.max' => 'El campo es demasiado largo',
+            '*.lte' => 'La hora ingresada debe ser un número entre 0 a 24',
             'filtro_fecha_hasta.after_or_equal' => 'El campo debe ser posterior o igual a la fecha anteriormente ingresada',
-            'filtro_tiempo_hasta.after' => 'El campo debe ser posterior a la hora anteriormente ingresada',
+            'filtro_tiempo_hasta.gte' => 'El campo debe ser posterior a la hora anteriormente ingresada',
             'filtro_duracion_desde' => 'El campo debe ser mayor o igual a 0',
             'filtro_duracion_hasta.gte' => 'El campo debe ser mayor o igual a la duracion anteriormente ingresada',
         ];
+    }
+    /* EVENTOS */
+    #[On('crear-pre-programacion')]
+    public function crearPreProgramacion()
+    {
+        /* Las siguientes reglas de validación y mensajes de error son únicos del módulo de pre-programación */
+        $this->validate([
+            'actividad_seleccionada' => 'required_without:filtro_actividad|nullable|integer',
+            'filtro_actividad' => ['required_without:actividad_seleccionada', 'nullable', 'regex:/^[\pL\s]+$/u', 'max:255'],
+            'area_seleccionada' => 'required_with:filtro_actividad|nullable|integer',
+            
+            'subactividad_seleccionada' => 'nullable|integer',
+            'filtro_subactividad' => ['nullable', 'regex:/^[\pL\s]+$/u', 'max:255'],
+            
+            'facilitador_seleccionado' => 'required_without:filtro_facilitador|nullable|integer',
+            'filtro_facilitador' => ['required_without:facilitador_seleccionado', 'nullable', 'regex:/^[\pL\s]+$/u', 'max:255'],
+            
+            'filtro_institucion' => ['nullable', 'regex:/^[\pL\s]+$/u', 'max:255'],
+            'filtro_lugar' => ['required', 'regex:/^[\pL\s]+$/u', 'max:255'],
+            'filtro_fecha_desde' => 'required|date',
+            'filtro_tiempo_desde' => 'required|integer',
+            'filtro_tiempo_hasta' => ['required', 'integer', 'gte:filtro_tiempo_desde'],
+        ],
+        [
+            'actividad_seleccionada.required_without' => 'Debe seleccionar o ingresar una nueva actividad.',
+            'filtro_actividad.required_without' => 'Debe seleccionar o ingresar una nueva actividad.',
+            'area_seleccionada.required_with' => 'Debe seleccionar un área para registrar la nueva actividad.',
+            'facilitador_seleccionado.required_without' => 'Debe seleccionar o ingresar un nuevo facilitador.',
+            'filtro_facilitador.required_without' => 'Debe seleccionar o ingresar un nuevo facilitador.',
+            'filtro_lugar.required' => 'El campo lugar es obligatorio.',
+            'filtro_fecha_desde.required' => 'El campo fecha (desde) es obligatorio.',
+            'filtro_tiempo_desde.required' => 'El campo hora (desde) es obligatorio.',
+            'filtro_tiempo_hasta.required' => 'El campo hora (hasta) es obligatorio.',
+            'filtro_tiempo_hasta.after' => 'La hora final debe ser posterior a la de inicio.',
+        ]);
+
+        $campos_id = [
+            'actividad_id' => $this->actividad_seleccionada,
+            'subactividad_id' => $this->subactividad_seleccionada,
+            'facilitador_id' => $this->facilitador_seleccionado
+        ];
+    
+        if($campos_id['actividad_id']) {
+            $actividad_preprogram = $campos_id['actividad_id'];
+        } else {
+            $actividad = Actividad::create([
+                'area_id' => $this->area_seleccionada,
+                'nombre' => $this->filtro_actividad
+            ]);
+            $actividad_preprogram = $actividad->id;
+        }
+
+        if($campos_id['subactividad_id']) {
+            $subactividad_preprogram = $campos_id['subactividad_id'];
+        } elseif (!empty($this->filtro_subactividad)) {
+            $subactividad = Subactividad::create([
+                'actividad_id' => $actividad_preprogram,
+                'nombre' => $this->filtro_subactividad
+            ]);
+            $subactividad_preprogram = $subactividad->id;
+        } else {
+            $subactividad_preprogram = null;
+        }
+
+        if($campos_id['facilitador_id']) {
+            $facilitador_preprogram = $campos_id['facilitador_id'];
+        } else {
+            $facilitador = Facilitador::create([
+                'nombre' => $this->filtro_facilitador
+            ]);
+            $facilitador_preprogram = $facilitador->id;
+        }
+
+        $duracion_preprogram = $this->filtro_tiempo_hasta - $this->filtro_tiempo_desde;
+        $desde_preprogram = sprintf('%02d:00', $this->filtro_tiempo_desde);
+        $hasta_preprogram = sprintf('%02d:00', $this->filtro_tiempo_hasta);
+
+        Programacion::create([
+            'actividad_id' => $actividad_preprogram,
+            'subactividad_id' => $subactividad_preprogram,
+            'facilitador_id' => $facilitador_preprogram,
+            'institucion' => $this->filtro_institucion ?: 'VENPRECAR, C.A.',
+            'lugar' => $this->filtro_lugar,
+            'fecha' => $this->filtro_fecha_desde,
+            'desde' => $desde_preprogram,
+            'hasta' => $hasta_preprogram,
+            'duracion' => $duracion_preprogram,
+        ]);
+
+        return session()->flash('success', 'Pre-Programación registrada con éxito! Recuerde revisar la nueva información en el módulo de configuración');
     }
 
     /* PROPIEDADES COMPUTADAS */

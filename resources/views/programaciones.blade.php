@@ -10,12 +10,16 @@
         </h3>
 
         <div class="row">
-            <div class="col-4">
-                <div class="sticky-top" style="top: 20px">
-                    <livewire:filtro-programaciones />
+            <div class="col-8">
+                <livewire:filtro-programaciones />
+
+                <div class="mt-2 d-flex flex-row-reverse">
+                    <button class="btn btn-lg btn-primary" x-data @click="$dispatch('crear-pre-programacion')">
+                        <i class="fas fa-save mr-2"></i>Crear Pre-Programación con Información Ingresada
+                    </button>
                 </div>
             </div>
-            <div class="col-8">
+            <div class="col-4">
                 <livewire:data-preprogram />
             </div>
         </div>
