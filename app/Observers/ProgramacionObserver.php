@@ -18,7 +18,7 @@ class ProgramacionObserver
 
     /**
      * Cada vez que la tabla 'tbl_programaciones' se actualiza, se ejecuta este código
-     * para borrar la cache de los empleados en cursos posteriormente desaprobados .
+     * para borrar la cache de los empleados en cursos posteriormente desaprobados.
      */
     public function updated(Programacion $programacion): void
     {
@@ -29,11 +29,12 @@ class ProgramacionObserver
     }
 
     /**
-     * Handle the Programacion "deleted" event.
+     * Cada vez que se borra un registro de la tabla 'tbl_programaciones', se ejecuta
+     * este código.
      */
     public function deleted(Programacion $programacion): void
     {
-        //
+        DB::unprepared('REFRESH MATERIALIZED VIEW CONCURRENTLY mvw_pre_programaciones');
     }
 
     /**

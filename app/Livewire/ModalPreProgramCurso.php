@@ -17,28 +17,18 @@ class ModalPreProgramCurso extends Component
 {
     /* PROPIEDADES */
     public $programacion_id = null;
-
+    
     public $area_seleccionada;
-
     public $actividad_seleccionada;
-
     public $subactividad_seleccionada;
-
     public $facilitador_seleccionado;
 
     public $institucion;
-
     public $fecha;
-
     public $lugar;
-
     public $desde;
-
     public $hasta;
-
     public $duracion;
-
-    public $extra = false;
 
     /* EVENTOS */
     // Se abre el modal y se cargan los datos desde la vista "mvw_pre_programaciones"
@@ -54,8 +44,7 @@ class ModalPreProgramCurso extends Component
 
             if ($registro) {
                 $this->programacion_id = $registro->programacion_id;
-
-                // Buscar IDs de los registros relacionados por nombre (no se consulta tbl_programaciones)
+                
                 $area = Area::where('nombre', $registro->nombre_area)->first();
                 if ($area) {
                     $this->area_seleccionada = $area->id;
@@ -63,12 +52,14 @@ class ModalPreProgramCurso extends Component
                     $actividad = Actividad::where('nombre', $registro->nombre_actividad)
                         ->where('area_id', $area->id)
                         ->first();
+
                     if ($actividad) {
                         $this->actividad_seleccionada = $actividad->id;
 
                         $subactividad = Subactividad::where('nombre', $registro->nombre_subactividad)
                             ->where('actividad_id', $actividad->id)
                             ->first();
+
                         if ($subactividad) {
                             $this->subactividad_seleccionada = $subactividad->id;
                         }
@@ -76,6 +67,7 @@ class ModalPreProgramCurso extends Component
                 }
 
                 $facilitador = Facilitador::where('nombre', $registro->nombre_facilitador)->first();
+
                 if ($facilitador) {
                     $this->facilitador_seleccionado = $facilitador->id;
                 }
@@ -83,8 +75,8 @@ class ModalPreProgramCurso extends Component
                 $this->institucion = $registro->institucion;
                 $this->fecha = Carbon::parse($registro->fecha)->format('Y-m-d');
                 $this->lugar = $registro->lugar;
-                $this->desde = substr($registro->desde, 0, 5);
-                $this->hasta = substr($registro->hasta, 0, 5);
+                $this->desde = (int) substr($registro->desde, 0, 2);
+                $this->hasta = (int) substr($registro->hasta, 0, 2);
                 $this->duracion = $registro->duracion;
             }
         }
@@ -143,9 +135,8 @@ class ModalPreProgramCurso extends Component
             'institucion' => ['nullable', 'max:255'],
             'fecha' => 'required|date',
             'lugar' => ['required', 'max:255'],
-            'desde' => 'required|date_format:H:i',
-            'hasta' => ['required', 'date_format:H:i', 'after:desde'],
-            'duracion' => ['required', 'numeric', 'min:0'],
+            'desde' => ['nullable', 'integer', 'lte:24'],
+            'hasta' => ['nullable', 'integer', 'lte:24', 'gte:desde']
         ];
     }
 
@@ -156,8 +147,8 @@ class ModalPreProgramCurso extends Component
             '*.integer' => 'El campo debe ser un número entero.',
             '*.exists' => 'El registro seleccionado no existe.',
             '*.max' => 'El campo es demasiado largo.',
-            'hasta.after' => 'La hora de finalización debe ser posterior a la hora de inicio.',
-            'duracion.min' => 'La duración debe ser mayor o igual a 0.',
+            '*.lte' => 'La hora debe ser un número entre 0 y 24.',
+            'hasta.gte' => 'La hora debe ser posterior a la hora de inicio.'
         ];
     }
 
@@ -188,10 +179,9 @@ class ModalPreProgramCurso extends Component
                 'institucion' => $this->institucion,
                 'fecha' => $this->fecha,
                 'lugar' => $this->lugar,
-                'desde' => $this->desde,
-                'hasta' => $this->hasta,
-                'duracion' => $this->duracion,
-                'extra' => $this->extra,
+                'desde' => sprintf('%02d:00', $this->desde),
+                'hasta' => sprintf('%02d:00', $this->hasta),
+                'duracion' => $this->hasta - $this->desde
             ]
         );
 
@@ -211,10 +201,10 @@ class ModalPreProgramCurso extends Component
     public function limpiar()
     {
         $this->reset([
-            'programacion_id', 'area_seleccionada', 'actividad_seleccionada',
+            'area_seleccionada', 'actividad_seleccionada',
             'subactividad_seleccionada', 'facilitador_seleccionado',
             'institucion', 'fecha', 'lugar',
-            'desde', 'hasta', 'duracion', 'extra',
+            'desde', 'hasta'
         ]);
         $this->resetValidation();
     }

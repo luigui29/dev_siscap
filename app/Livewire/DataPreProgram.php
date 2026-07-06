@@ -3,10 +3,12 @@
 namespace App\Livewire;
 
 use App\Models\RrhhPersonal;
+use App\Models\Programacion;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Carbon\Carbon;
 
 class DataPreProgram extends Component
 {
@@ -26,15 +28,6 @@ class DataPreProgram extends Component
         'duracion_hasta' => null,
     ];
 
-    public $data_filtrada_empleados = [
-        'ficha' => null,
-        'cedula' => null,
-        'nombre' => null,
-        'gerencia' => null,
-        'cargo' => null,
-        'unidad' => null,
-    ];
-
     public $program_seleccionada = null;
 
     /* EVENTOS */
@@ -48,12 +41,6 @@ class DataPreProgram extends Component
         $this->data_filtrada_program = $filtros;
         $this->reset('program_seleccionada');
         unset($this->pre_programaciones);
-    }
-
-    #[On('busqueda-filtrada-empleados')]
-    public function obtenerDataEmpleados($filtros)
-    {
-        $this->data_filtrada_empleados = $filtros;
     }
 
     /*
@@ -70,10 +57,17 @@ class DataPreProgram extends Component
     {
         $vista = DB::table('mvw_pre_programaciones');
 
-        return $this->filtrar_program($vista)
+        $resultados = $this->filtrar_program($vista)
             ->orderBy('programacion_id', 'asc')
             ->limit(50)
             ->get();
+
+        return $resultados->map(function ($item) {
+            if ($item->fecha) {
+                $item->fecha = Carbon::parse($item->fecha)->format('d-m-Y');
+            }
+            return $item;
+        });
     }
 
     // Todos los empleados según filtros (limitado a 50 resultados)

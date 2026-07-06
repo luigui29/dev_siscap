@@ -26,7 +26,7 @@
 
         <!-- MODALES -->
         <livewire:modal-pre-program-curso />
-        
+        <livewire:modal-pre-program-empleados />
     </div>
 
 </div>

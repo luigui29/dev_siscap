@@ -175,7 +175,7 @@
      window.addEventListener('cerrar-modal-ingles', event => {
           $('#modal_ingles').modal('hide');
      });
-     /* [VISTA: PRE-PROGRAMACIÓN] GESTIÓN DE CURSOS PRE-PROGRAMADOS */
+     /* [VISTA: PRE-PROGRAMACIÓN] EDICIÓN DE CURSOS PRE-PROGRAMADOS */
      window.addEventListener('listo-modal-pre-program-curso', event => {
           $('#modal_pre_program_curso').modal('show');
      });
@@ -183,7 +183,14 @@
      window.addEventListener('cerrar-modal-pre-program-curso', event => {
           $('#modal_pre_program_curso').modal('hide');
      });
+     /* [VISTA: PRE-PROGRAMACIÓN] EDICIÓN DE EMPLEADOS MATRICULADOS */
+     window.addEventListener('listo-modal-pre-program-empleados', event => {
+          $('#modal_pre_program_empleados').modal('show');
+     });
 
+     window.addEventListener('cerrar-modal-pre-program-empleados', event => {
+          $('#modal_pre_program_empleados').modal('hide');
+     });
      /* [VISTA: PROGRAMACIÓN FINAL] TRABAJADORES MATRICULADOS EN UN CURSO */
      window.addEventListener('abrir-modal-programacion-trabajadores', event => {
           $('#modalProgramacionTrabajadores').modal('show');
