@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('pl_experiencia_laboral', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('ficha_empleado');
-            $table->char('cargo_desempeñado', length: 255);
-            $table->char('empresa', length: 255)->nullable();
+            $table->string('cargo_desempeñado');
+            $table->string('empresa')->nullable();
             $table->timestamp('desde');
             $table->timestamp('hasta')->nullable();
-            $table->char('observacion', length: 255)->nullable();
+            $table->string('observacion')->nullable();
             $table->timestamps();
         });
     }

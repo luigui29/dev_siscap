@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('tbl_subactividades', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('actividad_id');
-            $table->char('nombre', length: 255);
-            $table->char('objetivo', length: 255)->nullable();
+            $table->string('nombre');
+            $table->string('objetivo')->nullable();
             $table->timestamps();
 
             $table->foreign('actividad_id')->references('id')->on('tbl_actividades')->onDelete('cascade');

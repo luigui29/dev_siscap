@@ -16,7 +16,7 @@ return new class extends Migration
             $table->bigInteger('programacion_id');
             $table->bigInteger('ficha_empleado');
             $table->boolean('estatus')->nullable();
-            $table->char('causa', length: 255)->nullable();
+            $table->string('causa')->nullable();
             $table->timestamp('fecha_modificado')->nullable();
             $table->timestamps();
 

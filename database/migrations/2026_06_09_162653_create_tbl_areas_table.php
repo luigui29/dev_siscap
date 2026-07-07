@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('tbl_areas', function (Blueprint $table) {
             $table->id();
-            $table->char('nombre', length: 50);
-            $table->char('descripcion', length: 255)->nullable();
+            $table->string('nombre', 50);
+            $table->string('descripcion')->nullable();
             $table->boolean('estatus')->default(true);
             $table->timestamps();
         });

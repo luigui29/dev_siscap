@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('tbl_actividades', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('area_id');
-            $table->char('nombre', length: 255);
-            $table->char('objetivo', length: 255)->nullable();
+            $table->string('nombre');
+            $table->string('objetivo')->nullable();
             $table->timestamps();
 
             $table->foreign('area_id')->references('id')->on('tbl_areas')->onDelete('cascade');

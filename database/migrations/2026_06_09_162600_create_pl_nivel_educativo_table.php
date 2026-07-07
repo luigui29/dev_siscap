@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('pl_nivel_educativo', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('ficha_empleado');
-            $table->char('nivel_educativo', length: 255);
-            $table->char('titulo', length: 255)->nullable();
-            $table->char('especialidad', length: 255)->nullable();
-            $table->char('instituto', length: 255)->nullable();
+            $table->string('nivel_educativo');
+            $table->string('titulo')->nullable();
+            $table->string('especialidad')->nullable();
+            $table->string('instituto')->nullable();
             $table->boolean('graduado')->default(false);
             $table->integer('fecha_culminado')->nullable();
             $table->boolean('ultimo_nivel')->default(false);

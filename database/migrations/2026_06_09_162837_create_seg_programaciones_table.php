@@ -17,9 +17,9 @@ return new class extends Migration
             $table->bigInteger('actividad_id');
             $table->bigInteger('subactividad_id')->nullable();
             $table->bigInteger('facilitador_id');
-            $table->char('institucion', length: 255)->default("VENPRECAR, C.A.");
+            $table->string('institucion')->default("VENPRECAR, C.A.");
             $table->timestamp('fecha');
-            $table->char('lugar', length: 255);
+            $table->string('lugar');
             $table->time('desde');
             $table->time('hasta');
             $table->float('duracion');

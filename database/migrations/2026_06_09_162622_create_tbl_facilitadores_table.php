@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tbl_facilitadores', function (Blueprint $table) {
             $table->id();
-            $table->char('nombre', length: 50);
+            $table->string('nombre');
             $table->bigInteger('ficha_empleado')->nullable();
             $table->timestamps();
         });
