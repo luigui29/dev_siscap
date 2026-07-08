@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pl_programaciones', function (Blueprint $table) {
+            $table->id();
             $table->bigInteger('programacion_id');
             $table->bigInteger('ficha_empleado');
             $table->boolean('estatus')->nullable();

@@ -12,6 +12,8 @@ class PersonalProgramacion extends Model
     protected $table = 'pl_programaciones';
 
     protected $fillable = [
+        'programacion_id',
+        'ficha_empleado',
         'estatus',
         'causa',
     ];

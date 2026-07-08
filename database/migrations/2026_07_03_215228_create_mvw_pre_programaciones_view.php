@@ -32,7 +32,7 @@ return new class extends Migration
             FROM tbl_programaciones tp
             JOIN tbl_actividades tact ON tp.actividad_id = tact.id
             JOIN tbl_areas ta ON tact.area_id = ta.id
-            JOIN tbl_subactividades tsact ON tp.subactividad_id = tsact.id
+            LEFT JOIN tbl_subactividades tsact ON tp.subactividad_id = tsact.id
             JOIN tbl_facilitadores tfac ON tp.facilitador_id = tfac.id
             WHERE tp.aprobado IS NULL AND tp.ejecutado IS NULL
         ');

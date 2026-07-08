@@ -39,6 +39,11 @@
           Alpine.store('programaciones', {
                cargando: false
           });
+
+          // Estado de carga al agregar o quitar empleados matriculados
+          Alpine.store('matriculados', {
+               cargando: false
+          });
      });
 
      // SCRIPTS A EJECUTAR TRAS CARGAR LIVEWIRE (ANTES DE SER INICIALIZADO EN LA PÁGINA)
@@ -131,7 +136,7 @@
                     });
                }
 
-                /* Verificar el uso de un filtro de búsqueda de programaciones y activar
+               /* Verificar el uso de un filtro de búsqueda de programaciones y activar
                estado de carga de componentes correspondientes */
                if (component.name === 'filtro-programaciones' || component.name === 'data-preprogram') {
                     
@@ -145,6 +150,22 @@
 
                     fail(() => {
                          Alpine.store('programaciones').cargando = false;
+                    });
+               }
+
+               /* Activar estado de carga al agregar o quitar empleados matriculados */
+               if (component.name === 'modal-pre-program-empleados') {
+                    
+                    Alpine.store('matriculados').cargando = true;
+
+                    succeed(() => {
+                         setTimeout(() => {
+                              Alpine.store('matriculados').cargando = false;
+                         }, 50);
+                    });
+
+                    fail(() => {
+                         Alpine.store('matriculados').cargando = false;
                     });
                }
           });
