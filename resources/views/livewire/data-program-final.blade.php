@@ -2,7 +2,7 @@
 <div class="card shadow-sm border-0 bg-white">
     <div class="card-header border-bottom p-3">
         <h5 class="font-weight-bold mb-0 text-white">
-            <i class="fas fa-th-large mr-2"></i> Programaciones Finales y Pre-Programaciones
+            <i class="fas fa-th-large mr-2"></i> Programaciones
         </h5>
     </div>
 
