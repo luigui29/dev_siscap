@@ -374,6 +374,24 @@
           border-color: #DB8B52FF !important;
           color: #fff;
      }
+
+     .btn-outline-pdf {
+          color: #EC8763FF;
+          border-color: #EC8763FF;
+          background-color: transparent;
+          background-image: none;
+          transition: color 0.15s ease-in-out,
+                      background-color 0.15s ease-in-out,
+                      border-color 0.15s ease-in-out,
+                      box-shadow 0.15s ease-in-out;
+     }
+
+     .btn-outline-pdf:hover,
+     .btn-outline-pdf:active {
+          color: #fff;
+          border-color: #EC8763FF;
+          background-color: #EC8763FF;
+     }
      
      /* Etiquetas de estatus y colores */
      .status-badge {

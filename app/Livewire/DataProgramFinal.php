@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Exports\ControlAsistenciaPdf;
 use App\Models\Programacion;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -9,7 +10,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class DataPreProgram extends Component
+class DataProgramFinal extends Component
 {
     /* PROPIEDADES */
     public $data_filtrada_program = [
@@ -39,22 +40,22 @@ class DataPreProgram extends Component
     {
         $this->data_filtrada_program = $filtros;
         $this->reset('program_seleccionada');
-        unset($this->pre_programaciones);
+        unset($this->programaciones);
     }
 
     /*
     * Tras actualizar los registros se re-renderiza el componente
     * para mostrarlos en la página sin recargar
     */
-    #[On('pre-program-actualizada')]
+    #[On('program-final-actualizada')]
     public function actualizar() {}
 
     /* PROPIEDADES COMPUTADAS */
-    // Todas las pre-programaciones según filtros (limitado a 50 resultados)
+    // Todas las programaciones aún no ejecutadas según filtros (limitado a 50 resultados)
     #[Computed]
-    public function pre_programaciones()
+    public function programaciones()
     {
-        $vista = DB::table('mvw_pre_programaciones');
+        $vista = DB::table('mvw_programaciones_finales');
 
         $resultados = $this->filtrar_program($vista)
             ->orderBy('programacion_id', 'asc')
@@ -132,14 +133,54 @@ class DataPreProgram extends Component
         return $query;
     }
 
-    public function render()
+    public function rechazar($programacion_id)
     {
-        return view('livewire.data-preprogram');
+        $query = Programacion::findOrFail($programacion_id);
+
+        if ($query) {
+            $query->aprobado = false;
+        }
+
+        $this->dispatch('program-final-actualizada');
     }
 
-    public function eliminar($programacion_id)
+    public function aprobar($programacion_id)
     {
-        Programacion::findOrFail($programacion_id)->delete();
-        $this->dispatch('pre-program-actualizada');
+        $query = Programacion::findOrFail($programacion_id);
+
+        if ($query) {
+            $query->aprobado = true;
+        }
+
+        $this->dispatch('program-final-actualizada');
+    }
+
+    public function retroceder($programacion_id)
+    {
+        $query = Programacion::findOrFail($programacion_id);
+
+        if ($query) {
+            $query->aprobado = null;
+        }
+
+        $this->dispatch('program-final-actualizada');
+    }
+
+    public function control_asistencia($programacion_id)
+    {
+        $query = Programacion::findOrFail($programacion_id);
+
+        if (! $query) {
+            return;
+        }
+
+        return (new ControlAsistenciaPdf(
+            programacion: $query,
+        ))->download();
+    }
+
+    public function render()
+    {
+        return view('livewire.data-program-final');
     }
 }

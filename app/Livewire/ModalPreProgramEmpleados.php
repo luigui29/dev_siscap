@@ -46,13 +46,6 @@ class ModalPreProgramEmpleados extends Component
         $this->dispatch('listo-modal-pre-program-empleados');
     }
 
-    // Se obtiene la data filtrada por el componente FiltroEmpleados
-    #[On('busqueda-filtrada-empleados')]
-    public function obtenerDataFiltrada($filtros)
-    {
-        $this->data_filtrada = $filtros;
-    }
-
     // Se agrega la ficha del empleado al arreglo de empleados matriculados
     #[On('agregar-empleado')]
     public function agregar_empleado($ficha)
@@ -75,6 +68,13 @@ class ModalPreProgramEmpleados extends Component
         $this->empleados_matriculados = collect($this->empleados_matriculados)->filter(
             fn ($emp) => $emp->ficha != $ficha
         );
+    }
+
+    // Se obtiene la data filtrada por el componente FiltroEmpleados
+    #[On('busqueda-filtrada-empleados')]
+    public function obtenerDataFiltrada($filtros)
+    {
+        $this->data_filtrada = $filtros;
     }
 
     /* PROPIEDADES COMPUTADAS */

@@ -123,7 +123,7 @@
                                              <span class="small d-block text-secondary"><strong>Área:</strong> {{ $curso->actividad->area->nombre }}</span>                                             
                                         </td>
                                         <td class="p-2 align-middle">
-                                             <span class="text-dark" style="font-size: 0.9rem;">{{ $curso->subactividad->nombre }}</span>
+                                             <span class="text-dark" style="font-size: 0.9rem;">{{ $curso->subactividad?->nombre ?? '---' }}</span>
                                         </td>
                                         <td class="p-2 align-middle">
                                              <span class="text-secondary" style="font-size: 0.9rem;">{{ $curso->facilitador->nombre }}</span>

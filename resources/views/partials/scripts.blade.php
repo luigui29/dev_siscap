@@ -212,8 +212,12 @@
      window.addEventListener('cerrar-modal-pre-program-empleados', event => {
           $('#modal_pre_program_empleados').modal('hide');
      });
-     /* [VISTA: PROGRAMACIÓN FINAL] TRABAJADORES MATRICULADOS EN UN CURSO */
-     window.addEventListener('abrir-modal-programacion-trabajadores', event => {
-          $('#modalProgramacionTrabajadores').modal('show');
+     /* [VISTA: PROGRAMACIÓN FINAL] LOS EMPLEADOS MATRICULADOS EN EL CURSO */
+     window.addEventListener('abrir-modal-program-empleados', event => {
+          $('#modal_program_empleados').modal('show');
+     });
+
+     window.addEventListener('cerrar-modal-program-empleados', event => {
+          $('#modal_program_empleados').modal('hide');
      });
 </script>

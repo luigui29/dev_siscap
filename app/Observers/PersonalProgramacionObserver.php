@@ -13,6 +13,7 @@ class PersonalProgramacionObserver
     public function refrescarCache(PersonalProgramacion $personalProgramacion): void
     {
         DB::unprepared('REFRESH MATERIALIZED VIEW CONCURRENTLY mvw_programaciones_empleados');
+        DB::unprepared('REFRESH MATERIALIZED VIEW CONCURRENTLY mvw_programaciones_finales');
     }
 
     /**

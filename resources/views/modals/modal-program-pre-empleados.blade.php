@@ -95,8 +95,8 @@
                                     @if($this->empleados_matriculados)
                                         @foreach($this->empleados_matriculados as $e)
                                             <tr>
-                                                <td class="p-2 text-left font-weight-bold align-middle">{{ $e->nombre_empleado }}<br><em class="small"> Ficha: {{$e->ficha}} | C.I. {{$e->cedula}} </em></td>
-                                                <td class="p-2 text-left font-weight-bold align-middle">{{ $e->texto_gerencia }}<br><em class="small"> Unidad: {{ $e->texto_unidad }} | Cargo: {{$e->texto_cargo}} </em></td>
+                                                <td class="p-2 text-left font-weight-bold align-middle" style="word-break: break-word;">{{ $e->nombre_empleado }}<br><em class="small"> Ficha: {{$e->ficha}} | C.I. {{$e->cedula}} </em></td>
+                                                <td class="p-2 text-left font-weight-bold align-middle" style="word-break: break-word;">{{ $e->texto_gerencia }}<br><em class="small"> Unidad: {{ $e->texto_unidad }} | Cargo: {{$e->texto_cargo}} </em></td>
                                                 <td class="p-2 text-center align-middle">
                                                     <button class="btn btn-sm btn-outline-danger" wire:click="quitar_empleado({{ $e->ficha }})">
                                                         <i class="fas fa-minus"></i>

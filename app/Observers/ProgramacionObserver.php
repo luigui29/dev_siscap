@@ -25,6 +25,7 @@ class ProgramacionObserver
         if ($programacion->wasChanged('aprobado')) {
             DB::unprepared('REFRESH MATERIALIZED VIEW CONCURRENTLY mvw_programaciones_empleados');
             DB::unprepared('REFRESH MATERIALIZED VIEW CONCURRENTLY mvw_pre_programaciones');
+            DB::unprepared('REFRESH MATERIALIZED VIEW CONCURRENTLY mvw_programaciones_finales');
         }
     }
 

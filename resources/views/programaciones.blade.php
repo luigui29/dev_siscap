@@ -28,20 +28,26 @@
         <livewire:modal-pre-program-curso />
         <livewire:modal-pre-program-empleados />
     </div>
-
-</div>
 @endif
 
 <!-- PROGRAMACIONES FINALES -->
 @if ($pestania === 'final')
     <div class="d-flex flex-column justify-content-start mb-4 mx-5 text-dark">
         <h3 class="font-weight-bold my-3">
-            Gestión de Desarrollo Gerencial
+            Programación Final
         </h3>
 
-        <livewire:filtro-gerencias />
+        <div class="row">
+            <div class="col-8">
+                <livewire:filtro-programaciones />
+                <livewire:data-program-final />
+            </div>
+        </div>
         <livewire:data-gerencias />
     </div>
+
+    <!-- MODALES -->
+    <livewire:modal-program-empleados />
 @endif
 
 <!-- EJECUCIONES -->
@@ -49,5 +55,7 @@
 @if($pestania === 'ejecucion')
 
 @endif
+
+</div>
 
 </x-layouts.app>

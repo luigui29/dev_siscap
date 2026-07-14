@@ -65,7 +65,7 @@
                     <div class="col-6">
                         <label for="institucion_filtro" class="font-weight-bold text-muted mb-1">Institución</label>
                         @error('filtro_institucion') <span class="text-danger font-weight-bold"><i class="fas fa-info-circle ml-1 mr-2"></i>{{ $message }}</span> @enderror
-                        <input id="institucion_filtro" type="text" class="form-control form-control-md" wire:model.live.debounce.500ms="filtro_institucion" :disabled="$store.programaciones.cargando" placeholder="VENPRECAR (por defecto)" style="border-radius: 4px;">
+                        <input id="institucion_filtro" type="text" class="form-control form-control-md" wire:model.live.debounce.500ms="filtro_institucion" :disabled="$store.programaciones.cargando" placeholder="VENPRECAR" style="border-radius: 4px;">
                     </div>
                     <div class="col-6">
                         <label for="lugar_filtro" class="font-weight-bold text-muted mb-1">Lugar</label>
