@@ -139,6 +139,7 @@ class DataProgramFinal extends Component
 
         if ($query) {
             $query->aprobado = false;
+            $query->save();
         }
 
         $this->dispatch('program-final-actualizada');
@@ -150,6 +151,7 @@ class DataProgramFinal extends Component
 
         if ($query) {
             $query->aprobado = true;
+            $query->save();
         }
 
         $this->dispatch('program-final-actualizada');
@@ -161,6 +163,7 @@ class DataProgramFinal extends Component
 
         if ($query) {
             $query->aprobado = null;
+            $query->save();
         }
 
         $this->dispatch('program-final-actualizada');

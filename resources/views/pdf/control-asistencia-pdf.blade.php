@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Resumen de Perfil</title>
+    <title>Control de Asistencias</title>
     <style>
         @page {
             margin: 20px;
@@ -97,9 +97,6 @@
                 <th class="text-center">Ficha</th>
                 <th class="text-center">Cédula</th>
                 <th class="text-left">Nombre</th>
-                <th class="text-left">Gerencia</th>
-                <th class="text-left">Cargo</th>
-                <th class="text-left">Unidad</th>
                 <th class="text-center">Firma</th>
             </tr>
         </thead>
@@ -110,9 +107,6 @@
                     <td class="text-center align-middle">{{ $empleado->ficha }}</td>
                     <td class="text-center align-middle">{{ $empleado->cedula }}</td>
                     <td class="text-left align-middle">{{ $empleado->nombre_empleado }}</td>
-                    <td class="text-left align-middle">{{ $empleado->texto_gerencia }}</td>
-                    <td class="text-left align-middle">{{ $empleado->texto_cargo }}</td>
-                    <td class="text-left align-middle">{{ $empleado->texto_unidad }}</td>
                     <td class="text-center align-middle"></td>
                 </tr>
             @empty

@@ -10,13 +10,22 @@
                     </button>
             </div>
 
-            <div class="modal-body p-0">
+            <div class="modal-body p-0" style="position: relative;">
+                <!-- Indicador de carga -->    
+                <div x-show="$store.matriculados.cargando" 
+                        style="position: absolute; inset: 0; background: rgba(255,255,255,0.7); z-index: 10; justify-content: center; align-items: center; border-radius: 4px; display: none;" 
+                        :class="$store.matriculados.cargando ? 'd-flex' : 'd-none'">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary mb-2" role="status"></div>
+                        <div class="text-primary small font-weight-bold">Cargando...</div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-sm table-fixed-layout mb-0">
                         <thead class="bg-light">
                             <tr>
-                                <th class="p-2 text-left align-middle" style="width: 20%;">FICHA </th>
-                                <th class="p-2 text-left align-left" style="width: 20%;">NOMBRE </th>
+                                <th class="p-2 text-center align-middle" style="width: 10%;">FICHA </th>
+                                <th class="p-2 text-left align-middle" style="width: 30%;">NOMBRE </th>
                                 <th class="p-2 text-center align-middle" style="width: 20%;">GERENCIA </th>
                                 <th class="p-2 text-center align-middle" style="width: 20%;">CARGO </th>
                                 <th class="py-2 text-center align-middle" style="width: 20%;">UNIDAD </th>
@@ -25,8 +34,8 @@
                         <tbody>
                             @forelse($this->empleados_matriculados as $e)
                                 <tr>
-                                    <td class="p-2 text-left font-weight-bold align-middle">{{ $e->ficha }}</td>
-                                    <td class="p-2 text-left align-left">{{ $e->nombre }} <br><small class="text-muted">{{ $e->cedula }}</small></td>
+                                    <td class="p-2 text-center font-weight-bold align-middle">{{ $e->ficha }}</td>
+                                    <td class="p-2 text-left align-middle"> {{ $e->nombre_empleado }} <br><small class="text-muted">C.I.: {{ $e->cedula }}</small></td>
                                     <td class="p-2 text-center align-middle">{{ $e->texto_gerencia }}</td>
                                     <td class="p-2 text-center align-middle">{{ $e->texto_cargo }}</td>
                                     <td class="p-2 text-center align-middle">{{ $e->texto_unidad }}</td>

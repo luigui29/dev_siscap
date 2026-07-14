@@ -138,7 +138,7 @@
 
                /* Verificar el uso de un filtro de búsqueda de programaciones y activar
                estado de carga de componentes correspondientes */
-               if (component.name === 'filtro-programaciones' || component.name === 'data-preprogram') {
+               if (component.name === 'filtro-programaciones' || component.name === 'data-preprogram' || component.name === 'data-program-final') {
                     
                     Alpine.store('programaciones').cargando = true;
 
@@ -154,7 +154,7 @@
                }
 
                /* Activar estado de carga al agregar o quitar empleados matriculados */
-               if (component.name === 'modal-pre-program-empleados') {
+               if (component.name === 'modal-pre-program-empleados' || component.name === 'modal-program-empleados') {
                     
                     Alpine.store('matriculados').cargando = true;
 

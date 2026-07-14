@@ -25,34 +25,52 @@
                 <p class="text-secondary mb-2"><strong>Lugar:</strong>{{$program->lugar}}</p>
                 <p class="text-secondary mb-2"><i class="fas fa-calendar mr-2"></i>{{$program->fecha}}</p>
                 <p class="text-secondary mb-2"><i class="fas fa-clock mr-2"></i>{{$program->desde}} - {{$program->hasta}}  <strong>({{$program->duracion}}) Hora(s)</strong></p>
-                <div class="mb-2 row">
+                <div class="mb-2 mt-3 row">
                     <div class="col-6">
-                        <button class="ml-2 btn btn-md btn-outline-primary" wire:click="$dispatch('abrir-modal-program-empleados', { id: {{ $program->programacion_id }} })">
+                        <button class="btn btn-md btn-outline-primary" wire:click="$dispatch('abrir-modal-program-empleados', { id: {{ $program->programacion_id }} })">
                             <i class="fas fa-users"></i>
                         </button>
                     </div>
                     @if(is_null($program->aprobado))
                     <div class="col-2 ml-auto d-flex justify-content-end">
-                        <button class="btn btn-md btn-outline-success" 
-                                wire:click="aprobar({{ $program->programacion_id }})">
-                            <i class="fas fa-regular fa-circle-check"></i>
+                        <button class="btn btn-md btn-outline-success mr-2" 
+                                wire:click="aprobar({{ $program->programacion_id }})"
+                                wire:loading.attr="disabled"
+                                wire:target="aprobar({{ $program->programacion_id }})"
+                                :disabled="$store.programaciones.cargando">
+                            <span wire:loading wire:target="aprobar({{ $program->programacion_id }})" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <i wire:loading.remove wire:target="aprobar({{ $program->programacion_id }})" class="fas fa-check-circle"></i>
                         </button>
                         <button class="btn btn-md btn-outline-danger"
                                 wire:confirm="¿Está seguro de que quiere rechazar esta programación?" 
-                                wire:click="rechazar({{ $program->programacion_id }})">
-                            <i class="fas fa-solid fa-ban"></i>
+                                wire:click="rechazar({{ $program->programacion_id }})"
+                                wire:loading.attr="disabled"
+                                wire:target="rechazar({{ $program->programacion_id }})"
+                                :disabled="$store.programaciones.cargando">
+                            <span wire:loading wire:target="rechazar({{ $program->programacion_id }})" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <i wire:loading.remove wire:target="rechazar({{ $program->programacion_id }})" class="fas fa-solid fa-ban"></i>
                         </button>
                     </div>
                     @else
                     <div class="col-2 ml-auto d-flex justify-content-end">
-                        <button class="btn btn-md btn-outline-pdf" 
-                                wire:click="$dispatch('abrir-modal-program-empleados', { id: {{ $program->programacion_id }} })">
-                            <i class="fas fa-regular fa-circle-check"></i>
+                        @if($program->aprobado)
+                        <button class="btn btn-md btn-outline-pdf mr-2" 
+                                wire:click="control_asistencia({{ $program->programacion_id }})"
+                                wire:loading.attr="disabled"
+                                wire:target="control_asistencia({{ $program->programacion_id }})"
+                                :disabled="$store.programaciones.cargando">
+                            <span wire:loading wire:target="control_asistencia({{ $program->programacion_id }})" class="spinner-border spinner-border-sm mx-1" role="status" aria-hidden="true"></span>
+                            <i wire:loading.remove wire:target="control_asistencia({{ $program->programacion_id }})" class="fas fa-file-pdf mx-1"></i>
                         </button>
+                        @endif
                         <button class="btn btn-md btn-outline-secondary"
-                                wire:confirm="¿Está seguro de que quiere retrodecer esta programación? Esto puede afectar las horas de capacitación de los empleados matriculados." 
-                                wire:click="retrodecer({{ $program->programacion_id }})">
-                            <i class="fas fa-redo"></i>
+                                wire:confirm="¿Está seguro de que quiere retroceder esta programación? Esto puede afectar las horas de capacitación de los empleados matriculados." 
+                                wire:click="retroceder({{ $program->programacion_id }})"
+                                wire:loading.attr="disabled"
+                                wire:target="retroceder({{ $program->programacion_id }})"
+                                :disabled="$store.programaciones.cargando">
+                            <span wire:loading wire:target="retroceder({{ $program->programacion_id }})" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <i wire:loading.remove wire:target="retroceder({{ $program->programacion_id }})" class="fas fa-redo"></i>
                         </button>
                     </div>
                     @endif

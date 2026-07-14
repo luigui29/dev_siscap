@@ -43,7 +43,6 @@
                 <livewire:data-program-final />
             </div>
         </div>
-        <livewire:data-gerencias />
     </div>
 
     <!-- MODALES -->

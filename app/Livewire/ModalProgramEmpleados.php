@@ -35,6 +35,6 @@ class ModalProgramEmpleados extends Component
 
     public function render()
     {
-        return view('modals.modal-program-pre-empleados');
+        return view('modals.modal-program-empleados');
     }
 }
