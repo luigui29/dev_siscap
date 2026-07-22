@@ -184,6 +184,39 @@ class DataProgramFinal extends Component
 
     public function render()
     {
-        return view('livewire.data-program-final');
+        /**
+         * Cada vez que se renderiza la vista, se vuelve a calcular las sumas mostradas
+         * en las tarjetas de stats de la vista
+         */
+
+        $vista = DB::table('mvw_programaciones_finales');
+        $query = $this->filtrar_program($vista);
+
+        $totales_agrupados = (clone $query)->select('aprobado', DB::raw('count(*) as total'))
+            ->groupBy('aprobado')
+            ->get();
+
+        $totales_program_aprob = 0;
+        $totales_program_recha = 0;
+        $totales_program_pend = 0;
+
+        foreach ($totales_agrupados as $item) {
+            if (is_null($item->aprobado)) {
+                $totales_program_pend += $item->total;
+            } elseif (in_array($item->aprobado, [true, 1, '1', 't', 'true', 'T', 'TRUE'], true)) {
+                $totales_program_aprob += $item->total;
+            } else {
+                $totales_program_recha += $item->total;
+            }
+        }
+
+        $totales_program = $totales_program_aprob + $totales_program_recha + $totales_program_pend;
+
+        return view('livewire.data-program-final', compact(
+            'totales_program',
+            'totales_program_aprob',
+            'totales_program_recha',
+            'totales_program_pend'
+        ));
     }
 }
